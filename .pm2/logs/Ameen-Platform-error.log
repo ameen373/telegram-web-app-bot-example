@@ -1,0 +1,3042 @@
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+FetchError: request to https://api.telegram.org/bot8750226509:[REDACTED]/getMe failed, reason: read ECONNRESET
+    at ClientRequest.<anonymous> (/data/data/com.termux/files/home/my-mega-app/node_modules/node-fetch/lib/index.js:1501:11)
+    at ClientRequest.emit (node:events:508:20)
+    at emitErrorEvent (node:_http_client:109:11)
+    at TLSSocket.socketErrorListener (node:_http_client:593:5)
+    at TLSSocket.emit (node:events:508:20)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  type: 'system',
+  errno: 'ECONNRESET',
+  code: 'ECONNRESET'
+}
+Error: Bot is not running!
+    at Telegraf.stop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:218:19)
+    at process.<anonymous> (/data/data/com.termux/files/home/my-mega-app/telega.js:73:34)
+    at Object.onceWrapper (node:events:623:12)
+    at process.emit (node:events:508:20)
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 207538584, allowed_updates: [] }
+  }
+}
+TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async [Symbol.asyncIterator] (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/data/data/com.termux/files/home/my-mega-app/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 207538585, allowed_updates: [] }
+  }
+}

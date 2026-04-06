@@ -1,0 +1,15 @@
+[2026-04-06T12:54:39.779Z] [debug] Notifying parent we're ready
+[2026-04-06T12:54:39.794Z] [debug] Received message from parent: {
+  cacheFile: '/data/data/com.termux/files/home/.cache/com.vercel.cli/package-updates/vercel-latest.json',
+  distTag: 'latest',
+  name: 'vercel',
+  updateCheckInterval: 86400000
+}
+[2026-04-06T12:54:39.794Z] [debug] Disconnecting from parent
+[2026-04-06T12:54:39.798Z] [debug] Checking lock file: /data/data/com.termux/files/home/.cache/com.vercel.cli/package-updates/vercel-latest.lock
+[2026-04-06T12:54:39.803Z] [debug] Initializing lock file with pid 5679
+[2026-04-06T12:54:39.807Z] [debug] Fetching https://registry.npmjs.org/-/package/vercel/dist-tags
+[2026-04-06T12:54:41.463Z] [debug] Found dist tag "latest" with version "50.39.0"
+[2026-04-06T12:54:41.463Z] [debug] Writing cache file: /data/data/com.termux/files/home/.cache/com.vercel.cli/package-updates/vercel-latest.json
+[2026-04-06T12:54:41.466Z] [debug] Releasing lock file: /data/data/com.termux/files/home/.cache/com.vercel.cli/package-updates/vercel-latest.lock
+[2026-04-06T12:54:41.467Z] [debug] Worker finished successfully!

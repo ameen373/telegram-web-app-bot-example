@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة Telega-IO العالمية</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f9; margin: 0; padding: 15px; color: #333; }
+        .card { background: white; padding: 20px; border-radius: 18px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); margin-bottom: 20px; border-top: 5px solid #0088cc; }
+        .tabs { display: flex; justify-content: space-around; margin-bottom: 20px; background: #e0e0e0; border-radius: 12px; padding: 4px; }
+        .tab { padding: 12px; border-radius: 10px; cursor: pointer; flex: 1; text-align: center; font-weight: bold; transition: 0.3s; }
+        .active { background: #0088cc; color: white; }
+        .hidden { display: none; }
+        h2 { margin-top: 0; color: #0088cc; font-size: 1.2rem; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; font-size: 14px; }
+        button { background: #0088cc; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:active { transform: scale(0.98); opacity: 0.9; }
+        .status-msg { font-size: 12px; color: #666; text-align: center; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="tabs">
+        <div id="tabAdv" class="tab active" onclick="showTab('advertiser')">قسم المعلنين</div>
+        <div id="tabPub" class="tab" onclick="showTab('publisher')">قسم الناشرين</div>
+    </div>
+
+    <div id="advertiser" class="card">
+        <h2>📢 إنشاء حملة إعلانية عالمية</h2>
+        <input type="text" id="adTitle" placeholder="عنوان الحملة (مثال: ترويج قناة دراما)">
+        <textarea id="adContent" rows="4" placeholder="اكتب نص الإعلان هنا..."></textarea>
+        <input type="url" id="adLink" placeholder="رابط الزر (اختياري)">
+        <button onclick="sendAdRequest()">إرسال الطلب للمراجعة</button>
+        <p class="status-msg">سيتم مراجعة طلبك من قبل إدارة Telega-IO فوراً.</p>
+    </div>
+
+    <div id="publisher" class="card hidden">
+        <h2>💰 لوحة تحكم الناشر</h2>
+        <p>قم بربط قناتك لتبدأ باستقبال الإعلانات وتحقيق الأرباح.</p>
+        <input type="text" id="chanName" placeholder="اسم القناة">
+        <input type="text" id="chanLink" placeholder="رابط القناة (@username)">
+        <button onclick="registerChannel()">تسجيل القناة في الشبكة</button>
+    </div>
+
+    <script>
+        // دمج بياناتك من الصورة
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9wJ3RKL9Sc0VqIgOz3HIL6PAZMK1GZos",
+            authDomain: "telega-io.firebaseapp.com",
+            databaseURL: "https://telega-io-default-rtdb.firebaseio.com",
+            projectId: "telega-io",
+            storageBucket: "telega-io.firebasestorage.app",
+            messagingSenderId: "413242252888",
+            appId: "1:413242252888:web:6055aaa7fcdd256910b42d"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // تهيئة Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        const user = tg.initDataUnsafe.user || { id: "unknown", first_name: "Guest" };
+
+        function showTab(type) {
+            document.getElementById('advertiser').classList.toggle('hidden', type !== 'advertiser');
+            document.getElementById('publisher').classList.toggle('hidden', type !== 'publisher');
+            document.getElementById('tabAdv').classList.toggle('active', type === 'advertiser');
+            document.getElementById('tabPub').classList.toggle('active', type === 'publisher');
+        }
+
+        // إرسال طلب معلن
+        function sendAdRequest() {
+            const title = document.getElementById('adTitle').value;
+            const content = document.getElementById('adContent').value;
+            const link = document.getElementById('adLink').value;
+
+            if (!title || !content) {
+                tg.showAlert("⚠️ يرجى إدخال العنوان والمحتوى.");
+                return;
+            }
+
+            db.ref('ads_requests/' + user.id).push({
+                title: title,
+                content: content,
+                link: link,
+                sender: user.first_name,
+                status: 'pending',
+                time: Date.now()
+            }).then(() => {
+                tg.showAlert("✅ تم إرسال طلبك بنجاح! انتظر إشعاراً من البوت.");
+                document.getElementById('adTitle').value = "";
+                document.getElementById('adContent').value = "";
+            });
+        }
+
+        // تسجيل قناة ناشر
+        function registerChannel() {
+            const cName = document.getElementById('chanName').value;
+            const cLink = document.getElementById('chanLink').value;
+
+            if (!cName || !cLink) {
+                tg.showAlert("⚠️ يرجى ملء بيانات القناة.");
+                return;
+            }
+
+            db.ref('publishers/' + user.id).set({
+                channel_name: cName,
+                channel_link: cLink,
+                status: 'verified'
+            }).then(() => {
+                tg.showAlert("✨ تم تسجيل قناتك بنجاح في المنصة العالمية!");
+            });
+        }
+    </script>
+</body>
+</html>
