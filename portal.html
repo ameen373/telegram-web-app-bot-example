@@ -4,95 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telega-IO | المنصة العالمية</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; text-align: center; }
         .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .header { text-align: center; margin-bottom: 30px; }
         .tabs { display: flex; margin-bottom: 25px; background: #e4e6eb; border-radius: 12px; padding: 5px; }
-        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; border-radius: 10px; transition: 0.3s; font-weight: bold; }
+        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; border-radius: 10px; font-weight: bold; }
         .active-tab { background: #0088cc; color: white; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
-        textarea { height: 120px; resize: none; }
-        button { width: 100%; padding: 15px; background: #0088cc; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #0077b5; }
-        .footer-text { text-align: center; font-size: 12px; color: #777; margin-top: 15px; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 15px; background: #0088cc; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        button:disabled { background: #ccc; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h2 style="color: #0088cc;">📢 إنشاء حملة إعلانية عالمية</h2>
-    </div>
-
+    <h2 style="color: #0088cc;">📢 إنشاء حملة إعلانية</h2>
     <div class="tabs">
         <div class="tab active-tab">قسم المعلنين</div>
         <div class="tab">قسم الناشرين</div>
     </div>
 
-    <div id="advertiser-form">
-        <div class="form-group">
-            <label>عنوان الإعلان</label>
-            <input type="text" id="ad-title" placeholder="أدخل عنواناً جذاباً...">
-        </div>
-        <div class="form-group">
-            <label>محتوى الرسالة الإعلانية</label>
-            <textarea id="ad-content" placeholder="اكتب تفاصيل إعلانك هنا..."></textarea>
-        </div>
-        <div class="form-group">
-            <label>رابط التواصل أو القناة</label>
-            <input type="text" id="ad-link" placeholder="@username أو رابط">
-        </div>
-        <button onclick="sendData()">إرسال الطلب للمراجعة</button>
-        <p class="footer-text">سيتم مراجعة طلبك من قبل إدارة Telega-IO فوراً.</p>
-    </div>
+    <input type="text" id="ad-title" placeholder="عنوان الإعلان">
+    <textarea id="ad-content" placeholder="محتوى الرسالة"></textarea>
+    <input type="text" id="ad-link" placeholder="رابط التواصل">
+    
+    <button id="submitBtn" onclick="sendData()">إرسال الطلب للمراجعة</button>
 </div>
 
 <script>
-    // تهيئة تليجرام
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
     // إعدادات Firebase الخاصة بك
     const firebaseConfig = {
         databaseURL: "https://telega-io-default-rtdb.firebaseio.com"
     };
-    firebase.initializeApp(firebaseConfig);
+    
+    // التحقق من التهيئة لتجنب الأخطاء
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const database = firebase.database();
 
     function sendData() {
+        const btn = document.getElementById('submitBtn');
         const title = document.getElementById('ad-title').value;
         const content = document.getElementById('ad-content').value;
         const link = document.getElementById('ad-link').value;
 
         if(!title || !content || !link) {
-            alert("يرجى ملء جميع الحقول!");
+            alert("⚠️ يرجى ملء الحقول أولاً");
             return;
         }
 
-        // إرسال البيانات لقاعدة البيانات
-        const newAdRef = database.ref('ads').push();
-        newAdRef.set({
+        btn.disabled = true;
+        btn.innerText = "جاري الإرسال...";
+
+        // محاولة الإرسال
+        database.ref('ads').push({
             title: title,
             content: content,
             link: link,
             status: 'pending',
             timestamp: Date.now()
-        }).then(() => {
-            if (tg.showAlert) {
-                tg.showAlert("✅ تم إرسال طلبك بنجاح! سيتم إخطارك عند الموافقة.");
-            } else {
-                alert("✅ تم إرسال طلبك بنجاح!");
-            }
-            // إغلاق التطبيق بعد الإرسال
-            setTimeout(() => { tg.close(); }, 2000);
-        }).catch((error) => {
-            alert("خطأ في الإرسال: " + error.message);
+        })
+        .then(() => {
+            alert("✅ تم الإرسال بنجاح!");
+            // إعادة تصفير الحقول
+            document.getElementById('ad-title').value = "";
+            document.getElementById('ad-content').value = "";
+            document.getElementById('ad-link').value = "";
+        })
+        .catch((error) => {
+            alert("❌ فشل الإرسال: " + error.message);
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerText = "إرسال الطلب للمراجعة";
         });
     }
 </script>
