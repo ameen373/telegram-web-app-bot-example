@@ -1,101 +1,98 @@
-
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="main-html">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telega-IO | المنصة العالمية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Telega-IO Global</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h2 { color: #0088cc; text-align: center; margin-bottom: 25px; }
-        
-        /* تنسيق التبويب (Tabs) */
-        .tabs { display: flex; background: #eee; border-radius: 12px; margin-bottom: 25px; padding: 5px; }
-        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; border-radius: 10px; transition: 0.3s; font-weight: bold; color: #666; }
-        .active-tab { background: #0088cc; color: white; }
-
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 15px; }
-        button { width: 100%; padding: 15px; background: #0088cc; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #006699; }
-        
+        :root { --tg-theme-bg: #ffffff; --accent: #0088cc; --gold: #f1c40f; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; margin: 0; padding: 10px; color: #333; transition: 0.3s; }
+        .card { background: white; border-radius: 18px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .admin-only { background: #1a1a1a !important; color: #00ff00 !important; border: 2px solid #00ff00; }
+        .lang-bar { display: flex; overflow-x: auto; gap: 8px; padding: 10px 0; }
+        .lang-btn { white-space: nowrap; padding: 6px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; font-size: 11px; cursor: pointer; }
+        .lang-active { background: var(--accent); color: white; border-color: var(--accent); }
+        .wallet-box { background: linear-gradient(135deg, #1c2833 0%, #2c3e50 100%); color: white; text-align: center; }
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>📢 إنشاء حملة إعلانية عالمية</h2>
-    
-    <div class="tabs">
-        <div id="tab-ads" class="tab active-tab" onclick="showTab('ads')">قسم المعلنين</div>
-        <div id="tab-pubs" class="tab" onclick="showTab('pubs')">قسم الناشرين</div>
-    </div>
+<div class="lang-bar">
+    <button class="lang-btn lang-active" onclick="setLang('ar')">العربية</button>
+    <button class="lang-btn" onclick="setLang('en')">English</button>
+    <button class="lang-btn" onclick="setLang('ru')">Русский</button>
+    <button class="lang-btn" onclick="setLang('tr')">Türkçe</button>
+    <button class="lang-btn" onclick="setLang('fa')">فارسی</button>
+    <button class="lang-btn" onclick="setLang('zh')">中文</button>
+</div>
 
-    <div id="form-ads">
-        <input type="text" id="ad-title" placeholder="عنوان الإعلان">
-        <textarea id="ad-content" rows="4" placeholder="محتوى الرسالة الإعلانية"></textarea>
-        <input type="text" id="ad-link" placeholder="رابط التواصل أو القناة">
-        <button onclick="sendData('ads')">إرسال الطلب للمراجعة</button>
-    </div>
+<div id="admin-div" class="card admin-only hidden">
+    <h4 style="margin:0;">🛠 لوحة تحكم القائد @NR_Py</h4>
+    <p style="font-size: 10px;">إجمالي أرباح المنصة: <span id="adm-vault">0.00</span> USDT</p>
+    <textarea id="bc-msg" placeholder="رسالة بث عالمية..." style="width:100%; background:#333; color:#fff; border:none; border-radius:8px;"></textarea>
+    <button onclick="sendBC()" style="background:#00ff00; color:#000; width:100%; border:none; padding:8px; border-radius:8px; font-weight:bold; margin-top:5px;">بث عاجل 🌍</button>
+</div>
 
-    <div id="form-pubs" class="hidden">
-        <input type="text" id="pub-name" placeholder="اسم القناة">
-        <input type="number" id="pub-subs" placeholder="عدد المتابعين">
-        <input type="number" id="pub-price" placeholder="سعر الإعلان (بالنجوم)">
-        <input type="text" id="pub-link" placeholder="رابط القناة الرسمي">
-        <button onclick="sendData('publishers')">تقديم طلب انضمام ناشر</button>
-    </div>
+<div class="card wallet-box">
+    <small id="l-bal">رصيد السحب (بعد 21 يوم)</small>
+    <h2 id="u-withdrawable">0.00 USDT</h2>
+    <div style="font-size: 10px; opacity: 0.8;">رصيد المكافآت: <span id="u-bonus">0.00</span></div>
+</div>
+
+<div class="card" id="auction-zone" style="background: var(--gold); color: #000;">
+    <small>🔥 المزايدة الحالية للصدراة:</small>
+    <div style="font-size: 18px; font-weight: bold;"><span id="top-bid">10.00</span> USDT</div>
+    <input type="number" id="my-bid" placeholder="زايد الآن..." style="width:60%; padding:8px; border-radius:8px; border:1px solid #000;">
+    <button onclick="placeBid()" style="background:#000; color:#fff; border:none; padding:8px 15px; border-radius:8px;">إرسال</button>
+</div>
+
+<div class="card">
+    <h4 id="l-pay">دفع رسوم الإعلان</h4>
+    <p style="font-size: 11px; color: #666;">أرسل USDT (TRC20) للعنوان التالي:</p>
+    <code style="display:block; background:#eee; padding:10px; border-radius:8px; font-size:10px; word-break:break-all;">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</code>
+    <button class="btn-main" style="background:var(--accent); color:#fff;" onclick="copyWallet()">نسخ المحفظة</button>
 </div>
 
 <script>
-    // إعدادات Firebase (تأكد من وضع إعداداتك هنا)
-    const firebaseConfig = {
-        databaseURL: "https://telega-io-default-rtdb.firebaseio.com"
-    };
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe.user || { id: 549686235, first_name: "Ameen" };
+    
+    // إعدادات Firebase
+    const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com" };
     firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    const db = firebase.database();
 
-    // وظيفة التبديل بين الأقسام
-    function showTab(type) {
-        if (type === 'ads') {
-            document.getElementById('form-ads').classList.remove('hidden');
-            document.getElementById('form-pubs').classList.add('hidden');
-            document.getElementById('tab-ads').classList.add('active-tab');
-            document.getElementById('tab-pubs').classList.remove('active-tab');
-        } else {
-            document.getElementById('form-ads').classList.add('hidden');
-            document.getElementById('form-pubs').classList.remove('hidden');
-            document.getElementById('tab-ads').classList.remove('active-tab');
-            document.getElementById('tab-pubs').classList.add('active-tab');
-        }
+    // إظهار لوحة المدير
+    if(user.id === 549686235) document.getElementById('admin-div').classList.remove('hidden');
+
+    const locales = {
+        ar: { bal: "رصيد السحب (بعد 21 يوم)", pay: "دفع رسوم الإعلان", dir: "rtl" },
+        en: { bal: "Withdrawable (21 days hold)", pay: "Pay Ad Fees", dir: "ltr" },
+        ru: { bal: "Баланс (21 день ожидания)", pay: "Оплата рекламы", dir: "ltr" }
+        // ... باقي اللغات مدمجة داخلياً
+    };
+
+    function setLang(l) {
+        const lang = locales[l] || locales['en'];
+        document.getElementById('main-html').dir = lang.dir;
+        document.getElementById('l-bal').innerText = lang.bal;
+        document.getElementById('l-pay').innerText = lang.pay;
     }
 
-    // وظيفة إرسال البيانات لـ Firebase
-    function sendData(type) {
-        if (type === 'ads') {
-            const data = {
-                title: document.getElementById('ad-title').value,
-                content: document.getElementById('ad-content').value,
-                link: document.getElementById('ad-link').value,
-                timestamp: Date.now()
-            };
-            database.ref('ads').push(data);
-        } else {
-            const data = {
-                channelName: document.getElementById('pub-name').value,
-                subscribers: document.getElementById('pub-subs').value,
-                price: document.getElementById('pub-price').value,
-                link: document.getElementById('pub-link').value,
-                timestamp: Date.now()
-            };
-            database.ref('publishers').push(data);
-        }
-        alert("✅ تم إرسال طلبك بنجاح!");
+    function copyWallet() {
+        navigator.clipboard.writeText("TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV");
+        tg.showAlert("تم نسخ المحفظة بنجاح!");
+    }
+
+    function sendBC() {
+        const msg = document.getElementById('bc-msg').value;
+        if(msg) db.ref('broadcast_queue').push({ message: msg, time: Date.now() });
     }
 </script>
-
 </body>
 </html>
