@@ -3,81 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Pro Global</title>
+    <title>Telega-IO Pro | Global Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        /* 🎨 نظام الألوان الذكي (الوضع الليلي) */
+        /* 🎨 نظام الألوان الذكي المدمج */
         :root {
             --bg: #f8f9fa; --card: #ffffff; --text: #1e293b;
             --accent: #0088cc; --gold: #f1c40f; --safe: #22c55e; --danger: #ef4444;
         }
         @media (prefers-color-scheme: dark) {
-            :root {
-                --bg: #0f172a; --card: #1e293b; --text: #f1f5f9;
-            }
+            :root { --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; }
         }
 
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 12px; transition: 0.3s; line-height: 1.6; }
         
-        /* 💳 المحفظة والضمان */
-        .hero-wallet { background: linear-gradient(135deg, #1e293b, #334155); color: white; padding: 25px; border-radius: 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        /* 💳 الهوية البصرية الجديدة للمحفظة */
+        .hero-wallet { background: linear-gradient(135deg, #1e293b, #334155); color: white; padding: 25px; border-radius: 24px; text-align: center; margin-bottom: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .escrow-status { background: var(--safe); color: white; font-size: 10px; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 10px; }
 
-        /* 📑 التبويبات الاحترافية */
+        /* 🔥 بنر المزايدة المدمج */
+        .bid-card { background: var(--gold); color: #000; padding: 15px; border-radius: 20px; margin-bottom: 15px; font-weight: bold; }
+
+        /* 📑 التبويبات الاحترافية العائمة */
         .nav-tabs { display: flex; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 16px; margin-bottom: 20px; position: sticky; top: 10px; z-index: 100; backdrop-filter: blur(10px); }
-        .tab-item { flex: 1; text-align: center; padding: 12px; cursor: pointer; border-radius: 12px; font-size: 13px; font-weight: bold; transition: 0.2s; color: #64748b; }
+        .tab-item { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 12px; font-size: 11px; font-weight: bold; transition: 0.2s; color: #64748b; }
         .tab-active { background: var(--card); color: var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        /* 🛒 بطاقات السوق والإحصائيات */
-        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05); }
-        .stat-badge { background: rgba(0,136,204,0.1); color: var(--accent); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; margin-left: 5px; }
-        .rating { color: var(--gold); font-size: 14px; margin: 8px 0; }
+        /* 🛒 بطاقات القنوات */
+        .card { background: var(--card); border-radius: 20px; padding: 18px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .stat-badge { background: rgba(0,136,204,0.1); color: var(--accent); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: bold; margin-left: 5px; }
+        .rating { color: var(--gold); font-size: 12px; margin: 5px 0; }
         
-        /* 🛡️ لوحة التحكم المخفية @NR_Py */
+        /* 🛡️ لوحة التحكم @NR_Py */
         .admin-panel { background: #000 !important; color: #00ff00 !important; border: 2px solid #00ff00; }
 
-        /* 🔘 الأزرار والمدخلات */
-        .btn-prime { width: 100%; padding: 16px; border: none; border-radius: 16px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; font-size: 15px; margin-top: 10px; transition: 0.2s; }
-        .btn-prime:active { transform: scale(0.98); opacity: 0.9; }
-        input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; background: var(--bg); color: var(--text); box-sizing: border-box; outline: none; }
+        .btn-prime { width: 100%; padding: 15px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; font-size: 14px; margin-top: 10px; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; background: var(--bg); color: var(--text); box-sizing: border-box; outline: none; font-size: 14px; }
         
         .hidden { display: none; }
+        .lang-chip { padding: 6px 15px; border-radius: 20px; background: var(--card); font-size: 11px; border: 1px solid rgba(0,0,0,0.1); white-space: nowrap; }
     </style>
 </head>
 <body>
 
-<div style="display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; scrollbar-width: none;">
-    <button onclick="changeLang('ar')" style="padding:5px 15px; border-radius:20px; border:none; background:var(--accent); color:white;">العربية</button>
-    <button onclick="changeLang('en')" style="padding:5px 15px; border-radius:20px; border:none; background:var(--card); color:var(--text);">English</button>
-    <button onclick="changeLang('tr')" style="padding:5px 15px; border-radius:20px; border:none; background:var(--card); color:var(--text);">Türkçe</button>
+<div style="display: flex; overflow-x: auto; gap: 8px; padding-bottom: 15px; scrollbar-width: none;">
+    <div class="lang-chip" style="background:var(--accent); color:white;">العربية</div>
+    <div class="lang-chip">English</div>
+    <div class="lang-chip">Русский</div>
+    <div class="lang-chip">Türkçe</div>
 </div>
 
-<div id="admin-p" class="card admin-panel hidden">
-    <h4 style="margin:0;">🛡️ Commander Control (@NR_Py)</h4>
-    <textarea id="bc-msg" placeholder="اكتب رسالة البث العالمي هنا..."></textarea>
-    <button class="btn-prime" style="background:#00ff00; color:black;" onclick="sendBroadcast()">بث فوري للمشتركين 🚀</button>
+<div id="admin-panel" class="card admin-panel hidden">
+    <h4 style="margin:0;">🛡️ Commander Console (@NR_Py)</h4>
+    <p style="font-size:12px;">إجمالي رصيد المنصة: <span id="adm-cash">0.00</span> USDT</p>
+    <textarea id="bc-msg" placeholder="رسالة بث عالمية للمستخدمين..." style="background:#111; color:#0f0;"></textarea>
+    <button class="btn-prime" style="background:#00ff00; color:black;" onclick="sendBroadcast()">إطلاق البث العالمي 🚀</button>
 </div>
 
 <div class="hero-wallet">
-    <small>الرصيد الكلي في الضمان 🛡️</small>
+    <small>الرصيد القابل للسحب (بعد 21 يوم) 🛡️</small>
     <h1 id="user-bal" style="margin: 5px 0;">0.00 <span style="font-size:15px;">USDT</span></h1>
-    <div class="escrow-status">نظام الدفع المحمي مفعّل</div>
+    <div class="escrow-status">نظام الضمان Escrow مفعّل</div>
+</div>
+
+<div class="bid-card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span>🔥 مزاد الصدارة الحالي:</span>
+        <span id="top-bid">12.50 USDT</span>
+    </div>
+    <div style="display:flex; gap:8px; margin-top:10px;">
+        <input type="number" id="bid-input" placeholder="زايد الآن..." style="margin:0; border:none; background:white; color:black;">
+        <button onclick="placeBid()" style="background:black; color:white; border:none; padding:10px 15px; border-radius:10px;">مزايدة</button>
+    </div>
 </div>
 
 <div class="nav-tabs">
-    <div id="t-market" class="tab-item tab-active" onclick="switchSec('market')">السوق</div>
-    <div id="t-ads" class="tab-item" onclick="switchSec('ads')">أعلن</div>
-    <div id="t-kyc" class="tab-item" onclick="switchSec('kyc')">التوثيق</div>
-    <div id="t-help" class="tab-item" onclick="switchSec('help')">الدعم</div>
+    <div id="t-market" class="tab-item tab-active" onclick="switchSec('market')">السوق 🛒</div>
+    <div id="t-ads" class="tab-item" onclick="switchSec('ads')">أعلن 📢</div>
+    <div id="t-pubs" class="tab-item" onclick="switchSec('pubs')">الناشر ➕</div>
+    <div id="t-kyc" class="tab-item" onclick="switchSec('kyc')">التوثيق 🆔</div>
+    <div id="t-pay" class="tab-item" onclick="switchSec('pay')">السحب 💳</div>
 </div>
 
 <div id="sec-market" class="section">
     <div class="card">
-        <div style="display:flex; justify-content:space-between;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
             <b>Yeraltı Turkish Drama</b>
-            <span style="color:var(--safe); font-size:12px; font-weight:bold;">18 USDT</span>
+            <span style="color:var(--safe); font-size:13px; font-weight:bold;">18 USDT</span>
         </div>
         <div class="rating">★★★★★ <small style="color:gray;">(32 تقييم)</small></div>
         <div style="margin-top:8px;">
@@ -89,32 +103,41 @@
 </div>
 
 <div id="sec-ads" class="section card hidden">
-    <h4>إنشاء حملة عالمية 🌍</h4>
+    <h4>إنشاء حملة إعلانية دولية 🌍</h4>
     <input type="text" placeholder="اسم الحملة">
-    <textarea placeholder="نص المنشور + الروابط..."></textarea>
-    <p style="font-size:10px; color:var(--safe);">* سيتم حجز المبلغ في نظام الضمان لمدة 24 ساعة لحمايتك.</p>
-    <button class="btn-prime">إرسال وتحويل للضمان</button>
+    <textarea placeholder="محتوى الإعلان والروابط..."></textarea>
+    <p style="font-size:10px; color:var(--safe);">* سيتم حجز المبلغ في الضمان لمدة 24 ساعة لضمان النشر.</p>
+    <button class="btn-prime">دفع وتحويل للضمان</button>
+</div>
+
+<div id="sec-pubs" class="section card hidden">
+    <h4>إضافة قناتك للشبكة والربح</h4>
+    <input type="text" placeholder="اسم القناة">
+    <input type="text" placeholder="رابط القناة t.me/...">
+    <input type="number" placeholder="سعر المنشور الواحد (USDT)">
+    <button class="btn-prime" style="background:var(--safe);">تقديم للتوثيق</button>
 </div>
 
 <div id="sec-kyc" class="section card hidden">
-    <h4>توثيق الهوية (KYC)</h4>
-    <p style="font-size:11px;">ارفع صورة الهوية أو جواز السفر لزيادة سقف السحب اليومي إلى 1000 USDT.</p>
+    <h4>توثيق الهوية لرفع سقف السحب</h4>
+    <p style="font-size:11px;">ارفع الهوية لزيادة سحبك اليومي إلى 1000 USDT شهرياً.</p>
     <input type="file" accept="image/*">
-    <button class="btn-prime" style="background:var(--safe);">إرسال للمراجعة</button>
+    <button class="btn-prime">إرسال للمراجعة</button>
 </div>
 
-<div id="sec-help" class="section card hidden">
-    <h4>الدعم الفني المدمج</h4>
-    <textarea id="tkt-msg" placeholder="اكتب مشكلتك هنا..."></textarea>
-    <button class="btn-prime" onclick="openTicket()">فتح تذكرة دعم</button>
+<div id="sec-pay" class="section card hidden">
+    <h4>سحب الأرباح المحققة</h4>
+    <p style="font-size:10px; color:var(--danger);">* السحب يوم الاثنين فقط | حد أدنى 20 USDT | معالجة 21 يوماً.</p>
+    <input type="text" placeholder="عنوان محفظة USDT (TRC20)">
+    <button class="btn-prime" style="background:#f39c12;">تأكيد طلب السحب</button>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
-    tg.expand(); // لفتح التطبيق بكامل الشاشة
+    tg.expand();
 
     const user = tg.initDataUnsafe.user || { id: 549686235 };
-    if(user.id === 549686235) document.getElementById('admin-p').classList.remove('hidden');
+    if(user.id === 549686235) document.getElementById('admin-panel').classList.remove('hidden');
 
     function switchSec(s) {
         document.querySelectorAll('.section').forEach(x => x.classList.add('hidden'));
@@ -123,13 +146,14 @@
         document.getElementById('t-' + s).classList.add('tab-active');
     }
 
-    function openTicket() {
-        const msg = document.getElementById('tkt-msg').value;
-        if(msg) tg.showAlert("تم إرسال تذكرتك للقائد @NR_Py بنجاح!");
+    function placeBid() {
+        const val = document.getElementById('bid-input').value;
+        if(val) tg.showAlert("تم إرسال مزايدتك بقيمة " + val + " USDT");
     }
 
-    function changeLang(l) {
-        tg.showAlert("اللغة الحالية: " + l);
+    function sendBroadcast() {
+        const msg = document.getElementById('bc-msg').value;
+        if(msg) tg.showAlert("جاري بث الرسالة لجميع قنوات الشبكة...");
     }
 </script>
 </body>
