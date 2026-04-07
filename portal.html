@@ -1,92 +1,99 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telega-IO | المنصة العالمية</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; text-align: center; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .tabs { display: flex; margin-bottom: 25px; background: #e4e6eb; border-radius: 12px; padding: 5px; }
-        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; border-radius: 10px; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { color: #0088cc; text-align: center; margin-bottom: 25px; }
+        
+        /* تنسيق التبويب (Tabs) */
+        .tabs { display: flex; background: #eee; border-radius: 12px; margin-bottom: 25px; padding: 5px; }
+        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; border-radius: 10px; transition: 0.3s; font-weight: bold; color: #666; }
         .active-tab { background: #0088cc; color: white; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 15px; background: #0088cc; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
+
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 15px; }
+        button { width: 100%; padding: 15px; background: #0088cc; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #006699; }
+        
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 style="color: #0088cc;">📢 إنشاء حملة إعلانية عالمية</h2>
+    <h2>📢 إنشاء حملة إعلانية عالمية</h2>
+    
     <div class="tabs">
-        <div class="tab active-tab">قسم المعلنين</div>
-        <div class="tab">قسم الناشرين</div>
+        <div id="tab-ads" class="tab active-tab" onclick="showTab('ads')">قسم المعلنين</div>
+        <div id="tab-pubs" class="tab" onclick="showTab('pubs')">قسم الناشرين</div>
     </div>
 
-    <input type="text" id="ad-title" placeholder="عنوان الإعلان">
-    <textarea id="ad-content" placeholder="محتوى الرسالة الإعلانية"></textarea>
-    <input type="text" id="ad-link" placeholder="رابط التواصل أو القناة">
-    
-    <button id="submitBtn" onclick="sendData()">إرسال الطلب للمراجعة</button>
+    <div id="form-ads">
+        <input type="text" id="ad-title" placeholder="عنوان الإعلان">
+        <textarea id="ad-content" rows="4" placeholder="محتوى الرسالة الإعلانية"></textarea>
+        <input type="text" id="ad-link" placeholder="رابط التواصل أو القناة">
+        <button onclick="sendData('ads')">إرسال الطلب للمراجعة</button>
+    </div>
+
+    <div id="form-pubs" class="hidden">
+        <input type="text" id="pub-name" placeholder="اسم القناة">
+        <input type="number" id="pub-subs" placeholder="عدد المتابعين">
+        <input type="number" id="pub-price" placeholder="سعر الإعلان (بالنجوم)">
+        <input type="text" id="pub-link" placeholder="رابط القناة الرسمي">
+        <button onclick="sendData('publishers')">تقديم طلب انضمام ناشر</button>
+    </div>
 </div>
 
 <script>
-    // تهيئة تليجرام
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    // إعدادات Firebase الخاصة بك
+    // إعدادات Firebase (تأكد من وضع إعداداتك هنا)
     const firebaseConfig = {
         databaseURL: "https://telega-io-default-rtdb.firebaseio.com"
     };
-    
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    function sendData() {
-        const title = document.getElementById('ad-title').value;
-        const content = document.getElementById('ad-content').value;
-        const link = document.getElementById('ad-link').value;
-        const btn = document.getElementById('submitBtn');
-
-        if(!title || !content || !link) {
-            alert("يرجى ملء جميع الحقول!");
-            return;
+    // وظيفة التبديل بين الأقسام
+    function showTab(type) {
+        if (type === 'ads') {
+            document.getElementById('form-ads').classList.remove('hidden');
+            document.getElementById('form-pubs').classList.add('hidden');
+            document.getElementById('tab-ads').classList.add('active-tab');
+            document.getElementById('tab-pubs').classList.remove('active-tab');
+        } else {
+            document.getElementById('form-ads').classList.add('hidden');
+            document.getElementById('form-pubs').classList.remove('hidden');
+            document.getElementById('tab-ads').classList.remove('active-tab');
+            document.getElementById('tab-pubs').classList.add('active-tab');
         }
+    }
 
-        btn.disabled = true;
-        btn.innerText = "جاري الإرسال...";
-
-        // إرسال البيانات لقاعدة البيانات
-        database.ref('ads').push({
-            title: title,
-            content: content,
-            link: link,
-            status: 'pending',
-            timestamp: Date.now()
-        }).then(() => {
-            // حل مشكلة WebAppMethodUnsupported بالتأكد من البيئة
-            if (tg.showAlert && tg.initData !== "") {
-                tg.showAlert("✅ تم إرسال طلبك بنجاح!");
-            } else {
-                alert("✅ تم إرسال طلبك بنجاح!");
-            }
-            
-            // تصفير الخانات
-            document.getElementById('ad-title').value = "";
-            document.getElementById('ad-content').value = "";
-            document.getElementById('ad-link').value = "";
-        }).catch((error) => {
-            alert("خطأ في الإرسال: " + error.message);
-        }).finally(() => {
-            btn.disabled = false;
-            btn.innerText = "إرسال الطلب للمراجعة";
-        });
+    // وظيفة إرسال البيانات لـ Firebase
+    function sendData(type) {
+        if (type === 'ads') {
+            const data = {
+                title: document.getElementById('ad-title').value,
+                content: document.getElementById('ad-content').value,
+                link: document.getElementById('ad-link').value,
+                timestamp: Date.now()
+            };
+            database.ref('ads').push(data);
+        } else {
+            const data = {
+                channelName: document.getElementById('pub-name').value,
+                subscribers: document.getElementById('pub-subs').value,
+                price: document.getElementById('pub-price').value,
+                link: document.getElementById('pub-link').value,
+                timestamp: Date.now()
+            };
+            database.ref('publishers').push(data);
+        }
+        alert("✅ تم إرسال طلبك بنجاح!");
     }
 </script>
 
