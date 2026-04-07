@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telega-IO | المنصة العالمية</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
@@ -14,70 +15,75 @@
         .active-tab { background: #0088cc; color: white; }
         input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
         button { width: 100%; padding: 15px; background: #0088cc; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        button:disabled { background: #ccc; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 style="color: #0088cc;">📢 إنشاء حملة إعلانية</h2>
+    <h2 style="color: #0088cc;">📢 إنشاء حملة إعلانية عالمية</h2>
     <div class="tabs">
         <div class="tab active-tab">قسم المعلنين</div>
         <div class="tab">قسم الناشرين</div>
     </div>
 
     <input type="text" id="ad-title" placeholder="عنوان الإعلان">
-    <textarea id="ad-content" placeholder="محتوى الرسالة"></textarea>
-    <input type="text" id="ad-link" placeholder="رابط التواصل">
+    <textarea id="ad-content" placeholder="محتوى الرسالة الإعلانية"></textarea>
+    <input type="text" id="ad-link" placeholder="رابط التواصل أو القناة">
     
     <button id="submitBtn" onclick="sendData()">إرسال الطلب للمراجعة</button>
 </div>
 
 <script>
+    // تهيئة تليجرام
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
     // إعدادات Firebase الخاصة بك
     const firebaseConfig = {
         databaseURL: "https://telega-io-default-rtdb.firebaseio.com"
     };
     
-    // التحقق من التهيئة لتجنب الأخطاء
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
     const database = firebase.database();
 
     function sendData() {
-        const btn = document.getElementById('submitBtn');
         const title = document.getElementById('ad-title').value;
         const content = document.getElementById('ad-content').value;
         const link = document.getElementById('ad-link').value;
+        const btn = document.getElementById('submitBtn');
 
         if(!title || !content || !link) {
-            alert("⚠️ يرجى ملء الحقول أولاً");
+            alert("يرجى ملء جميع الحقول!");
             return;
         }
 
         btn.disabled = true;
         btn.innerText = "جاري الإرسال...";
 
-        // محاولة الإرسال
+        // إرسال البيانات لقاعدة البيانات
         database.ref('ads').push({
             title: title,
             content: content,
             link: link,
             status: 'pending',
             timestamp: Date.now()
-        })
-        .then(() => {
-            alert("✅ تم الإرسال بنجاح!");
-            // إعادة تصفير الحقول
+        }).then(() => {
+            // حل مشكلة WebAppMethodUnsupported بالتأكد من البيئة
+            if (tg.showAlert && tg.initData !== "") {
+                tg.showAlert("✅ تم إرسال طلبك بنجاح!");
+            } else {
+                alert("✅ تم إرسال طلبك بنجاح!");
+            }
+            
+            // تصفير الخانات
             document.getElementById('ad-title').value = "";
             document.getElementById('ad-content').value = "";
             document.getElementById('ad-link').value = "";
-        })
-        .catch((error) => {
-            alert("❌ فشل الإرسال: " + error.message);
-        })
-        .finally(() => {
+        }).catch((error) => {
+            alert("خطأ في الإرسال: " + error.message);
+        }).finally(() => {
             btn.disabled = false;
             btn.innerText = "إرسال الطلب للمراجعة";
         });
