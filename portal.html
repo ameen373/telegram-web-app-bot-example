@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Global Pro</title>
+    <title>Telega-IO Enterprise</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -13,80 +13,107 @@
             --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --text: #f1f5f9;
         }
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text);
-            margin: 0; padding: 15px; padding-bottom: 90px;
+            font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text);
+            margin: 0; overflow-x: hidden;
         }
+        .sidebar {
+            position: fixed; top: 0; right: -250px; width: 250px; height: 100%;
+            background: var(--bg); border-left: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s; z-index: 2000; padding: 20px; box-sizing: border-box;
+        }
+        .sidebar.active { right: 0; }
+        .sidebar-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        
+        .main-content { padding: 15px; padding-bottom: 90px; }
         .card {
-            background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 18px;
-            border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(15px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px);
         }
-        .admin-only { border: 2px solid #ef4444; background: rgba(239,68,68,0.08); }
         .nav-tabs {
             position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95);
-            display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); z-index: 1000;
+            display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000;
         }
-        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; transition: 0.3s; }
+        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
         .tab-active { color: var(--accent); font-weight: bold; }
-        .btn-main { width: 100%; padding: 16px; border: none; border-radius: 18px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 10px; font-size: 14px; }
-        .section { display: none; animation: fadeIn 0.4s ease; }
+        .btn-main { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 10px; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: white; padding: 12px; box-sizing: border-box; margin-bottom: 10px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; box-sizing: border-box; }
         #global-notify { display: none; background: linear-gradient(90deg, #3b82f6, #8b5cf6); padding: 12px; text-align: center; border-radius: 15px; font-weight: bold; color: white; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-<div id="global-notify"><span id="notify-msg"></span></div>
-
-<div id="sec-market" class="section" style="display: block;">
-    <div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--gold);">
-        <small>رصيدك الحالي</small>
-        <h2 id="user-balance">0.00 USDT</h2>
-    </div>
-    <div class="card">
-        <b>Yeraltı Turkish Drama</b> <span style="font-size:10px; color:var(--safe);">✓ نشط</span>
-        <button class="btn-main">حجز مساحة إعلانية</button>
-    </div>
+<div id="sidebar" class="sidebar">
+    <h3>القائمة الإضافية</h3>
+    <div class="sidebar-item" onclick="tg.showAlert('قريباً: الإعدادات')">⚙️ الإعدادات</div>
+    <div class="sidebar-item" onclick="toggleSidebar()" style="color: #ef4444;">❌ إغلاق</div>
 </div>
 
-<div id="sec-ads" class="section">
-    <div class="card">
-        <h3>🚀 أعلن عن قناتك</h3>
-        <p style="font-size: 13px;">أضف قناتك الآن ليراها المعلنون ويطلبوا مساحات إعلانية منك مباشرة.</p>
-        <button class="btn-main" onclick="tg.showAlert('قريباً...')">إضافة قناة +</button>
+<div class="main-content">
+    <div id="global-notify"><span id="notify-msg"></span></div>
+    
+    <div class="header">
+        <h2 style="margin:0;">Telega-IO</h2>
+        <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:24px;">☰</button>
     </div>
-</div>
 
-<div id="sec-admin" class="section">
-    <div class="card admin-only">
-        <h3 style="color:#ef4444;">⚙️ لوحة تحكم الإدارة</h3>
-        
-        <div style="margin-bottom: 20px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 15px;">
-            <p>💰 إدارة المحفظة</p>
-            <button class="btn-main" style="background:var(--safe);" onclick="deposit()">شحن رصيد مستخدم</button>
-        </div>
-
-        <div style="padding: 10px; background: rgba(0,0,0,0.2); border-radius: 15px;">
-            <p>📢 البث العالمي</p>
-            <textarea id="bc-msg" placeholder="اكتب رسالة البث هنا..."></textarea>
-            <button class="btn-main" onclick="sendBC()">إرسال الإشعار للجميع 🚀</button>
+    <div id="sec-home" class="section" style="display: block;">
+        <div class="card" style="border: 1px solid var(--gold); text-align: center;">
+            <p>مرحباً بك في القائمة الرئيسية</p>
+            <h2 id="balance">0.00 USDT</h2>
         </div>
     </div>
-</div>
 
-<div id="sec-support" class="section">
-    <div class="card">
-        <h3>💬 الدعم والوساطة</h3>
-        <button class="btn-main" onclick="window.open('https://t.me/Te_Bit')">تواصل مع @Te_Bit</button>
+    <div id="sec-channels" class="section">
+        <h3 style="color: var(--safe);">📺 مساحة الناشرين</h3>
+        <div class="card">
+            <b>Yeraltı Turkish Drama</b>
+            <p style="font-size: 11px;">الحالة: <span style="color: var(--safe);">نشط ✓</span></p>
+            <button class="btn-main">إدارة القناة</button>
+        </div>
+        <button class="btn-main" style="background: var(--safe);">إضافة قناة ناشر جديدة +</button>
+    </div>
+
+    <div id="sec-promo" class="section">
+        <h3 style="color: var(--accent);">📣 مساحة المعلنين</h3>
+        <div class="card">
+            <p style="font-size: 13px;">قم بإنشاء حملة إعلانية لترويج علامتك التجارية أو قناتك.</p>
+            <button class="btn-main">بدء حملة إعلانية جديدة</button>
+        </div>
+    </div>
+
+    <div id="sec-stats" class="section">
+        <div class="card">
+            <h3>📊 إحصائيات النشاط</h3>
+            <div style="font-size: 13px; display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span>إجمالي المشاهدات:</span> <span>0</span>
+            </div>
+            <div style="font-size: 13px; display: flex; justify-content: space-between;">
+                <span>إجمالي الأرباح:</span> <span>0.00$</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="sec-admin" class="section">
+        <div class="card" style="border: 2px solid #ef4444;">
+            <h3 style="color:#ef4444;">لوحة تحكم أمين</h3>
+            <button class="btn-main" onclick="deposit()">شحن رصيد مستخدم</button>
+            <div style="margin-top: 15px;">
+                <textarea id="bc-msg" placeholder="رسالة البث..."></textarea>
+                <button class="btn-main" onclick="sendBC()">إطلاق البث</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="nav-tabs">
-    <div id="t-market" class="tab-btn tab-active" onclick="switchTab('market')">🛒 السوق</div>
-    <div id="t-ads" class="tab-btn" onclick="switchTab('ads')">🚀 أعلن</div>
+    <div id="t-home" class="tab-btn tab-active" onclick="switchTab('home')">🏠 الرئيسية</div>
+    <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺 القنوات</div>
+    <div id="t-promo" class="tab-btn" onclick="switchTab('promo')">📣 الترويج</div>
+    <div id="t-stats" class="tab-btn" onclick="switchTab('stats')">📊 الإحصائيات</div>
     <div id="t-admin" class="tab-btn" style="display:none;" onclick="switchTab('admin')">⚙️ الإدارة</div>
-    <div id="t-support" class="tab-btn" onclick="switchTab('support')">💬 الدعم</div>
 </div>
 
 <script>
@@ -94,17 +121,15 @@
     const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
     const user = tg.initDataUnsafe.user || { id: 549686235 };
 
-    // تفعيل لوحة التحكم والزر الخاص بها لأمين فقط
-    if(user.id.toString() === "549686235") {
-        document.getElementById('t-admin').style.display = 'block';
-    }
+    if(user.id.toString() === "549686235") document.getElementById('t-admin').style.display = 'block';
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
 
     function switchTab(tabId) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
         document.getElementById('sec-' + tabId).style.display = 'block';
         document.getElementById('t-' + tabId).classList.add('tab-active');
-        tg.HapticFeedback.impactOccurred('light');
     }
 
     function sendBC() {
@@ -116,16 +141,13 @@
     }
 
     function deposit() {
-        const uid = prompt("أدخل ID المستخدم:");
-        const amt = prompt("المبلغ (USDT):");
-        if(uid && amt) {
-            db.ref('wallets/' + uid).update({ balance: parseFloat(amt) });
-            tg.showAlert("✅ تم الشحن بنجاح");
-        }
+        const uid = prompt("ID المستخدم:");
+        const amt = prompt("المبلغ:");
+        if(uid && amt) db.ref('wallets/' + uid).update({ balance: parseFloat(amt) });
     }
 
     db.ref('wallets/' + user.id + '/balance').on('value', snap => {
-        document.getElementById('user-balance').innerText = (snap.val() || 0).toFixed(2) + " USDT";
+        document.getElementById('balance').innerText = (snap.val() || 0).toFixed(2) + " USDT";
     });
 
     tg.expand();
