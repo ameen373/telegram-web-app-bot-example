@@ -3,123 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Enterprise Pro</title>
+    <title>Telega-IO Enterprise</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         :root {
             --bg: #0f172a; --card: rgba(30, 41, 59, 0.7);
-            --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --danger: #ef4444; --text: #f1f5f9;
+            --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --text: #f1f5f9;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; padding-bottom: 90px; }
-        .sidebar { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: var(--bg); border-left: 1px solid rgba(255,255,255,0.1); transition: 0.3s; z-index: 2000; padding: 20px; box-sizing: border-box; }
-        .sidebar.active { right: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
         .main-content { padding: 15px; }
-        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
+        .card { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
         .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
-        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; transition: 0.2s; }
-        .tab-active { color: var(--accent); font-weight: bold; transform: scale(1.05); }
-        .btn-main { width: 100%; padding: 14px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 10px; font-size: 14px; }
+        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
+        .tab-active { color: var(--accent); font-weight: bold; }
+        .btn-main { width: 100%; padding: 12px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 8px; font-size: 13px; }
         .section { display: none; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; }
-        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; padding: 12px; box-sizing: border-box; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .stat-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
+        .stat-num { display: block; font-size: 20px; font-weight: bold; color: var(--accent); }
     </style>
 </head>
 <body>
 
-<div id="sidebar" class="sidebar">
-    <h3>القائمة الإضافية</h3>
-    <div onclick="tg.showAlert('قريباً')" style="padding:15px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer;">⚙️ الإعدادات</div>
-    <div onclick="toggleSidebar()" style="padding:15px; color:var(--danger); cursor:pointer;">❌ إغلاق</div>
-</div>
-
 <div class="main-content">
-    <div class="header">
-        <h2 style="margin:0; font-size: 20px;">Telega-IO</h2>
-        <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:24px;">☰</button>
-    </div>
-
     <div id="sec-home" class="section" style="display: block;">
-        <div class="card" style="border: 1px solid var(--gold); text-align: center;">
-            <small>الرصيد الكلي</small>
-            <h2 id="balance-main">0.00 USDT</h2>
-        </div>
-        
-        <div class="card">
-            <h4>📊 الإحصائيات العامة</h4>
-            <p style="font-size:12px;">متابعة أداء المنصة والوصول العام.</p>
+        <div class="card" style="border: 1px solid var(--gold); text-align: center; background: linear-gradient(135deg, #1e293b, #0f172a);">
+            <small>إجمالي الرصيد 💰</small>
+            <h2 id="balance-home" style="margin: 5px 0; color: var(--gold);">0.00 USDT</h2>
         </div>
 
-        <div class="grid-3">
-            <div class="card" style="margin-bottom:0; text-align:center; padding:15px;">
-                <span style="font-size:20px;">🔥</span><br><small>عروض ساخنة</small>
+        <div class="card">
+            <h4 style="margin-top:0; color: var(--accent);">📊 إحصائيات المنصة</h4>
+            <div class="grid-stats">
+                <div class="stat-box">
+                    <span class="stat-num">48K</span>
+                    <small>متابع نشط</small>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-num">1.2M</span>
+                    <small>مشاهدة كلية</small>
+                </div>
             </div>
-            <div class="card" style="margin-bottom:0; text-align:center; padding:15px;">
-                <span style="font-size:20px;">💎</span><br><small>باقات خاصة</small>
-            </div>
+        </div>
+
+        <div class="card" style="border-right: 4px solid #ef4444;">
+            <h4 style="margin:0; color: #ef4444;">🔥 عروض ساخنة</h4>
+            <p style="font-size: 12px; margin: 8px 0;">تخفيض 25% على مساحات الإعلان في قنوات الدراما التركية الكبرى.</p>
+            <button class="btn-main" style="background: #ef4444;" onclick="switchTab('promo')">اغتنم الفرصة</button>
+        </div>
+
+        <div class="card" style="border-right: 4px solid var(--gold);">
+            <h4 style="margin:0; color: var(--gold);">💎 مزايا حصرية</h4>
+            <p style="font-size: 12px; margin: 8px 0;">خاصية "الترويج السريع" متاحة الآن لأصحاب العضويات الذهبية فقط.</p>
+            <button class="btn-main" style="background: var(--gold); color: #000;" onclick="tg.showAlert('قريباً لمستخدمي Pro')">اكتشف المزايا</button>
         </div>
     </div>
 
-    <div id="sec-channels" class="section">
-        <h3 style="color: var(--safe);">📺 مساحة الناشرين</h3>
-        <div class="card">
-            <b>قائمة القنوات</b>
-            <p style="font-size:12px; color:#94a3b8;">أضف قنواتك وابدأ باستقبال طلبات الإعلان.</p>
-            <button class="btn-main" style="background: var(--safe);">إضافة قناة جديدة +</button>
-        </div>
-    </div>
-
-    <div id="sec-promo" class="section">
-        <h3 style="color: var(--accent);">📣 مساحة المعلنين</h3>
-        <div class="card">
-            <h4>💰 محفظة الإيداع</h4>
-            <p style="font-size:12px;">اشحن رصيدك لبدء حملات ترويجية فورية.</p>
-            <button class="btn-main" onclick="deposit()">إيداع USDT</button>
-        </div>
-        <div class="card">
-            <h4>🚀 ترويج القنوات</h4>
-            <button class="btn-main">إنشاء حملة جديدة</button>
-        </div>
-    </div>
-
-    <div id="sec-wallet" class="section">
-        <h3 style="color: var(--gold);">💳 المحفظة المالية</h3>
-        <div class="card" style="background: linear-gradient(45deg, #1e293b, #0f172a);">
-            <small>الرصيد المتاح</small>
-            <h2 id="balance-wallet">0.00 USDT</h2>
-        </div>
-        
-        <div class="grid-3">
-            <button class="btn-main" style="background:var(--danger); margin-top:0;" onclick="tg.showAlert('السحب متاح عند الوصول لـ 10 USDT')">📤 سحب</button>
-            <button class="btn-main" style="background:var(--accent); margin-top:0;" onclick="tg.showAlert('كود الإحالة: ' + user.id)">👥 إحالة</button>
-        </div>
-
-        <div class="card" style="margin-top:15px; border: 1px dashed var(--gold);">
-            <h4>🏆 المسابقة الأسبوعية</h4>
-            <p style="font-size:12px;">شارك في المسابقة لتربح جوائز USDT مجانية.</p>
-            <button class="btn-main" style="background:var(--gold); color:#000;">دخول المسابقة</button>
-        </div>
-    </div>
-
-    <div id="sec-admin" class="section">
-        <div class="card" style="border: 2px solid var(--danger);">
-            <h3 style="color:var(--danger);">⚙️ لوحة تحكم أمين</h3>
-            <textarea id="bc-msg" placeholder="رسالة بث عالمية..."></textarea>
-            <button class="btn-main" onclick="sendBC()">بث الآن 🚀</button>
-            <button class="btn-main" style="background:#555; margin-top:10px;" onclick="adminDeposit()">شحن رصيد مستخدم</button>
-        </div>
-    </div>
+    <div id="sec-channels" class="section">...</div>
+    <div id="sec-promo" class="section">...</div>
+    <div id="sec-wallet" class="section">...</div>
 </div>
 
 <div class="nav-tabs">
     <div id="t-home" class="tab-btn tab-active" onclick="switchTab('home')">🏠 الرئيسية</div>
-    <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺 القنوات</div>
-    <div id="t-promo" class="tab-btn" onclick="switchTab('promo')">📣 الترويج</div>
+    <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺 الناشر</div>
+    <div id="t-promo" class="tab-btn" onclick="switchTab('promo')">📣 المعلن</div>
     <div id="t-wallet" class="tab-btn" onclick="switchTab('wallet')">💳 المحفظة</div>
-    <div id="t-admin" class="tab-btn" style="display:none;" onclick="switchTab('admin')">⚙️ الإدارة</div>
 </div>
 
 <script>
@@ -127,37 +79,17 @@
     const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
     const user = tg.initDataUnsafe.user || { id: 549686235 };
 
-    if(user.id.toString() === "549686235") document.getElementById('t-admin').style.display = 'block';
-
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-
     function switchTab(tabId) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
         document.getElementById('sec-' + tabId).style.display = 'block';
         document.getElementById('t-' + tabId).classList.add('tab-active');
-        tg.HapticFeedback.impactOccurred('light');
+        tg.HapticFeedback.impactOccurred('medium');
     }
 
-    function sendBC() {
-        const msg = document.getElementById('bc-msg').value;
-        if(msg) {
-            db.ref('global_notification').set({ msg: msg, time: Date.now() });
-            tg.showAlert("✅ تم الإرسال");
-        }
-    }
-
-    function adminDeposit() {
-        const uid = prompt("ID المستخدم:");
-        const amt = prompt("المبلغ:");
-        if(uid && amt) db.ref('wallets/' + uid).update({ balance: parseFloat(amt) });
-    }
-
-    // ربط الرصيد في كل مكان
     db.ref('wallets/' + user.id + '/balance').on('value', snap => {
         const val = (snap.val() || 0).toFixed(2) + " USDT";
-        document.getElementById('balance-main').innerText = val;
-        document.getElementById('balance-wallet').innerText = val;
+        document.getElementById('balance-home').innerText = val;
     });
 
     tg.expand();
