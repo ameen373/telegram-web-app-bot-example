@@ -14,53 +14,39 @@
         }
         body {
             font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text);
-            margin: 0; padding: 15px; padding-bottom: 90px; overflow-x: hidden;
+            margin: 0; padding: 15px; padding-bottom: 90px;
         }
         .card {
             background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 18px;
             border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(15px);
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
-        .admin-box { border: 2px solid #ef4444; background: rgba(239,68,68,0.05); }
+        .admin-only { border: 2px solid #ef4444; background: rgba(239,68,68,0.08); }
         .nav-tabs {
             position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95);
-            display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); z-index: 9999;
+            display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); z-index: 1000;
         }
-        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 11px; cursor: pointer; transition: 0.3s; }
-        .tab-active { color: var(--accent); font-weight: bold; transform: scale(1.1); }
+        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; transition: 0.3s; }
+        .tab-active { color: var(--accent); font-weight: bold; }
         .btn-main { width: 100%; padding: 16px; border: none; border-radius: 18px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 10px; font-size: 14px; }
-        .section { display: none; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: white; padding: 12px; box-sizing: border-box; margin-bottom: 10px; }
         #global-notify { display: none; background: linear-gradient(90deg, #3b82f6, #8b5cf6); padding: 12px; text-align: center; border-radius: 15px; font-weight: bold; color: white; margin-bottom: 15px; }
-        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: white; padding: 12px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
 <div id="global-notify"><span id="notify-msg"></span></div>
 
-<div id="admin-panel" class="card admin-box" style="display:none;">
-    <h3 style="margin-top:0;">🛠️ مركز قيادة أمين (Te_Bit)</h3>
-    <textarea id="bc-msg" placeholder="اكتب رسالة البث العالمية للمنصة..."></textarea>
-    <button class="btn-main" onclick="sendBC()">إطلاق البث العالمي 🚀</button>
-</div>
-
-<div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--gold);">
-    <small>الرصيد المتاح (نظام الضمان 🛡️)</small>
-    <h2 id="balance">0.00 USDT</h2>
-    <div style="font-size: 12px;">المسؤول الموثق: <b>@Te_Bit</b></div>
-    <button class="btn-main" style="background:var(--safe);" onclick="deposit()">شحن المحفظة</button>
-</div>
-
 <div id="sec-market" class="section" style="display: block;">
-    <div class="card">
-        <b>Yeraltı Turkish Drama</b> <span style="font-size:10px; color:var(--safe);">✓ 1000+ مشترك</span>
-        <div style="font-size:11px; margin: 8px 0;">تقييم: ★★★★★ | مشاهدات: +7k</div>
-        <button class="btn-main">حجز مكان إعلاني - 18 USDT</button>
+    <div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--gold);">
+        <small>رصيدك الحالي</small>
+        <h2 id="user-balance">0.00 USDT</h2>
     </div>
     <div class="card">
-        <b>Fi al-Zill (في الظل)</b> <span style="font-size:10px; color:var(--safe);">✓ 5000+ مشترك</span>
-        <button class="btn-main">حجز مكان إعلاني - 25 USDT</button>
+        <b>Yeraltı Turkish Drama</b> <span style="font-size:10px; color:var(--safe);">✓ نشط</span>
+        <button class="btn-main">حجز مساحة إعلانية</button>
     </div>
 </div>
 
@@ -68,22 +54,30 @@
     <div class="card">
         <h3>🚀 أعلن عن قناتك</h3>
         <p style="font-size: 13px;">أضف قناتك الآن ليراها المعلنون ويطلبوا مساحات إعلانية منك مباشرة.</p>
-        <button class="btn-main" onclick="tg.showAlert('سيتم فتح نظام إضافة القنوات خلال 24 ساعة')">إضافة قناة للسوق +</button>
+        <button class="btn-main" onclick="tg.showAlert('قريباً...')">إضافة قناة +</button>
     </div>
 </div>
 
-<div id="sec-verify" class="section">
-    <div class="card">
-        <h3>👤 توثيق الحساب</h3>
-        <p style="font-size: 12px;">الحسابات الموثقة تحصل على أولوية في الظهور وعلامة الصح الزرقاء.</p>
-        <button class="btn-main" style="background: var(--gold); color: #000;">طلب توثيق الحساب</button>
+<div id="sec-admin" class="section">
+    <div class="card admin-only">
+        <h3 style="color:#ef4444;">⚙️ لوحة تحكم الإدارة</h3>
+        
+        <div style="margin-bottom: 20px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 15px;">
+            <p>💰 إدارة المحفظة</p>
+            <button class="btn-main" style="background:var(--safe);" onclick="deposit()">شحن رصيد مستخدم</button>
+        </div>
+
+        <div style="padding: 10px; background: rgba(0,0,0,0.2); border-radius: 15px;">
+            <p>📢 البث العالمي</p>
+            <textarea id="bc-msg" placeholder="اكتب رسالة البث هنا..."></textarea>
+            <button class="btn-main" onclick="sendBC()">إرسال الإشعار للجميع 🚀</button>
+        </div>
     </div>
 </div>
 
 <div id="sec-support" class="section">
     <div class="card">
-        <h3>💬 الدعم الفني والوساطة</h3>
-        <p style="font-size: 13px;">تواصل مباشرة مع الوسيط "أمين" لإتمام الصفقات يدوياً.</p>
+        <h3>💬 الدعم والوساطة</h3>
         <button class="btn-main" onclick="window.open('https://t.me/Te_Bit')">تواصل مع @Te_Bit</button>
     </div>
 </div>
@@ -91,65 +85,50 @@
 <div class="nav-tabs">
     <div id="t-market" class="tab-btn tab-active" onclick="switchTab('market')">🛒 السوق</div>
     <div id="t-ads" class="tab-btn" onclick="switchTab('ads')">🚀 أعلن</div>
-    <div id="t-verify" class="tab-btn" onclick="switchTab('verify')">👤 التوثيق</div>
+    <div id="t-admin" class="tab-btn" style="display:none;" onclick="switchTab('admin')">⚙️ الإدارة</div>
     <div id="t-support" class="tab-btn" onclick="switchTab('support')">💬 الدعم</div>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
-    const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
     const user = tg.initDataUnsafe.user || { id: 549686235 };
 
-    // تفعيل الإدارة لأمين فقط
+    // تفعيل لوحة التحكم والزر الخاص بها لأمين فقط
     if(user.id.toString() === "549686235") {
-        document.getElementById('admin-panel').style.display = 'block';
+        document.getElementById('t-admin').style.display = 'block';
     }
 
-    // 🔄 محرك التنقل بين الأقسام
     function switchTab(tabId) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-        
         document.getElementById('sec-' + tabId).style.display = 'block';
         document.getElementById('t-' + tabId).classList.add('tab-active');
         tg.HapticFeedback.impactOccurred('light');
     }
 
-    // 📢 نظام البث العالمي
     function sendBC() {
         const msg = document.getElementById('bc-msg').value;
         if(msg) {
-            db.ref('global_notification').set({ msg: msg, time: Date.now() })
-              .then(() => {
-                  tg.showAlert("✅ تم نشر الإشعار العالمي");
-                  document.getElementById('bc-msg').value = "";
-              });
+            db.ref('global_notification').set({ msg: msg, time: Date.now() });
+            tg.showAlert("✅ تم الإرسال");
         }
     }
 
-    // 💰 نظام الرصيد المباشر
     function deposit() {
-        const amt = prompt("أدخل مبلغ الشحن (USDT):");
-        if(amt) { db.ref('wallets/' + user.id).update({ balance: parseFloat(amt) }); }
+        const uid = prompt("أدخل ID المستخدم:");
+        const amt = prompt("المبلغ (USDT):");
+        if(uid && amt) {
+            db.ref('wallets/' + uid).update({ balance: parseFloat(amt) });
+            tg.showAlert("✅ تم الشحن بنجاح");
+        }
     }
 
     db.ref('wallets/' + user.id + '/balance').on('value', snap => {
-        document.getElementById('balance').innerText = (snap.val() || 0).toFixed(2) + " USDT";
-    });
-
-    // 🔔 استقبال الإشعارات الحية
-    db.ref('global_notification').on('value', snap => {
-        const d = snap.val();
-        if(d && (Date.now() - d.time < 600000)) {
-            document.getElementById('global-notify').style.display = 'block';
-            document.getElementById('notify-msg').innerText = "📢 " + d.msg;
-        }
+        document.getElementById('user-balance').innerText = (snap.val() || 0).toFixed(2) + " USDT";
     });
 
     tg.expand();
-    tg.ready();
 </script>
 </body>
 </html>
