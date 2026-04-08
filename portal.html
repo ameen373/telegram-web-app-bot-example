@@ -14,7 +14,7 @@
         }
         body {
             font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text);
-            margin: 0; padding: 15px; padding-bottom: 90px;
+            margin: 0; padding: 15px; padding-bottom: 90px; overflow-x: hidden;
         }
         .card {
             background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 18px;
@@ -23,17 +23,16 @@
         }
         .admin-box { border: 2px solid #ef4444; background: rgba(239,68,68,0.05); }
         .nav-tabs {
-            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.9);
-            display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px);
-            z-index: 1000;
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95);
+            display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); z-index: 9999;
         }
-        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.6); font-size: 11px; font-weight: bold; cursor: pointer; }
-        .tab-active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
+        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 11px; cursor: pointer; transition: 0.3s; }
+        .tab-active { color: var(--accent); font-weight: bold; transform: scale(1.1); }
         .btn-main { width: 100%; padding: 16px; border: none; border-radius: 18px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 10px; font-size: 14px; }
-        textarea { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; padding: 10px; margin-top: 10px; box-sizing: border-box; }
-        .section { display: none; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .section { display: none; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         #global-notify { display: none; background: linear-gradient(90deg, #3b82f6, #8b5cf6); padding: 12px; text-align: center; border-radius: 15px; font-weight: bold; color: white; margin-bottom: 15px; }
+        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: white; padding: 12px; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -41,9 +40,9 @@
 <div id="global-notify"><span id="notify-msg"></span></div>
 
 <div id="admin-panel" class="card admin-box" style="display:none;">
-    <h3>🛠️ مركز قيادة أمين (Te_Bit)</h3>
-    <textarea id="bc-msg" placeholder="بث رسالة عالمية للمنصة..."></textarea>
-    <button class="btn-main" onclick="sendBC()">إطلاق البث 🚀</button>
+    <h3 style="margin-top:0;">🛠️ مركز قيادة أمين (Te_Bit)</h3>
+    <textarea id="bc-msg" placeholder="اكتب رسالة البث العالمية للمنصة..."></textarea>
+    <button class="btn-main" onclick="sendBC()">إطلاق البث العالمي 🚀</button>
 </div>
 
 <div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--gold);">
@@ -57,22 +56,34 @@
     <div class="card">
         <b>Yeraltı Turkish Drama</b> <span style="font-size:10px; color:var(--safe);">✓ 1000+ مشترك</span>
         <div style="font-size:11px; margin: 8px 0;">تقييم: ★★★★★ | مشاهدات: +7k</div>
-        <button class="btn-main">حجز مكان - 18 USDT</button>
+        <button class="btn-main">حجز مكان إعلاني - 18 USDT</button>
+    </div>
+    <div class="card">
+        <b>Fi al-Zill (في الظل)</b> <span style="font-size:10px; color:var(--safe);">✓ 5000+ مشترك</span>
+        <button class="btn-main">حجز مكان إعلاني - 25 USDT</button>
     </div>
 </div>
 
 <div id="sec-ads" class="section">
     <div class="card">
         <h3>🚀 أعلن عن قناتك</h3>
-        <p style="font-size: 13px;">قم بإضافة قناتك إلى السوق ليراها آلاف المعلنين.</p>
-        <button class="btn-main" onclick="tg.showAlert('سيتم تفعيل إضافة القنوات قريباً')">إضافة قناة جديدة +</button>
+        <p style="font-size: 13px;">أضف قناتك الآن ليراها المعلنون ويطلبوا مساحات إعلانية منك مباشرة.</p>
+        <button class="btn-main" onclick="tg.showAlert('سيتم فتح نظام إضافة القنوات خلال 24 ساعة')">إضافة قناة للسوق +</button>
+    </div>
+</div>
+
+<div id="sec-verify" class="section">
+    <div class="card">
+        <h3>👤 توثيق الحساب</h3>
+        <p style="font-size: 12px;">الحسابات الموثقة تحصل على أولوية في الظهور وعلامة الصح الزرقاء.</p>
+        <button class="btn-main" style="background: var(--gold); color: #000;">طلب توثيق الحساب</button>
     </div>
 </div>
 
 <div id="sec-support" class="section">
     <div class="card">
-        <h3>💬 الدعم الفني</h3>
-        <p style="font-size: 13px;">هل تواجه مشكلة أو تحتاج لوساطة يدوية؟</p>
+        <h3>💬 الدعم الفني والوساطة</h3>
+        <p style="font-size: 13px;">تواصل مباشرة مع الوسيط "أمين" لإتمام الصفقات يدوياً.</p>
         <button class="btn-main" onclick="window.open('https://t.me/Te_Bit')">تواصل مع @Te_Bit</button>
     </div>
 </div>
@@ -80,6 +91,7 @@
 <div class="nav-tabs">
     <div id="t-market" class="tab-btn tab-active" onclick="switchTab('market')">🛒 السوق</div>
     <div id="t-ads" class="tab-btn" onclick="switchTab('ads')">🚀 أعلن</div>
+    <div id="t-verify" class="tab-btn" onclick="switchTab('verify')">👤 التوثيق</div>
     <div id="t-support" class="tab-btn" onclick="switchTab('support')">💬 الدعم</div>
 </div>
 
@@ -88,47 +100,56 @@
     const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    
-    // تعريف المستخدم
     const user = tg.initDataUnsafe.user || { id: 549686235 };
 
-    // تفعيل لوحة الإدارة
+    // تفعيل الإدارة لأمين فقط
     if(user.id.toString() === "549686235") {
         document.getElementById('admin-panel').style.display = 'block';
     }
 
-    // وظيفة التنقل بين الأقسام
-    function switchTab(tab) {
-        // إخفاء الأقسام
+    // 🔄 محرك التنقل بين الأقسام
+    function switchTab(tabId) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-        // إزالة اللون الأزرق من الأزرار
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
         
-        // إظهار القسم المختار
-        document.getElementById('sec-' + tab).style.display = 'block';
-        // تفعيل الزر المختار
-        document.getElementById('t-' + tab).classList.add('tab-active');
+        document.getElementById('sec-' + tabId).style.display = 'block';
+        document.getElementById('t-' + tabId).classList.add('tab-active');
+        tg.HapticFeedback.impactOccurred('light');
     }
 
+    // 📢 نظام البث العالمي
     function sendBC() {
         const msg = document.getElementById('bc-msg').value;
         if(msg) {
-            db.ref('global_notification').set({ msg: msg, time: Date.now() });
-            tg.showAlert("✅ تم إرسال الإشعار بنجاح");
+            db.ref('global_notification').set({ msg: msg, time: Date.now() })
+              .then(() => {
+                  tg.showAlert("✅ تم نشر الإشعار العالمي");
+                  document.getElementById('bc-msg').value = "";
+              });
         }
     }
 
+    // 💰 نظام الرصيد المباشر
     function deposit() {
-        const amt = prompt("أدخل المبلغ (USDT):");
+        const amt = prompt("أدخل مبلغ الشحن (USDT):");
         if(amt) { db.ref('wallets/' + user.id).update({ balance: parseFloat(amt) }); }
     }
 
-    // تحديث الرصيد حياً
     db.ref('wallets/' + user.id + '/balance').on('value', snap => {
         document.getElementById('balance').innerText = (snap.val() || 0).toFixed(2) + " USDT";
     });
 
+    // 🔔 استقبال الإشعارات الحية
+    db.ref('global_notification').on('value', snap => {
+        const d = snap.val();
+        if(d && (Date.now() - d.time < 600000)) {
+            document.getElementById('global-notify').style.display = 'block';
+            document.getElementById('notify-msg').innerText = "📢 " + d.msg;
+        }
+    });
+
     tg.expand();
+    tg.ready();
 </script>
 </body>
 </html>
