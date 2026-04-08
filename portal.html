@@ -3,110 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Global Portal</title>
+    <title>Telega-IO Pro Global</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        :root { --bg-color: #0e1621; --card-bg: #17212b; --primary: #2481cc; --accent: #ebaa16; --text: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: var(--text); padding: 15px; margin: 0; }
-        .card { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid #2b5278; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn:active { transform: scale(0.98); }
-        .btn-gold { background: var(--accent); color: #000; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .badge { background: #2b5278; padding: 4px 8px; border-radius: 5px; font-size: 0.8em; margin-bottom: 5px; display: inline-block; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #2b5278; background: #242f3d; color: white; box-sizing: border-box; }
-        .contest-timer { color: var(--accent); font-weight: bold; text-align: center; font-size: 1.1em; }
-        .ref-link-box { background: #1c2835; padding: 10px; border-radius: 8px; font-family: monospace; border: 1px dashed var(--primary); margin-top: 10px; word-break: break-all; }
-        .tab-menu { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab { flex: 1; text-align: center; padding: 10px; background: #242f3d; border-radius: 8px; font-size: 0.9em; }
-        .tab.active { background: var(--primary); }
+        /* 🎨 نظام الألوان الذكي (الوضع الليلي) */
+        :root {
+            --bg: #f8f9fa; --card: #ffffff; --text: #1e293b;
+            --accent: #0088cc; --gold: #f1c40f; --safe: #22c55e; --danger: #ef4444;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f172a; --card: #1e293b; --text: #f1f5f9;
+            }
+        }
+
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 12px; transition: 0.3s; line-height: 1.6; }
+        
+        /* 💳 المحفظة والضمان */
+        .hero-wallet { background: linear-gradient(135deg, #1e293b, #334155); color: white; padding: 25px; border-radius: 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .escrow-status { background: var(--safe); color: white; font-size: 10px; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 10px; }
+
+        /* 📑 التبويبات الاحترافية */
+        .nav-tabs { display: flex; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 16px; margin-bottom: 20px; position: sticky; top: 10px; z-index: 100; backdrop-filter: blur(10px); }
+        .tab-item { flex: 1; text-align: center; padding: 12px; cursor: pointer; border-radius: 12px; font-size: 13px; font-weight: bold; transition: 0.2s; color: #64748b; }
+        .tab-active { background: var(--card); color: var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+        /* 🛒 بطاقات السوق والإحصائيات */
+        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05); }
+        .stat-badge { background: rgba(0,136,204,0.1); color: var(--accent); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; margin-left: 5px; }
+        .rating { color: var(--gold); font-size: 14px; margin: 8px 0; }
+        
+        /* 🛡️ لوحة التحكم المخفية @NR_Py */
+        .admin-panel { background: #000 !important; color: #00ff00 !important; border: 2px solid #00ff00; }
+
+        /* 🔘 الأزرار والمدخلات */
+        .btn-prime { width: 100%; padding: 16px; border: none; border-radius: 16px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; font-size: 15px; margin-top: 10px; transition: 0.2s; }
+        .btn-prime:active { transform: scale(0.98); opacity: 0.9; }
+        input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; background: var(--bg); color: var(--text); box-sizing: border-box; outline: none; }
+        
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="card" style="border-color: var(--accent);">
-        <div class="badge">🏆 مسابقة الإحالة الكبرى (3 أشهر)</div>
-        <p class="contest-timer" id="timer">جاري حساب الوقت...</p>
-        <div class="stat-grid">
-            <div style="text-align: center;">مركزك: <b id="user_rank">--</b></div>
-            <div style="text-align: center;">نقاطك: <b id="user_points">0</b></div>
+<div style="display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; scrollbar-width: none;">
+    <button onclick="changeLang('ar')" style="padding:5px 15px; border-radius:20px; border:none; background:var(--accent); color:white;">العربية</button>
+    <button onclick="changeLang('en')" style="padding:5px 15px; border-radius:20px; border:none; background:var(--card); color:var(--text);">English</button>
+    <button onclick="changeLang('tr')" style="padding:5px 15px; border-radius:20px; border:none; background:var(--card); color:var(--text);">Türkçe</button>
+</div>
+
+<div id="admin-p" class="card admin-panel hidden">
+    <h4 style="margin:0;">🛡️ Commander Control (@NR_Py)</h4>
+    <textarea id="bc-msg" placeholder="اكتب رسالة البث العالمي هنا..."></textarea>
+    <button class="btn-prime" style="background:#00ff00; color:black;" onclick="sendBroadcast()">بث فوري للمشتركين 🚀</button>
+</div>
+
+<div class="hero-wallet">
+    <small>الرصيد الكلي في الضمان 🛡️</small>
+    <h1 id="user-bal" style="margin: 5px 0;">0.00 <span style="font-size:15px;">USDT</span></h1>
+    <div class="escrow-status">نظام الدفع المحمي مفعّل</div>
+</div>
+
+<div class="nav-tabs">
+    <div id="t-market" class="tab-item tab-active" onclick="switchSec('market')">السوق</div>
+    <div id="t-ads" class="tab-item" onclick="switchSec('ads')">أعلن</div>
+    <div id="t-kyc" class="tab-item" onclick="switchSec('kyc')">التوثيق</div>
+    <div id="t-help" class="tab-item" onclick="switchSec('help')">الدعم</div>
+</div>
+
+<div id="sec-market" class="section">
+    <div class="card">
+        <div style="display:flex; justify-content:space-between;">
+            <b>Yeraltı Turkish Drama</b>
+            <span style="color:var(--safe); font-size:12px; font-weight:bold;">18 USDT</span>
         </div>
-    </div>
-
-    <div class="card">
-        <h3>💰 المحفظة المركزية</h3>
-        <div class="stat-grid">
-            <div>المتاح: <br><span id="balance" style="color: #4cd964; font-size: 1.2em;">0.00 USDT</span></div>
-            <div>المحجوز: <br><span id="escrow" style="color: #ff3b30; font-size: 1.2em;">0.00 USDT</span></div>
+        <div class="rating">★★★★★ <small style="color:gray;">(32 تقييم)</small></div>
+        <div style="margin-top:8px;">
+            <span class="stat-badge">👁️ 8.5k+ مشاهدة</span>
+            <span class="stat-badge">🔥 ERR: 15%</span>
         </div>
+        <button class="btn-prime">حجز إعلان بالضمان 🔒</button>
     </div>
+</div>
 
-    <div class="card">
-        <h3>📢 إنشاء حملة إعلانية</h3>
-        <label>رابط المنشور:</label>
-        <input type="text" id="ad_link" placeholder="https://t.me/your_channel/123">
-        
-        <label>قسم القنوات المستهدفة:</label>
-        <select id="ad_category">
-            <option value="general">عام 🌐</option>
-            <option value="cooking">الطبخ والحلويات 🍳</option>
-            <option value="movies">الأفلام والمسلسلات 🎬</option>
-            <option value="drama">الدراما التركية 🇹🇷</option>
-            <option value="tech">التقنية 💻</option>
-        </select>
-        
-        <button class="btn" onclick="createAd()">نشر الطلب بنظام الضمان</button>
-    </div>
+<div id="sec-ads" class="section card hidden">
+    <h4>إنشاء حملة عالمية 🌍</h4>
+    <input type="text" placeholder="اسم الحملة">
+    <textarea placeholder="نص المنشور + الروابط..."></textarea>
+    <p style="font-size:10px; color:var(--safe);">* سيتم حجز المبلغ في نظام الضمان لمدة 24 ساعة لحمايتك.</p>
+    <button class="btn-prime">إرسال وتحويل للضمان</button>
+</div>
 
-    <div class="card">
-        <h3>🔗 برنامج الشركاء (Referral)</h3>
-        <p style="font-size: 0.9em; color: #aaa;">ادعُ المعلنين والناشرين واحصل على عمولة تصل لـ 10% لمدة سنة كاملة!</p>
-        <div class="ref-link-box" id="ref_link">https://t.me/Telega_Ads_bot?start=user_id</div>
-        <button class="btn btn-gold" style="margin-top: 10px;" onclick="copyRef()">نسخ رابط الإحالة الخاص بك</button>
-    </div>
+<div id="sec-kyc" class="section card hidden">
+    <h4>توثيق الهوية (KYC)</h4>
+    <p style="font-size:11px;">ارفع صورة الهوية أو جواز السفر لزيادة سقف السحب اليومي إلى 1000 USDT.</p>
+    <input type="file" accept="image/*">
+    <button class="btn-prime" style="background:var(--safe);">إرسال للمراجعة</button>
+</div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.enableClosingConfirmation();
+<div id="sec-help" class="section card hidden">
+    <h4>الدعم الفني المدمج</h4>
+    <textarea id="tkt-msg" placeholder="اكتب مشكلتك هنا..."></textarea>
+    <button class="btn-prime" onclick="openTicket()">فتح تذكرة دعم</button>
+</div>
 
-        // إعدادات المسابقة
-        const endDate = new Date("July 8, 2026 00:00:00").getTime();
-        
-        function updateTimer() {
-            const now = new Date().getTime();
-            const diff = endDate - now;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            document.getElementById("timer").innerHTML = `باقي: ${days} يوم و ${hours} ساعة`;
-        }
-        setInterval(updateTimer, 1000);
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // لفتح التطبيق بكامل الشاشة
 
-        // وظائف الأزرار
-        function createAd() {
-            const link = document.getElementById('ad_link').value;
-            const cat = document.getElementById('ad_category').value;
-            if(!link) { tg.showAlert("يرجى إدخال رابط الإعلان"); return; }
-            
-            tg.showConfirm(`هل تريد تأكيد حجز مبلغ الإعلان واستهداف قسم [${cat}]؟`, (ok) => {
-                if(ok) {
-                    // كود إرسال الطلب لـ Firebase
-                    tg.showPopup({title: "تم!", message: "تم نشر طلبك، سيقوم أصحاب القنوات بالمزايدة الآن."});
-                }
-            });
-        }
+    const user = tg.initDataUnsafe.user || { id: 549686235 };
+    if(user.id === 549686235) document.getElementById('admin-p').classList.remove('hidden');
 
-        function copyRef() {
-            const link = document.getElementById('ref_link').innerText;
-            navigator.clipboard.writeText(link);
-            tg.showAlert("تم نسخ الرابط! انشره الآن وابدأ بربح العمولات.");
-        }
+    function switchSec(s) {
+        document.querySelectorAll('.section').forEach(x => x.classList.add('hidden'));
+        document.querySelectorAll('.tab-item').forEach(x => x.classList.remove('tab-active'));
+        document.getElementById('sec-' + s).classList.remove('hidden');
+        document.getElementById('t-' + s).classList.add('tab-active');
+    }
 
-        // إعداد رابط الإحالة الديناميكي
-        document.getElementById('ref_link').innerText = `https://t.me/Telega_Ads_bot?start=${tg.initDataUnsafe.user.id}`;
-    </script>
+    function openTicket() {
+        const msg = document.getElementById('tkt-msg').value;
+        if(msg) tg.showAlert("تم إرسال تذكرتك للقائد @NR_Py بنجاح!");
+    }
+
+    function changeLang(l) {
+        tg.showAlert("اللغة الحالية: " + l);
+    }
+</script>
 </body>
 </html>
