@@ -2,43 +2,32 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-  // إعدادات Firebase من واقع مشروعك
+  // تأكد من أن هذا الجزء يعمل بعد تحميل المكتبات أعلاه
   const firebaseConfig = {
     databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"
   };
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
 
-  // وظيفة البث العالمي (Broadcast)
-  function sendBroadcast() {
-    const msg = document.querySelector('textarea').value; // يأخذ النص من خانة البث
-    if (msg) {
-      database.ref('global_notification').set({
-        msg: msg,
-        time: Date.now()
-      }).then(() => {
-        alert("✅ تم إرسال البث العالمي بنجاح!");
-      });
-    } else {
-      alert("⚠️ يرجى كتابة رسالة أولاً");
-    }
+  // التحقق من تحميل Firebase لتجنب الشاشة السوداء
+  if (typeof firebase !== 'undefined') {
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // ربط الأزرار
+    window.onload = function() {
+        const broadcastBtn = document.querySelector('.btn-primary');
+        if(broadcastBtn) {
+            broadcastBtn.onclick = function() {
+                const msg = document.querySelector('textarea').value;
+                if(msg) {
+                    database.ref('global_notification').set({
+                        msg: msg,
+                        time: Date.now()
+                    }).then(() => alert("✅ تم البث"));
+                }
+            };
+        }
+    };
+  } else {
+    console.error("Firebase labels not loaded");
   }
-
-  // وظيفة شحن المحفظة (نظام الضمان)
-  function depositAction() {
-    const userId = prompt("أدخل معرف المستخدم (ID):");
-    const amount = prompt("أدخل المبلغ (USDT):");
-    if (userId && amount) {
-      database.ref('wallets/' + userId).update({
-        balance: parseFloat(amount),
-        status: "verified"
-      }).then(() => {
-        alert("💰 تم تحديث الرصيد بنجاح");
-      });
-    }
-  }
-
-  // ربط الأزرار الموجودة في تصميمك بالأوامر البرمجية
-  document.querySelector('.btn-primary').onclick = sendBroadcast; // زر إطلاق البث
-  document.querySelector('.btn-success').onclick = depositAction; // زر شحن المحفظة
 </script>
