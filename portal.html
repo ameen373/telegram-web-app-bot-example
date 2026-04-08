@@ -2,77 +2,119 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telega-IO Pro | مركز قيادة أمين</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Telega-IO Global Pro | مركز قيادة أمين</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
-        body { background-color: #121212; color: white; font-family: 'Arial', sans-serif; padding: 20px; text-align: center; }
-        .card { background: #1e1e26; border: 2px solid #3f51b5; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        h3 { color: #ffeb3b; }
-        textarea { width: 90%; height: 80px; border-radius: 10px; padding: 10px; margin-bottom: 15px; background: #2c2c34; color: white; border: 1px solid #555; }
-        button { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; }
-        .btn-blue { background-color: #3f51b5; color: white; }
-        .btn-green { background-color: #4caf50; color: white; }
-        .status { color: #00e676; font-size: 0.9em; margin-top: 10px; }
+        :root {
+            --bg: #0f172a; --card: rgba(30, 41, 59, 0.7);
+            --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --text: #f1f5f9;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text);
+            margin: 0; padding: 15px; padding-bottom: 90px; transition: 0.3s;
+        }
+        .card {
+            background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 18px;
+            border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .admin-box { border: 2px solid #ef4444; background: rgba(239,68,68,0.05); }
+        .nav-tabs {
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.9);
+            display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px);
+        }
+        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.6); font-size: 11px; font-weight: bold; cursor: pointer; }
+        .tab-active { color: var(--accent); }
+        .btn-main { width: 100%; padding: 16px; border: none; border-radius: 18px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 10px; font-size: 14px; transition: 0.2s; }
+        textarea { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; padding: 10px; margin-top: 10px; }
+        #global-notify { display: none; background: linear-gradient(90deg, #3b82f6, #8b5cf6); padding: 12px; text-align: center; border-radius: 15px; font-weight: bold; color: white; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
+<div id="global-notify"><span id="notify-msg"></span></div>
+
+<div id="admin-panel" class="card admin-box" style="display:none;">
+    <h3>🛠️ مركز قيادة أمين (Te_Bit)</h3>
+    <textarea id="bc-msg" placeholder="اكتب رسالة البث العالمية هنا..."></textarea>
+    <button class="btn-main" onclick="sendBC()">إطلاق البث 🚀</button>
+</div>
+
+<div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--gold);">
+    <small>الرصيد المتاح (نظام الضمان 🛡️)</small>
+    <h2 id="balanceDisplay">0.00 USDT</h2>
+    <div style="font-size: 12px;">المسؤول الموثق: <b>@Te_Bit</b></div>
+    <button class="btn-main" style="background:var(--safe);" onclick="deposit()">شحن المحفظة</button>
+</div>
+
+<div id="sec-market" class="section">
     <div class="card">
-        <h3>🛠️ مركز قيادة أمين (Te_Bit)</h3>
-        <textarea id="msgInput" placeholder="اكتب رسالة البث العالمية هنا..."></textarea>
-        <button class="btn-blue" onclick="handleBroadcast()">إطلاق البث 🚀</button>
-        <div id="statusMsg" class="status"></div>
+        <b>Yeraltı Turkish Drama</b> <span style="font-size:10px; color:var(--safe);">✓ 1000+ مشترك</span>
+        <button class="btn-main">حجز مكان - 18 USDT</button>
     </div>
+</div>
 
-    <div class="card">
-        <p>الرصيد المتاح (🛡️ نظام الضمان)</p>
-        <h2 id="balance">USDT 0.00</h2>
-        <button class="btn-green" onclick="handleDeposit()">شحن المحفظة</button>
-    </div>
+<div class="nav-tabs">
+    <div class="tab-btn tab-active">🛒 السوق</div>
+    <div class="tab-btn">🚀 أعلن</div>
+    <div class="tab-btn">👤 التوثيق</div>
+    <div class="tab-btn">💬 الدعم</div>
+</div>
 
-    <script>
-        // إعدادات Firebase الخاصة بك
-        const firebaseConfig = {
-            databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"
-        };
+<script>
+    // تهيئة البيانات
+    const tg = window.Telegram.WebApp;
+    const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-        // تهيئة النظام
-        try {
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.database();
+    // التحقق من هوية أمين (Te_Bit) لفتح لوحة التحكم
+    const user = tg.initDataUnsafe.user || { id: 549686235 }; // افتراضي للتجربة
+    if(user.id.toString() === "549686235") {
+        document.getElementById('admin-panel').style.display = 'block';
+    }
 
-            // 1. وظيفة البث العالمي
-            window.handleBroadcast = function() {
-                const msg = document.getElementById('msgInput').value;
-                if(msg) {
-                    db.ref('global_notification').set({
-                        msg: msg,
-                        time: Date.now()
-                    }).then(() => {
-                        document.getElementById('statusMsg').innerText = "✅ تم إرسال البث بنجاح!";
-                        setTimeout(() => document.getElementById('statusMsg').innerText = "", 3000);
-                    });
-                } else { alert("يرجى كتابة رسالة"); }
-            };
-
-            // 2. وظيفة تحديث الرصيد (نظام الضمان)
-            window.handleDeposit = function() {
-                const uid = prompt("أدخل ID المستخدم المطلوب شحن حسابه:");
-                const amount = prompt("أدخل المبلغ (USDT):");
-                if(uid && amount) {
-                    db.ref('wallets/' + uid).update({
-                        balance: parseFloat(amount),
-                        last_update: Date.now()
-                    }).then(() => alert("💰 تم تحديث الرصيد وتفعيل الضمان."));
-                }
-            };
-
-        } catch (e) {
-            console.error(e);
-            alert("حدث خطأ في الاتصال بقاعدة البيانات");
+    // وظيفة إرسال البث العالمي
+    function sendBC() {
+        const msg = document.getElementById('bc-msg').value;
+        if(msg) {
+            db.ref('global_notification').set({
+                msg: msg,
+                time: Date.now()
+            }).then(() => tg.showAlert("✅ تم إرسال الإشعار لجميع المستخدمين بنجاح."));
         }
-    </script>
+    }
+
+    // وظيفة الشحن (تحديث الرصيد حياً)
+    function deposit() {
+        const amt = prompt("أدخل المبلغ المراد شحنه (USDT):");
+        if(amt) {
+            db.ref('wallets/' + user.id).update({ balance: parseFloat(amt) });
+        }
+    }
+
+    // الاستماع للرصيد وتحديثه فوراً في الواجهة
+    db.ref('wallets/' + user.id + '/balance').on('value', snap => {
+        const val = snap.val() || 0;
+        document.getElementById('balanceDisplay').innerText = val.toFixed(2) + " USDT";
+    });
+
+    // استقبال إشعارات البث الحية
+    db.ref('global_notification').on('value', snap => {
+        const d = snap.val();
+        if(d && (Date.now() - d.time < 300000)) { // إظهار الرسالة إذا كانت مرسلة خلال آخر 5 دقائق
+            document.getElementById('global-notify').style.display = 'block';
+            document.getElementById('notify-msg').innerText = "📢 " + d.msg;
+        }
+    });
+
+    tg.expand(); // تمديد التطبيق ليملأ الشاشة
+</script>
 </body>
 </html>
