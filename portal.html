@@ -3,28 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telega-IO Pro</title>
+    <title>Telega-IO Pro | مركز قيادة أمين</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        /* أضف تنسيقاتك هنا لضمان عدم ظهور شاشة سوداء فارغة */
-        body { background-color: #1a1a2e; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
-        .card { border: 1px solid #e94560; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        button { background-color: #0f3460; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        body { background-color: #121212; color: white; font-family: 'Arial', sans-serif; padding: 20px; text-align: center; }
+        .card { background: #1e1e26; border: 2px solid #3f51b5; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        h3 { color: #ffeb3b; }
+        textarea { width: 90%; height: 80px; border-radius: 10px; padding: 10px; margin-bottom: 15px; background: #2c2c34; color: white; border: 1px solid #555; }
+        button { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; }
+        .btn-blue { background-color: #3f51b5; color: white; }
+        .btn-green { background-color: #4caf50; color: white; }
+        .status { color: #00e676; font-size: 0.9em; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h3>🚀 مركز قيادة أمين (Te_Bit)</h3>
-        <textarea id="broadcastMsg" placeholder="بث رسالة عالمية للمنصة..." style="width: 90%; height: 60px;"></textarea><br><br>
-        <button onclick="sendBroadcast()">إطلاق البث 🚀</button>
+        <h3>🛠️ مركز قيادة أمين (Te_Bit)</h3>
+        <textarea id="msgInput" placeholder="اكتب رسالة البث العالمية هنا..."></textarea>
+        <button class="btn-blue" onclick="handleBroadcast()">إطلاق البث 🚀</button>
+        <div id="statusMsg" class="status"></div>
     </div>
 
     <div class="card">
-        <p>الرصيد المتاح (نظام الضمان 🛡️)</p>
-        <h2 id="balanceDisplay">USDT 0.00</h2>
-        <button onclick="depositAction()" style="background-color: #28a745;">شحن المحفظة</button>
+        <p>الرصيد المتاح (🛡️ نظام الضمان)</p>
+        <h2 id="balance">USDT 0.00</h2>
+        <button class="btn-green" onclick="handleDeposit()">شحن المحفظة</button>
     </div>
 
     <script>
@@ -32,36 +37,41 @@
         const firebaseConfig = {
             databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"
         };
-        
-        // تشغيل النظام فقط إذا تم تحميل المكتبات بنجاح
+
+        // تهيئة النظام
         try {
             firebase.initializeApp(firebaseConfig);
-            const database = firebase.database();
+            const db = firebase.database();
 
-            // وظيفة البث العالمي
-            window.sendBroadcast = function() {
-                const msg = document.getElementById('broadcastMsg').value;
-                if (msg) {
-                    database.ref('global_notification').set({
+            // 1. وظيفة البث العالمي
+            window.handleBroadcast = function() {
+                const msg = document.getElementById('msgInput').value;
+                if(msg) {
+                    db.ref('global_notification').set({
                         msg: msg,
                         time: Date.now()
-                    }).then(() => alert("✅ تم إرسال البث لجميع المستخدمين!"));
+                    }).then(() => {
+                        document.getElementById('statusMsg').innerText = "✅ تم إرسال البث بنجاح!";
+                        setTimeout(() => document.getElementById('statusMsg').innerText = "", 3000);
+                    });
+                } else { alert("يرجى كتابة رسالة"); }
+            };
+
+            // 2. وظيفة تحديث الرصيد (نظام الضمان)
+            window.handleDeposit = function() {
+                const uid = prompt("أدخل ID المستخدم المطلوب شحن حسابه:");
+                const amount = prompt("أدخل المبلغ (USDT):");
+                if(uid && amount) {
+                    db.ref('wallets/' + uid).update({
+                        balance: parseFloat(amount),
+                        last_update: Date.now()
+                    }).then(() => alert("💰 تم تحديث الرصيد وتفعيل الضمان."));
                 }
             };
 
-            // وظيفة تحديث الرصيد
-            window.depositAction = function() {
-                const uid = prompt("أدخل ID المستخدم:");
-                const amt = prompt("المبلغ المراد شحنه:");
-                if (uid && amt) {
-                    database.ref('wallets/' + uid).update({
-                        balance: parseFloat(amt)
-                    }).then(() => alert("💰 تم تحديث الرصيد!"));
-                }
-            };
         } catch (e) {
-            console.error("Firebase Error:", e);
-            document.body.innerHTML = "<h1>خطأ في التحميل: يرجى التأكد من اتصال الإنترنت</h1>";
+            console.error(e);
+            alert("حدث خطأ في الاتصال بقاعدة البيانات");
         }
     </script>
 </body>
