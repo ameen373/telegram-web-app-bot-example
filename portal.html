@@ -1,103 +1,44 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Global Pro</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <style>
-        :root {
-            --bg: #0f172a; --card: rgba(30, 41, 59, 0.7);
-            --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --text: #f1f5f9;
-        }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text);
-            margin: 0; padding: 15px; padding-bottom: 90px; transition: 0.3s;
-        }
-        /* تصميم زجاجي عصري (Glassmorphism) */
-        .card {
-            background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 18px;
-            border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(15px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-        .admin-box { border: 2px solid #ef4444; background: rgba(239,68,68,0.05); }
-        .nav-tabs {
-            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.9);
-            display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px);
-        }
-        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.6); font-size: 11px; font-weight: bold; cursor: pointer; }
-        .tab-active { color: var(--accent); }
-        .btn-main { width: 100%; padding: 16px; border: none; border-radius: 18px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 10px; font-size: 14px; transition: 0.2s; }
-        .stat-badge { background: rgba(59,130,246,0.1); color: var(--accent); padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; margin-right: 5px; }
-        #global-notify { display: none; background: linear-gradient(90deg, #3b82f6, #8b5cf6); padding: 12px; text-align: center; border-radius: 15px; font-weight: bold; color: white; margin-bottom: 15px; }
-        .lang-ltr { direction: ltr; text-align: left; }
-    </style>
-</head>
-<body class="lang-rtl">
-
-<div id="global-notify"><span id="notify-msg"></span></div>
-
-<div id="admin-panel" class="card admin-box" style="display:none;">
-    <h3>🛠️ مركز قيادة أمين (Te_Bit)</h3>
-    <textarea id="bc-msg" placeholder="بث رسالة عالمية للمنصة..."></textarea>
-    <button class="btn-main" onclick="sendBC()">إطلاق البث 🚀</button>
-</div>
-
-<div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--gold);">
-    <small id="bal-text">الرصيد المتاح (نظام الضمان 🛡️)</small>
-    <h2 id="balance">0.00 USDT</h2>
-    <div style="font-size: 12px;">المسؤول الموثق: <b>@Te_Bit</b></div>
-    <button class="btn-main" style="background:var(--safe);" onclick="deposit()">شحن المحفظة</button>
-</div>
-
-<div id="sec-market" class="section">
-    <div class="card">
-        <b>Yeraltı Turkish Drama</b> <span style="font-size:10px; color:var(--safe);">✓ 1000+ مشترك</span>
-        <div style="font-size:11px; margin: 8px 0;"><span class="stat-badge">تقييم: ★★★★★</span><span class="stat-badge">مشاهدات: +7k</span></div>
-        <button class="btn-main">حجز مكان - 18 USDT</button>
-    </div>
-</div>
-
-<div class="nav-tabs">
-    <div id="t-market" class="tab-btn tab-active" onclick="switchTab('market')">🛒 السوق</div>
-    <div id="t-ads" class="tab-btn" onclick="switchTab('ads')">🚀 أعلن</div>
-    <div id="t-verify" class="tab-btn" onclick="switchTab('verify')">👤 التوثيق</div>
-    <div id="t-support" class="tab-btn" onclick="switchTab('support')">💬 الدعم</div>
-</div>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-    const tg = window.Telegram.WebApp;
-    const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
-    const uid = tg.initDataUnsafe.user?.id || 549686235;
+  // إعدادات Firebase من واقع مشروعك
+  const firebaseConfig = {
+    databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
 
-    if(uid.toString() === "549686235") document.getElementById('admin-panel').style.display = 'block';
-
-    function switchTab(s) {
-        document.querySelectorAll('.section').forEach(x => x.style.display = 'none');
-        document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('tab-active'));
-        document.getElementById('sec-' + s).style.display = 'block';
-        document.getElementById('t-' + s).classList.add('tab-active');
+  // وظيفة البث العالمي (Broadcast)
+  function sendBroadcast() {
+    const msg = document.querySelector('textarea').value; // يأخذ النص من خانة البث
+    if (msg) {
+      database.ref('global_notification').set({
+        msg: msg,
+        time: Date.now()
+      }).then(() => {
+        alert("✅ تم إرسال البث العالمي بنجاح!");
+      });
+    } else {
+      alert("⚠️ يرجى كتابة رسالة أولاً");
     }
+  }
 
-    // إدارة البث العالمي
-    function sendBC() {
-        const msg = document.getElementById('bc-msg').value;
-        db.ref('global_notification').set({msg: msg, time: Date.now()});
-        tg.showAlert("✅ تم إرسال الإشعار لجميع المستخدمين.");
+  // وظيفة شحن المحفظة (نظام الضمان)
+  function depositAction() {
+    const userId = prompt("أدخل معرف المستخدم (ID):");
+    const amount = prompt("أدخل المبلغ (USDT):");
+    if (userId && amount) {
+      database.ref('wallets/' + userId).update({
+        balance: parseFloat(amount),
+        status: "verified"
+      }).then(() => {
+        alert("💰 تم تحديث الرصيد بنجاح");
+      });
     }
+  }
 
-    // استقبال الإشعارات الحية
-    db.ref('global_notification').on('value', snap => {
-        const d = snap.val();
-        if(d && (Date.now() - d.time < 3600000)) {
-            document.getElementById('global-notify').style.display = 'block';
-            document.getElementById('notify-msg').innerText = d.msg;
-        }
-    });
-
-    tg.expand();
+  // ربط الأزرار الموجودة في تصميمك بالأوامر البرمجية
+  document.querySelector('.btn-primary').onclick = sendBroadcast; // زر إطلاق البث
+  document.querySelector('.btn-success').onclick = depositAction; // زر شحن المحفظة
 </script>
-</body>
-</html>
