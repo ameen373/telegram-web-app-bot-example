@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Full Suite</title>
+    <title>Telega-IO Premium Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -12,14 +12,16 @@
             --bg: #0f172a; --card: rgba(30, 41, 59, 0.7);
             --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --danger: #ef4444; --text: #f1f5f9;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
         .main-content { padding: 15px; }
         .card { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
         
         .feature-box { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px; margin-bottom: 8px; border-right: 3px solid var(--accent); }
-        .feature-title { font-weight: bold; color: var(--accent); display: block; font-size: 12px; margin-bottom: 4px; }
+        .feature-title { font-weight: bold; color: var(--accent); display: block; font-size: 12px; }
         .feature-desc { font-size: 10px; color: #94a3b8; line-height: 1.4; }
 
+        .plan-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
         .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
         .tab-active { color: var(--accent); font-weight: bold; }
@@ -28,108 +30,86 @@
         .section { display: none; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; box-sizing: border-box; }
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .bal-card { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; text-align: center; }
+        input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; text-align: center; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
 <div class="main-content">
     <div id="sec-home" class="section" style="display: block;">
-        <div class="card" style="text-align: center; border-color: var(--gold);">
-            <small>إجمالي الرصيد (نظام المقاصة) 💰</small>
+        <div class="card" style="border: 1px solid var(--gold); text-align: center;">
+            <small>إجمالي الرصيد المتوفر 💰</small>
             <h2 id="total-bal-home">0.00 USDT</h2>
         </div>
+
+        <div class="card" style="border-right: 4px solid var(--danger);">
+            <h4 style="margin:0; color:var(--danger);">🔥 عروض ترويجية ساخنة</h4>
+            <p style="font-size:11px; margin:5px 0; color:#94a3b8;">تخفيضات تصل إلى 30% على إعلانات قنوات الدراما والتقنية لفترة محدودة.</p>
+        </div>
+
         <div class="card">
-            <h4 style="color:var(--gold); margin-bottom: 12px;">💎 نظام العضويات والخطط (Levels)</h4>
-            <div class="feature-box" style="border-right-color: #94a3b8;">
-                <span class="feature-title" style="color:#f1f5f9;">الخطة المجانية</span>
-                <p class="feature-desc">للمستخدمين العاديين بميزات قياسية.</p>
-            </div>
-            <div class="feature-box">
-                <span class="feature-title">بريميوم ($19/شهر)</span>
-                <p class="feature-desc">خصم 5% فوري، أولوية في دعم العملاء، وظهور مميز للقنوات.</p>
-            </div>
-            <div class="feature-box" style="border-right-color: var(--gold);">
-                <span class="feature-title" style="color:var(--gold);">عضوية Golden VIP</span>
-                <p class="feature-desc">تُمنح تلقائياً لمن يتجاوز إنفاقه 5000$ تقديراً للولاء.</p>
-            </div>
+            <h4 style="color:var(--gold);">💎 نظام العضويات والخطط</h4>
+            <div class="plan-card"><span>الخطة المجانية</span><small>قياسية</small></div>
+            <div class="plan-card" style="border-color:var(--accent);"><span>بريميوم ($19)</span><small>خصم 5% فوري</small></div>
+            <div class="plan-card" style="border-color:var(--gold);"><span>Golden VIP</span><small>إنفاق +$5000</small></div>
+            <p style="font-size:9px; color:#94a3b8; margin-top:5px;">نظام ترقية تلقائي لتقدير ولاء العملاء.</p>
         </div>
     </div>
 
     <div id="sec-promo" class="section">
-        <h3 style="color:var(--accent);">📣 تجربة المعلن الذكية (Advertiser Suite)</h3>
+        <h3 style="color:var(--accent);">📣 لوحة المعلن الذكية</h3>
         
         <div class="card">
-            <h4>🎨 نظام إنشاء المحتوى المزدوج</h4>
-            <div class="feature-box">
-                <span class="feature-title">رابط المنشور (Forward)</span>
-                <p class="feature-desc">المعلن يضع رابط منشور جاهز من قناته مباشرة.</p>
-            </div>
-            <div class="feature-box">
-                <span class="feature-title">صناعة منشور (Draft)</span>
-                <p class="feature-desc">كتابة نص الإعلان ورفع صورة مباشرة من داخل التطبيق.</p>
-            </div>
-        </div>
-
-        <div class="card" style="border-top: 2px solid var(--safe);">
-            <h4>💳 طرق الدفع المتعددة</h4>
-            <div class="feature-box" style="border-right-color: var(--safe);">
-                <span class="feature-title" style="color:var(--safe);">الدفع الثابت (Fixed)</span>
-                <p class="feature-desc">استئجار القناة لمدة 24 ساعة بسعرها المحدد.</p>
-            </div>
-            <div class="feature-box" style="border-right-color: var(--safe);">
-                <span class="feature-title" style="color:var(--safe);">الدفع مقابل الأداء (CPM/CPC)</span>
-                <p class="feature-desc">المحاسبة بناءً على المشاهدات أو النقرات المحققة.</p>
-            </div>
-            <div class="feature-box" style="border-right-color: var(--safe);">
-                <span class="feature-title" style="color:var(--safe);">سلة المشتريات (Cart)</span>
-                <p class="feature-desc">إمكانية اختيار قنوات متعددة والدفع لها في عملية واحدة.</p>
+            <h4 style="margin:0; color:var(--accent);">📊 إحصائيات حملاتك</h4>
+            <div class="balance-grid" style="margin-top:10px;">
+                <div class="bal-card"><span style="color:var(--accent); font-weight:bold;">0</span><br><small>حملات نشطة</small></div>
+                <div class="bal-card"><span style="color:var(--accent); font-weight:bold;">0.00</span><br><small>مبلغ مستثمر</small></div>
             </div>
         </div>
 
         <div class="card">
-            <h4>🛡️ نظام الضمان (Escrow)</h4>
-            <p class="feature-desc">حماية كاملة؛ يتم تجميد مبلغ الإعلان ولا يتم تحريره للناشر إلا بعد التأكد من النشر.</p>
-            <button class="btn-main">بدأ حملة إعلانية الآن</button>
+            <h4>🎨 تجربة إنشاء المحتوى</h4>
+            <div class="feature-box"><span class="feature-title">نظام المحتوى المزدوج</span><p class="feature-desc">دعم الـ Forward المباشر أو صناعة Draft احترافي بنص وصورة.</p></div>
+            <div class="feature-box"><span class="feature-title">طرق الدفع (CPM/CPC/Fixed)</span><p class="feature-desc">اختر المحاسبة حسب الأداء أو استئجار ثابت لـ 24 ساعة.</p></div>
         </div>
     </div>
 
     <div id="sec-channels" class="section">
         <h3 style="color:var(--safe);">📺 لوحة الناشر والمالية</h3>
-        <div class="card">
-            <h4>📊 نظام إدارة القنوات (Global Market)</h4>
-            <div class="feature-box">
-                <span class="feature-title">التصنيف الآلي الذكي</span>
-                <p class="feature-desc">فحص آلي وتصنيف ضمن 10 أقسام رئيسية (رياضة، أفلام، كريبـتو، إلخ).</p>
-            </div>
-            <div class="feature-box">
-                <span class="feature-title">مراقب المشتركين الدوري</span>
-                <p class="feature-desc">تحديث آلي لعدد المشتركين كل 6 ساعات لضمان دقة البيانات.</p>
-            </div>
-            <button class="btn-main" style="background:var(--safe);">إضافة قناة للسوق +</button>
+        
+        <div class="card" style="border-left: 4px solid var(--safe);">
+            <h4 style="margin:0; color:var(--safe);">🛡️ نظام الضمان (Escrow)</h4>
+            <p style="font-size:11px; color:#94a3b8; margin-top:5px;">حماية كاملة للمعلن والناشر؛ يتم تجميد مبلغ الإعلان ولا يتم تحريره إلا بعد التأكد من النشر ومرور الوقت المحدد.</p>
         </div>
 
-        <div class="card" style="border-top: 2px solid var(--gold);">
-            <h4>💰 النظام المالي والسيولة</h4>
-            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:10px;">
-                <span>السحب: USDT TRC20</span>
-                <span style="color:var(--gold);">الحد الأدنى: 20$</span>
-            </div>
-            <p class="feature-desc">قاعدة الـ 21 يوماً: نظام مقاصة يمنع السحب لضمان عدم التلاعب.</p>
+        <div class="card">
+            <h4>📊 إدارة القنوات (Global Market)</h4>
+            <div class="feature-box"><span class="feature-title">التصنيف الآلي الذكي</span><p class="feature-desc">تصنيف تلقائي ضمن 10 أقسام ومراقب مشتركين كل 6 ساعات لضمان الدقة.</p></div>
+            <button class="btn-main" style="background:var(--safe);">إضافة قناة للسوق +</button>
         </div>
     </div>
 
     <div id="sec-referral" class="section">
-        <h3 style="color:var(--gold);">👥 نظام النمو والإحالة</h3>
+        <h3 style="color:var(--gold);">👥 النمو والمسابقات</h3>
+        
         <div class="card">
-            <h4>📈 برنامج الإحالة المتدرج</h4>
-            <p class="feature-desc">عمولات للمعلنين تبدأ من 5% وتصل إلى 10% بناءً على النشاط.</p>
-            <div style="background:rgba(0,0,0,0.2); border-radius:10px; padding:10px; margin-top:10px;">
-                <h5 style="margin:0 0 10px 0; color:var(--gold);">🏆 متصدري المسابقة (Leaderboard)</h5>
-                <div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0;"><span>1. @Ameen_TeBit</span><span style="color:var(--gold);">150 USDT</span></div>
-                <div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0;"><span>2. @User_X</span><span style="color:var(--gold);">75 USDT</span></div>
+            <h4 style="margin:0;">📈 برنامج الإحالة المتدرج</h4>
+            <ul style="font-size:11px; color:#94a3b8; padding-right:15px; margin-top:10px;">
+                <li>للمعلنين: عمولة تبدأ من 5% وتصل إلى 10% بناءً على النشاط.</li>
+                <li>للناشرين: عمولة ثابتة 5% لأول 6 أشهر ثم 2.5%.</li>
+            </ul>
+        </div>
+
+        <div class="card" style="border: 1px solid var(--gold);">
+            <h4 style="margin:0; color:var(--gold);">🏆 لوحة المتصدرين (Leaderboard)</h4>
+            <p style="font-size:10px; color:#94a3b8; margin:5px 0;">محرك مسابقات مدمج يظهر أفضل 10 مسوقين ويوزع الجوائز آلياً.</p>
+            <div class="bal-card" style="margin:10px 0; background:rgba(241,196,15,0.1);">
+                <small>عدد إحالاتك الحالية:</small>
+                <div id="ref-count" style="font-size:20px; font-weight:bold; color:var(--gold);">0</div>
             </div>
-            <input type="text" id="ref-link" readonly style="margin-top:15px;">
+            <input type="text" id="ref-link" readonly style="margin-top:10px;">
             <button class="btn-main" onclick="copyRef()">نسخ رابط الإحالة</button>
         </div>
     </div>
@@ -149,6 +129,13 @@
 
     document.getElementById('ref-link').value = "https://t.me/Telega_IO_Bot?start=" + user.id;
 
+    // جلب البيانات مع عداد الإحالات
+    db.ref('users/' + user.id).on('value', snap => {
+        const d = snap.val() || { balance: 0, bonus: 0, referrals: 0 };
+        document.getElementById('total-bal-home').innerText = (d.balance + d.bonus).toFixed(2) + " USDT";
+        document.getElementById('ref-count').innerText = d.referrals || 0;
+    });
+
     function switchTab(tabId) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
@@ -161,7 +148,7 @@
         const link = document.getElementById('ref-link');
         link.select();
         document.execCommand('copy');
-        tg.showAlert("✅ تم نسخ الرابط");
+        tg.showAlert("✅ تم نسخ الرابط بنجاح");
     }
 
     tg.expand();
