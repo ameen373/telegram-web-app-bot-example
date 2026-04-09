@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Full Mastery</title>
+    <title>Telega-IO Total Integration</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -12,18 +12,27 @@
             --bg: #0f172a; --card: rgba(30, 41, 59, 0.7);
             --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --danger: #ef4444; --text: #f1f5f9;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
         .main-content { padding: 15px; }
         .card { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
+        
+        .feature-box { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px; margin-bottom: 8px; border-right: 3px solid var(--accent); }
+        .feature-title { font-weight: bold; color: var(--accent); display: block; font-size: 12px; }
+        .feature-desc { font-size: 10px; color: #94a3b8; line-height: 1.4; }
+
         .btn-main { width: 100%; padding: 12px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 8px; font-size: 13px; }
         .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
         .tab-active { color: var(--accent); font-weight: bold; }
+        
         .section { display: none; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .progress-container { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 10px 0; }
+        
+        .progress-container { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 10px 0; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--gold); border-radius: 10px; transition: width 0.5s; }
         input, textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; box-sizing: border-box; text-align: center; }
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .bal-card { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body>
@@ -31,69 +40,99 @@
 <div class="main-content">
     <div id="sec-home" class="section" style="display: block;">
         <div class="card" style="border: 1px solid var(--gold); text-align: center;">
-            <small>الرصيد الكلي 💰</small>
-            <h2 id="total-bal-home">0.00 USDT</h2>
+            <small>إجمالي الرصيد المتوفر 💰</small>
+            <h2 id="total-bal-home" style="color:var(--gold);">0.00 USDT</h2>
         </div>
         <div class="card" style="border-right: 4px solid var(--danger);">
-            <h4 style="margin:0; color:var(--danger);">🔥 عروض ساخنة</h4>
-            <p style="font-size:10px; color:#94a3b8;">خصم 30% للمعلنين الجدد على قنوات الدراما.</p>
+            <h4 style="margin:0; color:var(--danger);">🔥 عروض ترويجية ساخنة</h4>
+            <p style="font-size:11px; margin:5px 0; color:#94a3b8;">خصم 30% على إعلانات قنوات الدراما لفترة محدودة.</p>
+        </div>
+        <div class="card">
+            <h4 style="color:var(--gold);">💎 مستويات العضوية</h4>
+            <div style="font-size:12px;">
+                <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><span>🆓 الخطة المجانية</span><span>أساسي</span></div>
+                <div style="display:flex; justify-content:space-between; padding:5px 0; color:var(--accent);"><span>💎 بريميوم ($19)</span><span>خصم 5%</span></div>
+            </div>
         </div>
     </div>
 
     <div id="sec-promo" class="section">
-        <h3 style="color:var(--accent);">📣 بوابة المعلن</h3>
+        <h3 style="color:var(--accent);">📣 لوحة المعلن الذكية</h3>
+        
         <div class="card" style="border-top: 2px solid var(--safe);">
-            <h4>💳 محفظة الإعلانات</h4>
-            <button class="btn-main" style="background:var(--safe);">إيداع أموال (USDT) +</button>
+            <h4>💳 محفظة المعلن</h4>
+            <div class="balance-grid">
+                <div class="bal-card"><span id="active-ads" style="color:var(--accent); font-weight:bold;">0</span><br><small>حملات</small></div>
+                <div class="bal-card"><span id="spent-money" style="color:var(--accent); font-weight:bold;">0.00</span><br><small>مستثمر</small></div>
+            </div>
+            <button class="btn-main" style="background:var(--safe); margin-top:15px;">إيداع رصيد إعلاني +</button>
         </div>
+
         <div class="card" style="border: 1px solid var(--gold);">
-            <h4 style="color:var(--gold); margin:0;">👑 Golden VIP Progress</h4>
-            <div class="progress-container"><div class="progress-bar" id="vip-prog" style="width: 20%;"></div></div>
-            <small style="font-size:9px;">أنفق 5000$ لتفعيل مزايا النخبة.</small>
+            <h4 style="color:var(--gold); margin:0;">👑 Golden VIP (أنفق $5000)</h4>
+            <div class="progress-container"><div class="progress-bar" id="vip-prog" style="width: 15%;"></div></div>
+            <small style="font-size:9px;">بقي لك الكثير لتصبح من النخبة.</small>
         </div>
-        <div class="card">
+
+        <div class="card" style="border-top: 2px solid var(--accent);">
             <h4 style="color:var(--accent);">🚀 اشتراك المعلن Pro</h4>
-            <button class="btn-main">اشترك بـ $29 / شهرياً</button>
+            <p style="font-size:10px; color:#94a3b8;">خصم 10% ثابت، أولوية ظهور، وتقارير دقيقة.</p>
+            <button class="btn-main">اشترك الآن بـ $29 / شهرياً</button>
+        </div>
+
+        <div class="card">
+            <h4>🎨 أدوات الإعلان</h4>
+            <div class="feature-box"><span class="feature-title">المحتوى المزدوج (Forward/Draft)</span><p class="feature-desc">دعم الـ Forward أو تصميم إعلانك هنا بنص وصورة.</p></div>
+            <div class="feature-box" style="border-right-color:var(--safe);"><span class="feature-title" style="color:var(--safe);">طرق الدفع (CPM/CPC/Fixed)</span><p class="feature-desc">المحاسبة حسب الأداء أو استئجار ثابت.</p></div>
         </div>
     </div>
 
     <div id="sec-channels" class="section">
-        <h3 style="color:var(--safe);">📺 بوابة الناشر</h3>
+        <h3 style="color:var(--safe);">📺 لوحة الناشر والمالية</h3>
+        
         <div class="card" style="border-top: 2px solid var(--danger);">
             <h4>💰 سحب الأرباح</h4>
-            <p style="font-size:10px; color:#94a3b8;">السحب متاح كل يوم ثلاثاء (حد أدنى 20$).</p>
-            <button class="btn-main" style="background:var(--danger);">طلب سحب الأموال</button>
+            <p style="font-size:10px; color:#94a3b8;">السحب كل ثلاثاء (حد أدنى 20$).</p>
+            <button class="btn-main" style="background:var(--danger);">طلب سحب أموال (USDT)</button>
         </div>
+
         <div class="card" style="border-right: 4px solid var(--safe);">
             <h4 style="color:var(--safe); margin:0;">🛡️ نظام الضمان (Escrow)</h4>
-            <p style="font-size:10px; color:#94a3b8;">يتم تجميد المبلغ لضمان حقوق النشر بالكامل.</p>
+            <p style="font-size:10px; color:#94a3b8;">تجميد المبلغ لضمان حقوق الطرفين بالكامل.</p>
         </div>
-        <div class="card">
+
+        <div class="card" style="border-top: 2px solid var(--safe);">
             <h4 style="color:var(--safe);">🌟 اشتراك الناشر Elite</h4>
-            <button class="btn-main" style="background:var(--safe);">اشترك بـ $15 / شهرياً</button>
+            <p style="font-size:10px; color:#94a3b8;">عمولة أقل 3%، سحب مرتين أسبوعياً، وتوثيق ذهبي.</p>
+            <button class="btn-main" style="background:var(--safe);">اشترك الآن بـ $15 / شهرياً</button>
+        </div>
+
+        <div class="card">
+            <h4>📊 إدارة القنوات</h4>
+            <p style="font-size:10px; color:#94a3b8;">تصنيف آلي ضمن 10 أقسام وتحديث كل 6 ساعات.</p>
+            <button class="btn-main" style="background:var(--safe);">إضافة قناة للسوق +</button>
         </div>
     </div>
 
     <div id="sec-referral" class="section">
-        <h3 style="color:var(--gold);">👥 نظام الإحالة والنمو</h3>
+        <h3 style="color:var(--gold);">👥 النمو والمسابقات</h3>
         <div class="card" style="border: 1px solid var(--gold);">
             <h4 style="color:var(--gold);">🏆 مسابقة أرباح الإحالة</h4>
-            <p style="font-size:10px; color:#94a3b8;">يتم احتساب ترتيبك بناءً على إجمالي أرباح أصحاب القنوات الذين دعوتهم.</p>
-            <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:10px; margin:10px 0;">
+            <p style="font-size:10px; color:#94a3b8;">يتم الاحتساب بناءً على إجمالي أرباح المدعوين أصحاب القنوات.</p>
+            <div class="bal-card" style="margin:10px 0; background:rgba(241,196,15,0.1);">
                 <small>إجمالي أرباح شبكتك:</small>
                 <div id="ref-earnings" style="font-size:20px; color:var(--gold); font-weight:bold;">0.00 USDT</div>
             </div>
             <input type="text" id="ref-link" readonly>
-            <button class="btn-main" onclick="copyRef()">نسخ رابط الإحالة</button>
+            <button class="btn-main" onclick="copyRef()">نسخ الرابط</button>
         </div>
     </div>
 
     <div id="sec-admin" class="section">
-        <h3 style="color:var(--danger);">🛠️ لوحة تحكم أمين (Te_Bit)</h3>
+        <h3 style="color:var(--danger);">🛠️ تحكم الإدارة (@Te_Bit)</h3>
         <div class="card" style="border: 2px solid var(--danger);">
-            <h4>إرسال بث عالمي (Broadcast)</h4>
-            <textarea id="bc-msg" placeholder="اكتب رسالتك لجميع المستخدمين..."></textarea>
-            <button class="btn-main" style="background:var(--danger);" onclick="sendBroadcast()">إرسال الآن 🚀</button>
+            <textarea id="bc-msg" placeholder="اكتب رسالة البث..."></textarea>
+            <button class="btn-main" style="background:var(--danger);" onclick="sendBC()">إرسال بث عالمي 🚀</button>
         </div>
     </div>
 </div>
@@ -111,7 +150,6 @@
     const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
     const user = tg.initDataUnsafe.user || { id: 549686235 };
 
-    // إظهار قسم الإدارة لأمين فقط
     if(user.id.toString() === "549686235") document.getElementById('t-admin').style.display = 'block';
     document.getElementById('ref-link').value = "https://t.me/Telega_IO_Bot?start=" + user.id;
 
@@ -119,6 +157,7 @@
         const d = snap.val() || { balance: 0, bonus: 0, ref_earnings: 0, spent: 0 };
         document.getElementById('total-bal-home').innerText = (d.balance + d.bonus).toFixed(2) + " USDT";
         document.getElementById('ref-earnings').innerText = (d.ref_earnings || 0).toFixed(2) + " USDT";
+        document.getElementById('spent-money').innerText = (d.spent || 0).toFixed(2);
         document.getElementById('vip-prog').style.width = Math.min((d.spent / 5000) * 100, 100) + "%";
     });
 
@@ -132,13 +171,13 @@
 
     function copyRef() {
         const link = document.getElementById('ref-link'); link.select();
-        document.execCommand('copy'); tg.showAlert("✅ تم نسخ رابط الإحالة");
+        document.execCommand('copy'); tg.showAlert("✅ تم النسخ");
     }
 
-    function sendBroadcast() {
+    function sendBC() {
         const msg = document.getElementById('bc-msg').value;
-        if(!msg) return tg.showAlert("أدخل نص الرسالة!");
-        tg.showAlert("🚀 جاري إرسال البث لجميع المستخدمين...");
+        if(!msg) return tg.showAlert("أدخل نصاً!");
+        tg.showAlert("🚀 جاري الإرسال...");
     }
 
     tg.expand();
