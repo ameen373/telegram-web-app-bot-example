@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Growth Edition</title>
+    <title>Telega-IO Premium Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -21,12 +21,11 @@
         .feature-title { font-weight: bold; color: var(--accent); display: block; font-size: 12px; }
         .feature-desc { font-size: 10px; color: #94a3b8; line-height: 1.4; }
 
-        /* تمايز قسم المسابقات والنمو */
-        .growth-badge { background: linear-gradient(90deg, var(--gold), #e67e22); color: #000; padding: 2px 8px; border-radius: 20px; font-size: 9px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
-        .leaderboard-list { margin-top: 10px; }
-        .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 5px; border-left: 2px solid transparent; }
-        .top-3 { border-left: 2px solid var(--gold); background: rgba(241, 196, 15, 0.05); }
-        
+        /* تنسيق العضويات الجديد */
+        .plan-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .plan-price { font-weight: bold; color: var(--gold); font-size: 14px; }
+        .vip-badge { background: linear-gradient(45deg, #d4af37, #f1c40f); color: #000; padding: 2px 8px; border-radius: 5px; font-weight: bold; font-size: 10px; }
+
         .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
         .tab-active { color: var(--accent); font-weight: bold; }
@@ -37,8 +36,7 @@
         
         .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .bal-card { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; text-align: center; }
-        
-        input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; text-align: center; font-size: 11px; }
+        input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; text-align: center; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -54,60 +52,77 @@
             <small>إجمالي الرصيد المتوفر 💰</small>
             <h2 id="total-bal-home" style="color: var(--gold); margin: 5px 0;">0.00 USDT</h2>
         </div>
+
+        <div class="card">
+            <h4 style="margin:0; color:var(--accent);">📊 إحصائيات المنصة</h4>
+            <div class="balance-grid" style="margin-top:10px;">
+                <div class="bal-card"><span style="font-size:18px; font-weight:bold; color:var(--accent);">48K</span><br><small>متابع نشط</small></div>
+                <div class="bal-card"><span style="font-size:18px; font-weight:bold; color:var(--accent);">1.2M</span><br><small>مشاهدة</small></div>
+            </div>
+        </div>
+
+        <div class="card" style="border-right: 4px solid var(--gold);">
+            <h4 style="margin:0; color:var(--gold); margin-bottom: 12px;">💎 نظام العضويات والخطط (Subscription)</h4>
+            
+            <div class="plan-card">
+                <div>
+                    <span style="font-size:12px; font-weight:bold; display:block;">الخطة المجانية</span>
+                    <small style="color:#94a3b8; font-size:9px;">للمستخدمين العاديين بميزات قياسية.</small>
+                </div>
+                <span class="plan-price">مجاناً</span>
+            </div>
+
+            <div class="plan-card" style="background: rgba(59, 130, 246, 0.05); border-color: var(--accent);">
+                <div>
+                    <span style="font-size:12px; font-weight:bold; display:block; color:var(--accent);">الخطة البريميوم</span>
+                    <small style="color:#94a3b8; font-size:9px;">خصم 5% فوري، أولوية الدعم، وظهور مميز.</small>
+                </div>
+                <span class="plan-price">$19<small>/شهر</small></span>
+            </div>
+
+            <div class="plan-card" style="background: rgba(241, 196, 15, 0.05); border-color: var(--gold);">
+                <div>
+                    <span class="vip-badge">Golden VIP</span>
+                    <small style="color:#94a3b8; font-size:9px; display:block; margin-top:4px;">تُمنح تلقائياً لمن يتجاوز إنفاقه $5000 تقديراً للولاء.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="border-right: 4px solid var(--danger);">
+            <h4 style="margin:0; color:var(--danger);">🔥 عروض ترويجية</h4>
+            <p style="font-size:11px; margin:5px 0; color:#94a3b8;">تخفيضات تصل إلى 30% على إعلانات قنوات الدراما والتقنية.</p>
+        </div>
     </div>
 
     <div id="sec-channels" class="section">
         <h3 style="color: var(--safe);">📺 لوحة الناشر والمالية</h3>
         <div class="card">
-            <h4>💰 الرصيد والسيولة</h4>
+            <h4>📊 إدارة القنوات والمراقبة</h4>
+            <div class="feature-item">
+                <span class="feature-title">🤖 التصنيف الآلي ومراقب المشتركين</span>
+                <p class="feature-desc">تحديث دوري كل 6 ساعات وفحص تلقائي للاسم والوصف ضمن 10 أقسام.</p>
+            </div>
+            <button class="btn-main" style="background:var(--safe);">إضافة قناة للسوق +</button>
+        </div>
+
+        <div class="card" style="border-top: 2px solid var(--gold);">
+            <h4 style="margin-top:0; color:var(--gold);">💰 المالية (USDT TRC20)</h4>
             <div class="balance-grid">
                 <div class="bal-card"><small style="color:var(--safe);">قابل للسحب</small><br><span id="with-bal" style="font-weight:bold;">0.00</span></div>
-                <div class="bal-card"><small style="color:var(--accent);">المكافآت</small><br><span id="bon-bal" style="font-weight:bold;">0.00</span></div>
+                <div class="bal-card"><small style="color:var(--accent);">رصيد المكافآت</small><br><span id="bon-bal" style="font-weight:bold;">0.00</span></div>
             </div>
-            <p style="font-size: 9px; color: #64748b; margin-top: 8px;">نظام مقاصة الـ 21 يوماً لضمان الموثوقية وفصل الأرصدة بدقة.</p>
-            <button class="btn-main" style="background:var(--danger);" onclick="tg.showAlert('السحب متاح أيام الثلاثاء بحد أدنى 20 USDT')">طلب سحب</button>
+            <p style="font-size: 9px; color: #64748b; margin-top: 8px;">سحب أسبوعي (الثلاثاء) بحد أدنى 20 USDT وقاعدة مقاصة 21 يوماً.</p>
+            <button class="btn-main" style="background:var(--danger);">طلب سحب الأرباح</button>
         </div>
     </div>
 
     <div id="sec-referral" class="section">
-        <h3 style="color: var(--gold);">👥 نظام النمو والإحالة (Growth)</h3>
-        
+        <h3 style="color: var(--gold);">👥 نظام الإحالة (Growth)</h3>
         <div class="card">
-            <span class="growth-badge">برنامج العمولة المتدرج 📈</span>
-            <div class="feature-item" style="border-right-color: var(--safe);">
-                <span class="feature-title">عمولة المعلنين</span>
-                <p class="feature-desc">تبدأ من 5% وتصل إلى 10% بناءً على مستوى النشاط (مراجعة كل 3 أشهر).</p>
-            </div>
-            <div class="feature-item" style="border-right-color: var(--accent);">
-                <span class="feature-title">عمولة الناشرين</span>
-                <p class="feature-desc">عمولة ثابتة 5% لأول 6 أشهر، ثم 2.5% للستة أشهر التالية.</p>
-            </div>
-            <input type="text" id="ref-link" readonly style="margin-top: 10px;">
-            <button class="btn-main" style="background:var(--accent);" onclick="copyRef()">نسخ رابط الإحالة</button>
-        </div>
-
-        <div class="card" style="border: 1px solid var(--gold);">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h4 style="margin:0; color:var(--gold);">🏆 لوحة المتصدرين (Leaderboard)</h4>
-                <small style="font-size:8px; color:var(--safe);">توزيع آلي للجوائز 🤖</small>
-            </div>
-            <p style="font-size:10px; color:#94a3b8; margin:5px 0;">محرك مسابقات مدمج (لمدة 3 أشهر) لأفضل 10 مسوقين.</p>
-            
-            <div class="leaderboard-list">
-                <div class="leaderboard-item top-3">
-                    <span>🥇 @Ameen_TeBit</span>
-                    <span style="color:var(--gold); font-weight:bold;">150 USDT</span>
-                </div>
-                <div class="leaderboard-item top-3">
-                    <span>🥈 @User_X22</span>
-                    <span style="color:var(--gold);">75 USDT</span>
-                </div>
-                <div class="leaderboard-item">
-                    <span>10. @Partner_99</span>
-                    <span style="color:var(--safe);">جوائز ترضية</span>
-                </div>
-            </div>
-            <button class="btn-main" style="background:linear-gradient(90deg, #1e293b, #334155); border:1px solid var(--gold); margin-top:15px;">عرض تفاصيل المسابقة</button>
+            <h4 style="margin:0;">📈 برنامج العمولة المتدرج</h4>
+            <p style="font-size:11px; color:#94a3b8; margin:8px 0;">عمولات تصل إلى 10% للمعلنين و5% للناشرين مع لوحة متصدرين للمسابقات.</p>
+            <input type="text" id="ref-link" readonly>
+            <button class="btn-main" style="background:var(--accent); margin-top:10px;" onclick="copyRef()">نسخ رابط الإحالة</button>
         </div>
     </div>
 
@@ -115,14 +130,14 @@
         <h3 style="color: var(--accent);">📣 لوحة المعلن</h3>
         <div class="card">
             <h4>نظام الضمان (Escrow) 🛡️</h4>
-            <p style="font-size:11px; color:#94a3b8;">تجميد مبلغ الإعلان لضمان حقوق الطرفين.</p>
+            <p style="font-size:11px; color:#94a3b8;">تجميد المبلغ لضمان النشر؛ حماية كاملة للمعلن والناشر.</p>
         </div>
     </div>
 
     <div id="sec-admin" class="section">
         <div class="card" style="border: 2px solid var(--danger);">
-            <h3 style="color:var(--danger); margin:0;">🚀 قيادة أمين (Te_Bit)</h3>
-            <button class="btn-main" onclick="tg.showAlert('سيتم إطلاق المسابقة القادمة آلياً')">إعادة ضبط المسابقة 🔄</button>
+            <h3 style="color:var(--danger); margin:0 0 10px 0;">🚀 قيادة أمين (Te_Bit)</h3>
+            <button class="btn-main" onclick="tg.showAlert('تم تفعيل نظام العضويات الجديد')">تحديث النظام العالمي</button>
         </div>
     </div>
 </div>
@@ -156,7 +171,7 @@
         const link = document.getElementById('ref-link');
         link.select();
         document.execCommand('copy');
-        tg.showAlert("✅ تم نسخ رابط الإحالة بنجاح");
+        tg.showAlert("✅ تم نسخ رابط الإحالة");
     }
 
     db.ref('wallets/' + user.id).on('value', snap => {
