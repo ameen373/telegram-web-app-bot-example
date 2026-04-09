@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Full Premium</title>
+    <title>Telega-IO Ultimate Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -12,17 +12,17 @@
             --bg: #0f172a; --card: rgba(30, 41, 59, 0.7);
             --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --danger: #ef4444; --text: #f1f5f9;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
         .main-content { padding: 15px; }
         .card { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
         
-        /* تنسيق العضويات */
-        .plan-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .vip-badge { background: linear-gradient(45deg, #d4af37, #f1c40f); color: #000; padding: 2px 8px; border-radius: 5px; font-weight: bold; font-size: 10px; }
+        /* تمايز المسابقات */
+        .contest-box { background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), rgba(0,0,0,0.4)); border: 1px solid var(--gold); border-radius: 15px; padding: 12px; margin-top: 10px; }
+        .leaderboard-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+        .top-rank { color: var(--gold); font-weight: bold; }
 
-        /* تنسيق المسابقات */
-        .contest-item { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--gold); }
+        /* تنسيق الخطط */
+        .plan-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--accent); color: white; margin-right: 5px; }
 
         .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
@@ -32,85 +32,90 @@
         .section { display: none; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; text-align: center; box-sizing: border-box; }
-        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; height: 80px; box-sizing: border-box; }
+        input, textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; box-sizing: border-box; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="main-content">
-    <div class="header">
-        <h2 style="margin:0; font-size: 18px;">Telega-IO</h2>
-        <div id="admin-badge" style="display:none; color:var(--danger); font-size:10px; border:1px solid var(--danger); padding:2px 6px; border-radius:10px;">ADMIN</div>
-    </div>
-
     <div id="sec-home" class="section" style="display: block;">
-        <div class="card" style="border: 1px solid var(--gold); text-align: center;">
-            <small>الرصيد المتاح (نظام الضمان) 🛡️</small>
-            <h2 id="total-bal-home" style="color: var(--gold); margin: 5px 0;">USDT 0.00</h2>
-            <button class="btn-main" style="background:var(--safe);">شحن المحفظة</button>
+        <div class="card" style="text-align: center; border-color: var(--gold);">
+            <small>إجمالي السيولة المتوفرة 💰</small>
+            <h2 id="total-bal-home">0.00 USDT</h2>
         </div>
 
         <div class="card">
-            <h4 style="color:var(--gold); margin-bottom: 12px;">💎 نظام العضويات والخطط</h4>
-            <div class="plan-card">
-                <span>الخطة المجانية</span>
-                <span style="font-size: 10px;">ميزات قياسية</span>
+            <h4 style="color:var(--gold);">💎 نظام العضويات والخطط</h4>
+            <div style="font-size: 11px;">
+                <div class="leaderboard-item"><span>🆓 الخطة المجانية</span><span>قياسية</span></div>
+                <div class="leaderboard-item"><span>💎 بريميوم ($19/شهر)</span><span style="color:var(--safe);">خصم 5% فوري</span></div>
+                <div class="leaderboard-item"><span>👑 Golden VIP</span><span style="color:var(--gold);">إنفاق +$5000</span></div>
             </div>
-            <div class="plan-card" style="border-color: var(--accent);">
-                <span>بريميوم ($19/شهر)</span>
-                <span style="color: var(--accent); font-size: 10px;">خصم 5% + دعم</span>
-            </div>
-            <div class="plan-card" style="border-color: var(--gold);">
-                <span class="vip-badge">Golden VIP</span>
-                <span style="font-size: 10px;">إنفاق +$5000</span>
-            </div>
+            <p style="font-size: 9px; color: #94a3b8; margin-top: 10px;">نظام ترقية تلقائي لتقدير ولاء العملاء.</p>
         </div>
     </div>
 
-    <div id="sec-channels" class="section">
+    <div id="sec-promo" class="section">
+        <h3 style="color:var(--accent);">📣 لوحة المعلن وحماية الأموال</h3>
         <div class="card">
-            <h4>📊 نظام إدارة القنوات</h4>
-            <ul style="font-size: 11px; padding-right: 20px; color: #94a3b8;">
-                <li>تصنيف آلي ضمن 10 أقسام</li>
-                <li>تحديث المشتركين كل 6 ساعات</li>
-            </ul>
-            <button class="btn-main" style="background:var(--accent);">إضافة قناة للسوق +</button>
+            <h4>نظام الضمان (Escrow) 🛡️</h4>
+            <p style="font-size: 11px; color: #94a3b8;">تجميد مبلغ الإعلان لضمان حقوق الطرفين؛ لا تحرير للأرباح إلا بعد التأكد من النشر.</p>
+            <button class="btn-main">إضافة قناة للسوق +</button>
+            <p style="font-size: 10px; text-align: center; margin-top: 8px; color: var(--accent);">أضف قناتك الآن ليراها المعلنون مباشرة.</p>
         </div>
-
-        <div class="card">
-            <h4 style="color:var(--safe);">💰 المالية والسحب</h4>
-            <p style="font-size: 10px; color: #94a3b8;">قاعدة الـ 21 يوماً لضمان الموثوقية والمقاصة.</p>
-            <button class="btn-main" style="background:var(--danger);">سحب (الثلاثاء) - حد أدنى 20 USDT</button>
+        
+        <div class="card" style="border-top: 2px solid var(--safe);">
+            <h4>💳 شحن المحفظة</h4>
+            <button class="btn-main" style="background:var(--safe);">شحن الرصيد المتاح</button>
+            <small style="display: block; text-align: center; margin-top: 5px; font-size: 10px;">المسؤول الموثق: @Te_Bit</small>
         </div>
     </div>
 
     <div id="sec-referral" class="section">
+        <h3 style="color:var(--gold);">👥 نظام النمو والمسابقات</h3>
         <div class="card">
-            <h4 style="color:var(--gold);">🏆 مسابقات الإحالة (Leaderboard)</h4>
-            <div class="contest-item">
-                <span>🥇 @Ameen_TeBit</span>
-                <span style="color:var(--gold);">150 USDT</span>
+            <h4>📈 برنامج الإحالة المتدرج</h4>
+            <ul style="font-size: 11px; color: #94a3b8; padding-right: 15px;">
+                <li>عمولة المعلنين: 5% إلى 10%</li>
+                <li>عمولة الناشرين: 5% (لأول 6 أشهر)</li>
+            </ul>
+        </div>
+
+        <div class="contest-box">
+            <h4 style="margin: 0; color: var(--gold);">🏆 مسابقات الإحالة (Leaderboard)</h4>
+            <p style="font-size: 10px; color: #f1f5f9; margin: 5px 0;">محرك مسابقات مدمج يوزع الجوائز آلياً لأفضل 10 مسوقين.</p>
+            <div id="leaderboard">
+                <div class="leaderboard-item top-rank"><span>1. @Ameen_TeBit</span><span>150 USDT</span></div>
+                <div class="leaderboard-item"><span>2. @User_X22</span><span>75 USDT</span></div>
             </div>
-            <p style="font-size: 10px; color: #94a3b8; margin-top: 10px;">عمولات متدرجة من 5% إلى 10% للمعلنين.</p>
-            <input type="text" id="ref-link" readonly style="margin-top:10px;">
-            <button class="btn-main" onclick="copyRef()">نسخ رابط الإحالة</button>
+            <button class="btn-main" style="background:transparent; border: 1px solid var(--gold); color: var(--gold);">عرض شروط المسابقة</button>
+        </div>
+
+        <input type="text" id="ref-link-final" readonly style="margin-top: 15px;">
+        <button class="btn-main" onclick="copyRefFinal()">نسخ رابط الإحالة</button>
+    </div>
+
+    <div id="sec-channels" class="section">
+        <div class="card">
+            <h4>🤖 نظام إدارة القنوات الذكي</h4>
+            <p style="font-size: 11px; color: #94a3b8;">تصنيف آلي ضمن 10 أقسام ومراقب دوري للمشتركين كل 6 ساعات.</p>
         </div>
     </div>
 
     <div id="sec-admin" class="section">
         <div class="card" style="border: 2px solid var(--danger);">
-            <h4 style="color:var(--danger);">🛠️ مركز قيادة أمين (Te_Bit)</h4>
-            <textarea placeholder="اكتب رسالة البث العالمية..."></textarea>
+            <h4 style="color:var(--danger); margin:0;">🛠️ مركز قيادة أمين (Te_Bit)</h4>
+            <textarea placeholder="اكتب رسالة البث العالمية للمنصة..."></textarea>
             <button class="btn-main" style="background:var(--accent);">إطلاق البث العالمي 🚀</button>
         </div>
     </div>
 </div>
 
 <div class="nav-tabs">
-    <div id="t-home" class="tab-btn tab-active" onclick="switchTab('home')">🏠 السوق</div>
-    <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺 أعلن</div>
-    <div id="t-referral" class="tab-btn" onclick="switchTab('referral')">👥 النمو</div>
+    <div id="t-home" class="tab-btn tab-active" onclick="switchTab('home')">🏠 الرئيسية</div>
+    <div id="t-promo" class="tab-btn" onclick="switchTab('promo')">📣 المعلن</div>
+    <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺 الناشر</div>
+    <div id="t-referral" class="tab-btn" onclick="switchTab('referral')">👥 الإحالة</div>
     <div id="t-admin" class="tab-btn" style="display:none;" onclick="switchTab('admin')">⚙️ الإدارة</div>
 </div>
 
@@ -120,20 +125,21 @@
     const user = tg.initDataUnsafe.user || { id: 549686235 };
 
     if(user.id.toString() === "549686235") document.getElementById('t-admin').style.display = 'block';
-    document.getElementById('ref-link').value = "https://t.me/Telega_IO_Bot?start=" + user.id;
+    document.getElementById('ref-link-final').value = "https://t.me/Telega_IO_Bot?start=" + user.id;
 
     function switchTab(tabId) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
         document.getElementById('sec-' + tabId).style.display = 'block';
         document.getElementById('t-' + tabId).classList.add('tab-active');
+        tg.HapticFeedback.impactOccurred('light');
     }
 
-    function copyRef() {
-        const link = document.getElementById('ref-link');
+    function copyRefFinal() {
+        const link = document.getElementById('ref-link-final');
         link.select();
         document.execCommand('copy');
-        tg.showAlert("✅ تم نسخ الرابط");
+        tg.showAlert("✅ تم النسخ! ابدأ بدعوة أصدقائك للمسابقة.");
     }
 
     tg.expand();
