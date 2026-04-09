@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Total Integration</title>
+    <title>Telega-IO Full Mastery</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -15,24 +15,17 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
         .main-content { padding: 15px; }
         .card { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
-        
-        .feature-box { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px; margin-bottom: 8px; border-right: 3px solid var(--accent); }
-        .feature-title { font-weight: bold; color: var(--accent); display: block; font-size: 12px; }
-        .feature-desc { font-size: 10px; color: #94a3b8; line-height: 1.4; }
-
         .btn-main { width: 100%; padding: 12px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 8px; font-size: 13px; }
         .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
         .tab-active { color: var(--accent); font-weight: bold; }
-        
         .section { display: none; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .progress-container { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 10px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--gold); border-radius: 10px; transition: width 0.5s; }
-        input, textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; box-sizing: border-box; text-align: center; }
-        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .bal-card { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-card { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .stat-val { font-size: 16px; font-weight: bold; display: block; }
+        input, textarea, select { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; box-sizing: border-box; text-align: center; margin-top: 5px; }
+        .vip-badge { font-size: 9px; padding: 2px 6px; border-radius: 5px; background: var(--gold); color: black; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -41,88 +34,74 @@
     <div id="sec-home" class="section" style="display: block;">
         <div class="card" style="border: 1px solid var(--gold); text-align: center;">
             <small>إجمالي الرصيد المتوفر 💰</small>
-            <h2 id="total-bal-home" style="color:var(--gold);">0.00 USDT</h2>
+            <h2 id="total-bal-home">0.00 USDT</h2>
         </div>
-        <div class="card" style="border-right: 4px solid var(--danger);">
-            <h4 style="margin:0; color:var(--danger);">🔥 عروض ترويجية ساخنة</h4>
-            <p style="font-size:11px; margin:5px 0; color:#94a3b8;">خصم 30% على إعلانات قنوات الدراما لفترة محدودة.</p>
-        </div>
+        
         <div class="card">
-            <h4 style="color:var(--gold);">💎 مستويات العضوية</h4>
-            <div style="font-size:12px;">
-                <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><span>🆓 الخطة المجانية</span><span>أساسي</span></div>
-                <div style="display:flex; justify-content:space-between; padding:5px 0; color:var(--accent);"><span>💎 بريميوم ($19)</span><span>خصم 5%</span></div>
+            <h4 style="color:var(--gold); margin-top:0;">💎 نظام العضويات والخطط</h4>
+            <div style="font-size: 11px; line-height: 1.6;">
+                • <b>الخطة المجانية:</b> ميزات قياسية أساسية.<br>
+                • <b style="color:var(--accent);">الخطة البريميوم ($19):</b> خصم 5% فوري وأولوية دعم.<br>
+                • <b style="color:var(--gold);">عضوية Golden VIP:</b> تمنح تلقائياً عند إنفاق $5000.
             </div>
+        </div>
+
+        <div class="card" style="border-right: 4px solid var(--danger);">
+            <h4 style="margin:0; color:var(--danger);">🔥 عروض ترويجية</h4>
+            <p style="font-size:10px;">خصم 30% على إعلانات قنوات الدراما والمسلسلات.</p>
         </div>
     </div>
 
     <div id="sec-promo" class="section">
-        <h3 style="color:var(--accent);">📣 لوحة المعلن الذكية</h3>
-        
-        <div class="card" style="border-top: 2px solid var(--safe);">
-            <h4>💳 محفظة المعلن</h4>
-            <div class="balance-grid">
-                <div class="bal-card"><span id="active-ads" style="color:var(--accent); font-weight:bold;">0</span><br><small>حملات</small></div>
-                <div class="bal-card"><span id="spent-money" style="color:var(--accent); font-weight:bold;">0.00</span><br><small>مستثمر</small></div>
-            </div>
-            <button class="btn-main" style="background:var(--safe); margin-top:15px;">إيداع رصيد إعلاني +</button>
-        </div>
-
-        <div class="card" style="border: 1px solid var(--gold);">
-            <h4 style="color:var(--gold); margin:0;">👑 Golden VIP (أنفق $5000)</h4>
-            <div class="progress-container"><div class="progress-bar" id="vip-prog" style="width: 15%;"></div></div>
-            <small style="font-size:9px;">بقي لك الكثير لتصبح من النخبة.</small>
-        </div>
-
-        <div class="card" style="border-top: 2px solid var(--accent);">
-            <h4 style="color:var(--accent);">🚀 اشتراك المعلن Pro</h4>
-            <p style="font-size:10px; color:#94a3b8;">خصم 10% ثابت، أولوية ظهور، وتقارير دقيقة.</p>
-            <button class="btn-main">اشترك الآن بـ $29 / شهرياً</button>
-        </div>
-
+        <h3 style="color:var(--accent);">📣 بوابة المعلن</h3>
         <div class="card">
-            <h4>🎨 أدوات الإعلان</h4>
-            <div class="feature-box"><span class="feature-title">المحتوى المزدوج (Forward/Draft)</span><p class="feature-desc">دعم الـ Forward أو تصميم إعلانك هنا بنص وصورة.</p></div>
-            <div class="feature-box" style="border-right-color:var(--safe);"><span class="feature-title" style="color:var(--safe);">طرق الدفع (CPM/CPC/Fixed)</span><p class="feature-desc">المحاسبة حسب الأداء أو استئجار ثابت.</p></div>
+            <h4>📊 إحصائيات حملاتك</h4>
+            <div class="grid-stats">
+                <div class="stat-card"><small>نشطة</small><span id="active-ads" class="stat-val" style="color:var(--accent);">0</span></div>
+                <div class="stat-card"><small>إجمالي الإنفاق</small><span id="total-spent" class="stat-val" style="color:var(--safe);">0.00</span></div>
+            </div>
+            <button class="btn-main" style="background:var(--safe); margin-top:15px;">إيداع رصيد جديد +</button>
+        </div>
+        <div class="card">
+            <h4 style="color:var(--accent);">🚀 اشتراك المعلن Pro</h4>
+            <p style="font-size:10px; color:#94a3b8;">أولوية ظهور، تقارير دقيقة، وخصم إضافي ($29/شهرياً).</p>
         </div>
     </div>
 
     <div id="sec-channels" class="section">
-        <h3 style="color:var(--safe);">📺 لوحة الناشر والمالية</h3>
-        
-        <div class="card" style="border-top: 2px solid var(--danger);">
-            <h4>💰 سحب الأرباح</h4>
-            <p style="font-size:10px; color:#94a3b8;">السحب كل ثلاثاء (حد أدنى 20$).</p>
-            <button class="btn-main" style="background:var(--danger);">طلب سحب أموال (USDT)</button>
+        <h3 style="color:var(--safe);">📺 بوابة الناشر</h3>
+        <div class="card">
+            <h4>💰 الأرباح والسيولة</h4>
+            <div class="grid-stats">
+                <div class="stat-card"><small>قابل للسحب</small><span id="withdrawable" class="stat-val" style="color:var(--safe);">0.00</span></div>
+                <div class="stat-card"><small>رصيد المكافآت</small><span id="rewards" class="stat-val" style="color:var(--accent);">0.00</span></div>
+            </div>
+            <p style="font-size:9px; color:#94a3b8; margin-top:10px;">السحب متاح كل ثلاثاء (حد أدنى 20$).</p>
+            <button class="btn-main" style="background:var(--danger);">طلب سحب الأموال</button>
         </div>
-
         <div class="card" style="border-right: 4px solid var(--safe);">
             <h4 style="color:var(--safe); margin:0;">🛡️ نظام الضمان (Escrow)</h4>
-            <p style="font-size:10px; color:#94a3b8;">تجميد المبلغ لضمان حقوق الطرفين بالكامل.</p>
-        </div>
-
-        <div class="card" style="border-top: 2px solid var(--safe);">
-            <h4 style="color:var(--safe);">🌟 اشتراك الناشر Elite</h4>
-            <p style="font-size:10px; color:#94a3b8;">عمولة أقل 3%، سحب مرتين أسبوعياً، وتوثيق ذهبي.</p>
-            <button class="btn-main" style="background:var(--safe);">اشترك الآن بـ $15 / شهرياً</button>
-        </div>
-
-        <div class="card">
-            <h4>📊 إدارة القنوات</h4>
-            <p style="font-size:10px; color:#94a3b8;">تصنيف آلي ضمن 10 أقسام وتحديث كل 6 ساعات.</p>
-            <button class="btn-main" style="background:var(--safe);">إضافة قناة للسوق +</button>
+            <p style="font-size:10px; color:#94a3b8;">تجميد المبلغ لضمان الحقوق بالكامل.</p>
         </div>
     </div>
 
     <div id="sec-referral" class="section">
-        <h3 style="color:var(--gold);">👥 النمو والمسابقات</h3>
-        <div class="card" style="border: 1px solid var(--gold);">
-            <h4 style="color:var(--gold);">🏆 مسابقة أرباح الإحالة</h4>
-            <p style="font-size:10px; color:#94a3b8;">يتم الاحتساب بناءً على إجمالي أرباح المدعوين أصحاب القنوات.</p>
-            <div class="bal-card" style="margin:10px 0; background:rgba(241,196,15,0.1);">
-                <small>إجمالي أرباح شبكتك:</small>
-                <div id="ref-earnings" style="font-size:20px; color:var(--gold); font-weight:bold;">0.00 USDT</div>
-            </div>
+        <h3 style="color:var(--gold);">👥 نظام النمو (Growth)</h3>
+        <div class="grid-stats" style="margin-bottom:15px;">
+            <div class="stat-card"><small>إجمالي الإحالات</small><span class="stat-val" style="color:var(--accent);">179</span></div>
+            <div class="stat-card"><small>إجمالي القنوات</small><span class="stat-val" style="color:var(--safe);">31</span></div>
+            <div class="stat-card"><small>نشط (30 يوم)</small><span class="stat-val">7</span></div>
+            <div class="stat-card"><small>المكاسب $</small><span class="stat-val" style="color:var(--gold);">3.36</span></div>
+        </div>
+        
+        <div class="card" style="border: 1px solid var(--accent);">
+            <h4 style="color:var(--accent);">💸 دخل سلبي من قناتك</h4>
+            <p style="font-size:10px; color:#94a3b8;">انشر منشوراً جاهزاً؛ ستحصل على 10% من أرباح ومصاريف من يسجل عبرك.</p>
+            <select><option>✅ هذا البحر سوف يفيض | الحلقة 24</option></select>
+            <button class="btn-main" onclick="tg.showAlert('جاري تجهيز المنشور للقناة...')">انشر وابدأ الربح 🚀</button>
+        </div>
+
+        <div class="card">
             <input type="text" id="ref-link" readonly>
             <button class="btn-main" onclick="copyRef()">نسخ الرابط</button>
         </div>
@@ -131,7 +110,7 @@
     <div id="sec-admin" class="section">
         <h3 style="color:var(--danger);">🛠️ تحكم الإدارة (@Te_Bit)</h3>
         <div class="card" style="border: 2px solid var(--danger);">
-            <textarea id="bc-msg" placeholder="اكتب رسالة البث..."></textarea>
+            <textarea id="bc-msg" placeholder="نص رسالة البث..."></textarea>
             <button class="btn-main" style="background:var(--danger);" onclick="sendBC()">إرسال بث عالمي 🚀</button>
         </div>
     </div>
@@ -153,14 +132,6 @@
     if(user.id.toString() === "549686235") document.getElementById('t-admin').style.display = 'block';
     document.getElementById('ref-link').value = "https://t.me/Telega_IO_Bot?start=" + user.id;
 
-    db.ref('users/' + user.id).on('value', snap => {
-        const d = snap.val() || { balance: 0, bonus: 0, ref_earnings: 0, spent: 0 };
-        document.getElementById('total-bal-home').innerText = (d.balance + d.bonus).toFixed(2) + " USDT";
-        document.getElementById('ref-earnings').innerText = (d.ref_earnings || 0).toFixed(2) + " USDT";
-        document.getElementById('spent-money').innerText = (d.spent || 0).toFixed(2);
-        document.getElementById('vip-prog').style.width = Math.min((d.spent / 5000) * 100, 100) + "%";
-    });
-
     function switchTab(t) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
@@ -171,14 +142,17 @@
 
     function copyRef() {
         const link = document.getElementById('ref-link'); link.select();
-        document.execCommand('copy'); tg.showAlert("✅ تم النسخ");
+        document.execCommand('copy'); tg.showAlert("✅ تم نسخ الرابط");
     }
 
-    function sendBC() {
-        const msg = document.getElementById('bc-msg').value;
-        if(!msg) return tg.showAlert("أدخل نصاً!");
-        tg.showAlert("🚀 جاري الإرسال...");
-    }
+    db.ref('users/' + user.id).on('value', snap => {
+        const d = snap.val() || { balance: 0, bonus: 0, spent: 0, ads: 0 };
+        document.getElementById('total-bal-home').innerText = (d.balance + d.bonus).toFixed(2) + " USDT";
+        document.getElementById('withdrawable').innerText = d.balance.toFixed(2);
+        document.getElementById('rewards').innerText = d.bonus.toFixed(2);
+        document.getElementById('active-ads').innerText = d.ads;
+        document.getElementById('total-spent').innerText = d.spent.toFixed(2);
+    });
 
     tg.expand();
 </script>
