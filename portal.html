@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Ultimate Edition</title>
+    <title>Telega-IO Network Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -13,12 +13,10 @@
             --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --danger: #ef4444; --text: #f1f5f9;
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
-        
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .main-content { padding: 15px; }
         .card { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
         
-        /* ميزات النظام المالي والسوق */
         .feature-item { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px; margin-bottom: 8px; border-right: 3px solid var(--accent); }
         .feature-title { font-weight: bold; color: var(--accent); display: block; font-size: 12px; }
         .feature-desc { font-size: 10px; color: #94a3b8; line-height: 1.4; }
@@ -31,10 +29,10 @@
         .section { display: none; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .grid-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .stat-card { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; text-align: center; }
-        .stat-val { display: block; font-size: 18px; font-weight: bold; color: var(--accent); }
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .bal-card { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; text-align: center; }
         
+        input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; margin-top: 5px; box-sizing: border-box; }
         textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; padding: 12px; box-sizing: border-box; }
     </style>
 </head>
@@ -47,46 +45,46 @@
     </div>
 
     <div id="sec-home" class="section" style="display: block;">
-        <div class="card" style="border: 1px solid var(--gold); text-align: center; background: linear-gradient(135deg, #1e293b, #0f172a);">
+        <div class="card" style="border: 1px solid var(--gold); text-align: center;">
             <small>إجمالي الرصيد المتوفر 💰</small>
             <h2 id="total-bal-home" style="color: var(--gold); margin: 5px 0;">0.00 USDT</h2>
         </div>
-
         <div class="card">
             <h4 style="margin:0; color:var(--accent);">📊 إحصائيات المنصة</h4>
-            <div class="grid-box">
-                <div class="stat-card"><span class="stat-num stat-val">48K</span><small>متابع نشط</small></div>
-                <div class="stat-card"><span class="stat-num stat-val">1.2M</span><small>مشاهدة</small></div>
+            <div class="balance-grid">
+                <div class="bal-card"><span style="font-size:18px; font-weight:bold; color:var(--accent);">48K</span><br><small>متابع نشط</small></div>
+                <div class="bal-card"><span style="font-size:18px; font-weight:bold; color:var(--accent);">1.2M</span><br><small>مشاهدة</small></div>
             </div>
-        </div>
-
-        <div class="card" style="border-right: 4px solid var(--danger);">
-            <h4 style="margin:0; color:var(--danger);">🔥 عروض ساخنة</h4>
-            <p style="font-size:11px; margin:5px 0;">تخفيضات حصرية على إعلانات قنوات الدراما والتقنية.</p>
-        </div>
-
-        <div class="card" style="border-right: 4px solid var(--gold);">
-            <h4 style="margin:0; color:var(--gold);">💎 مزايا حصرية</h4>
-            <p style="font-size:11px; margin:5px 0;">نظام "الترويج السريع" متاح الآن لزيادة انتشار قنواتك.</p>
         </div>
     </div>
 
     <div id="sec-channels" class="section">
-        <h3 style="color: var(--safe);">📊 إدارة القنوات (Global Market)</h3>
+        <h3 style="color: var(--safe);">📺 لوحة الناشر المتكاملة</h3>
+        
         <div class="card">
+            <h4 style="margin-top:0;">📊 إدارة القنوات (Global Market)</h4>
             <div class="feature-item">
-                <span class="feature-title">🤖 التصنيف الآلي الذكي</span>
-                <p class="feature-desc">فحص آلي لاسم ووصف القناة وتصنيفها ضمن 10 أقسام رئيسية لضمان دقة الاستهداف.</p>
-            </div>
-            <div class="feature-item">
-                <span class="feature-title">⏱️ مراقب المشتركين</span>
-                <p class="feature-desc">تحديث تلقائي لعدد المشتركين كل 6 ساعات لضمان مصداقية البيانات للمعلنين.</p>
-            </div>
-            <div class="feature-item">
-                <span class="feature-title">⚡ محرك البحث السريع</span>
-                <p class="feature-desc">بحث فوري للمعلنين عن القنوات بالاسم أو التخصص في أجزاء من الثانية.</p>
+                <span class="feature-title">🤖 التصنيف الآلي ومراقب المشتركين</span>
+                <p class="feature-desc">تحديث دوري كل 6 ساعات لضمان دقة البيانات للمعلنين.</p>
             </div>
             <button class="btn-main" style="background:var(--safe);">إضافة قناة للسوق +</button>
+        </div>
+
+        <div class="card" style="border-top: 2px solid var(--gold);">
+            <h4 style="margin-top:0; color:var(--gold);">💰 النظام المالي والسيولة</h4>
+            <div class="balance-grid">
+                <div class="bal-card"><small style="color:var(--safe);">قابل للسحب</small><br><span id="with-bal" style="font-weight:bold;">0.00</span></div>
+                <div class="bal-card"><small style="color:var(--accent);">رصيد المكافآت</small><br><span id="bon-bal" style="font-weight:bold;">0.00</span></div>
+            </div>
+            <div class="feature-item" style="margin-top:10px; border-right-color:var(--gold);">
+                <span class="feature-title">⏳ مقاصة الـ 21 يوماً</span>
+                <p class="feature-desc">يتم تحرير الأرباح للسحب بعد مرور 21 يوماً لضمان الموثوقية.</p>
+            </div>
+            <div class="feature-item" style="border-right-color:var(--gold);">
+                <span class="feature-title">📅 جدول السحب الأسبوعي</span>
+                <p class="feature-desc">السحب متاح "يوم الثلاثاء" بحد أدنى 20 USDT ورسوم 3$.</p>
+            </div>
+            <button class="btn-main" style="background:var(--danger);" onclick="tg.showAlert('السحب متاح أيام الثلاثاء عبر TRC20')">طلب سحب الأرباح</button>
         </div>
     </div>
 
@@ -94,44 +92,33 @@
         <h3 style="color: var(--accent);">📣 لوحة المعلن</h3>
         <div class="card">
             <h4>نظام الضمان (Escrow) 🛡️</h4>
-            <p style="font-size:11px; color:#94a3b8; line-height:1.5;">حماية كاملة للمعلن والناشر؛ يتم تجميد مبلغ الإعلان ولا يتم تحريره للناشر إلا بعد التأكد من النشر ومرور الوقت المحدد.</p>
-            <button class="btn-main" onclick="switchTab('wallet')">شحن المحفظة للإيداع</button>
-        </div>
-        <div class="card">
-            <h4>إحصائيات إعلانك</h4>
-            <p style="font-size:11px;">تتبع النقرات والمشاهدات لحملاتك بشكل مباشر.</p>
+            <p style="font-size:11px; color:#94a3b8;">تجميد مبلغ الإعلان لضمان حقوق الطرفين.</p>
+            <button class="btn-main" onclick="tg.showAlert('خدمة شحن الرصيد قيد التحديث')">شحن المحفظة للإعلان</button>
         </div>
     </div>
 
-    <div id="sec-wallet" class="section">
-        <h3 style="color: var(--gold);">💰 النظام المالي (Finance & Payouts)</h3>
-        <div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
-            <div style="display:flex; justify-content:space-around;">
-                <div style="text-align:center;"><small style="color:var(--safe);">قابل للسحب</small><br><span id="with-bal" style="font-weight:bold;">0.00</span></div>
-                <div style="text-align:center;"><small style="color:var(--accent);">رصيد المكافآت</small><br><span id="bon-bal" style="font-weight:bold;">0.00</span></div>
+    <div id="sec-referral" class="section">
+        <h3 style="color: var(--gold);">👥 نظام الإحالة (Referral)</h3>
+        <div class="card" style="text-align: center;">
+            <h4 style="margin:0;">شارك واربح 🎁</h4>
+            <p style="font-size:11px; color:#94a3b8; margin:10px 0;">احصل على عمولة من كل معلن أو ناشر يسجل عن طريقك.</p>
+            <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:10px; margin-bottom:10px;">
+                <small style="color:var(--gold);">رابط الإحالة الخاص بك:</small>
+                <input type="text" id="ref-link" readonly>
+                <button class="btn-main" style="background:var(--accent); margin-top:10px;" onclick="copyRef()">نسخ الرابط</button>
             </div>
-            <p style="font-size:9px; color:#64748b; text-align:center; margin-top:10px;">نظام فصل الأرصدة بدقة لزيادة تدوير الأموال.</p>
-        </div>
-
-        <div class="card">
-            <div class="feature-item" style="border-right-color:var(--gold);">
-                <span class="feature-title">⏳ قاعدة الـ 21 يوماً</span>
-                <p class="feature-desc">يتم تحرير الأرباح للسحب بعد 21 يوماً لضمان عدم التراجع عن النشر أو الاحتيال.</p>
+            <div class="balance-grid">
+                <div class="bal-card"><small>عدد الإحالات</small><br><span id="ref-count" style="font-weight:bold;">0</span></div>
+                <div class="bal-card"><small>أرباح الإحالة</small><br><span style="font-weight:bold; color:var(--safe);">0.00</span></div>
             </div>
-            <div class="feature-item" style="border-right-color:var(--gold);">
-                <span class="feature-title">📅 جدولة السحوبات</span>
-                <p class="feature-desc">السحب متاح كل "يوم الثلاثاء" بحد أدنى 20 USDT ورسوم شبكة ثابتة 3$.</p>
-            </div>
-            <button class="btn-main" style="background:var(--danger);" onclick="tg.showAlert('السحب متاح أيام الثلاثاء عبر بوابة TRC20')">طلب سحب الأرباح</button>
         </div>
     </div>
 
     <div id="sec-admin" class="section">
         <div class="card" style="border: 2px solid var(--danger);">
-            <h3 style="color:var(--danger); margin:0 0 10px 0;">🚀 مركز قيادة أمين (Te_Bit)</h3>
-            <textarea id="bc-msg" placeholder="اكتب رسالة البث العالمية للمنصة..."></textarea>
-            <button class="btn-main" onclick="sendBC()">إطلاق البث العالمي 🚀</button>
-            <button class="btn-main" style="background:#444; margin-top:10px;" onclick="adminDeposit()">شحن يدوي لمستخدم</button>
+            <h3 style="color:var(--danger); margin:0 0 10px 0;">🚀 قيادة أمين (Te_Bit)</h3>
+            <textarea id="bc-msg" placeholder="نص البث العالمي..."></textarea>
+            <button class="btn-main" onclick="sendBC()">إطلاق البث 🚀</button>
         </div>
     </div>
 </div>
@@ -140,7 +127,7 @@
     <div id="t-home" class="tab-btn tab-active" onclick="switchTab('home')">🏠 الرئيسية</div>
     <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺 الناشر</div>
     <div id="t-promo" class="tab-btn" onclick="switchTab('promo')">📣 المعلن</div>
-    <div id="t-wallet" class="tab-btn" onclick="switchTab('wallet')">💰 المالية</div>
+    <div id="t-referral" class="tab-btn" onclick="switchTab('referral')">👥 الإحالة</div>
     <div id="t-admin" class="tab-btn" style="display:none;" onclick="switchTab('admin')">⚙️ الإدارة</div>
 </div>
 
@@ -154,34 +141,39 @@
         document.getElementById('admin-badge').style.display = 'block';
     }
 
+    // إعداد رابط الإحالة
+    document.getElementById('ref-link').value = "https://t.me/YourBotName?start=" + user.id;
+
     function switchTab(tabId) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
         document.getElementById('sec-' + tabId).style.display = 'block';
         document.getElementById('t-' + tabId).classList.add('tab-active');
-        tg.HapticFeedback.impactOccurred('medium');
+        tg.HapticFeedback.impactOccurred('light');
+    }
+
+    function copyRef() {
+        const link = document.getElementById('ref-link');
+        link.select();
+        document.execCommand('copy');
+        tg.showAlert("✅ تم نسخ رابط الإحالة بنجاح");
     }
 
     function sendBC() {
         const msg = document.getElementById('bc-msg').value;
         if(msg) {
-            db.ref('global_notification').set({ msg: msg, time: Date.now(), sender: "Te_Bit" });
-            tg.showAlert("✅ تم إطلاق البث العالمي بنجاح");
+            db.ref('global_notification').set({ msg: msg, time: Date.now() });
+            tg.showAlert("✅ تم البث");
             document.getElementById('bc-msg').value = "";
         }
     }
 
-    function adminDeposit() {
-        const uid = prompt("ID المستخدم:");
-        const amt = prompt("المبلغ (USDT):");
-        if(uid && amt) db.ref('wallets/' + uid).update({ balance: parseFloat(amt) });
-    }
-
     db.ref('wallets/' + user.id).on('value', snap => {
-        const d = snap.val() || { balance: 0, bonus: 0 };
+        const d = snap.val() || { balance: 0, bonus: 0, refs: 0 };
         document.getElementById('total-bal-home').innerText = (d.balance + d.bonus).toFixed(2) + " USDT";
         document.getElementById('with-bal').innerText = d.balance.toFixed(2);
         document.getElementById('bon-bal').innerText = d.bonus.toFixed(2);
+        document.getElementById('ref-count').innerText = d.refs || 0;
     });
 
     tg.expand();
