@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Full Mastery</title>
+    <title>Telega-IO Enterprise Suite</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -12,125 +12,159 @@
             --bg: #0f172a; --card: rgba(30, 41, 59, 0.7);
             --accent: #3b82f6; --gold: #f1c40f; --safe: #10b981; --danger: #ef4444; --text: #f1f5f9;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        [dir="ltr"] { text-align: left; }
+        [dir="rtl"] { text-align: right; }
+        
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 100px; overflow-x: hidden; transition: all 0.3s ease; }
         .main-content { padding: 15px; }
-        .card { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
-        .btn-main { width: 100%; padding: 12px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 8px; font-size: 13px; }
-        .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
-        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
-        .tab-active { color: var(--accent); font-weight: bold; }
-        .section { display: none; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-card { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .stat-val { font-size: 16px; font-weight: bold; display: block; }
-        input, textarea, select { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; box-sizing: border-box; text-align: center; margin-top: 5px; }
-        .vip-badge { font-size: 9px; padding: 2px 6px; border-radius: 5px; background: var(--gold); color: black; font-weight: bold; }
+        .card { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(12px); animation: slideUp 0.4s ease; }
+        
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .btn-main { width: 100%; padding: 14px; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; background: var(--accent); color: white; margin-top: 10px; font-size: 13px; transition: transform 0.2s; }
+        .btn-main:active { transform: scale(0.98); }
+
+        .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; backdrop-filter: blur(15px); }
+        .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.4); font-size: 10px; cursor: pointer; transition: 0.3s; }
+        .tab-active { color: var(--accent); font-weight: bold; transform: translateY(-3px); }
+        
+        .section { display: none; }
+        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+        .stat-card { background: rgba(0,0,0,0.25); border-radius: 15px; padding: 12px; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .stat-val { font-size: 16px; font-weight: bold; display: block; margin-top: 4px; }
+        
+        .vip-progress { height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        .vip-bar { height: 100%; background: linear-gradient(90deg, var(--gold), #ff9f43); transition: width 1s ease-in-out; }
+        
+        input, select, textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; padding: 12px; box-sizing: border-box; margin-top: 8px; font-size: 12px; }
+        .badge { font-size: 9px; padding: 2px 8px; border-radius: 6px; font-weight: bold; }
     </style>
 </head>
-<body>
+<body id="body-tag">
 
 <div class="main-content">
     <div id="sec-home" class="section" style="display: block;">
-        <div class="card" style="border: 1px solid var(--gold); text-align: center;">
-            <small>إجمالي الرصيد المتوفر 💰</small>
-            <h2 id="total-bal-home">0.00 USDT</h2>
-        </div>
-        
-        <div class="card">
-            <h4 style="color:var(--gold); margin-top:0;">💎 نظام العضويات والخطط</h4>
-            <div style="font-size: 11px; line-height: 1.6;">
-                • <b>الخطة المجانية:</b> ميزات قياسية أساسية.<br>
-                • <b style="color:var(--accent);">الخطة البريميوم ($19):</b> خصم 5% فوري وأولوية دعم.<br>
-                • <b style="color:var(--gold);">عضوية Golden VIP:</b> تمنح تلقائياً عند إنفاق $5000.
+        <div class="card" style="text-align: center; border: 1px solid var(--accent);">
+            <small id="lang-bal-text">إجمالي الرصيد (USDT)</small>
+            <h1 id="total-bal-home" style="margin: 5px 0; color: var(--accent);">0.00</h1>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--safe);">TRC20 Active</span>
+                <span id="user-rank" class="badge" style="background: rgba(241, 196, 15, 0.2); color: var(--gold);">Free Tier</span>
             </div>
         </div>
 
-        <div class="card" style="border-right: 4px solid var(--danger);">
-            <h4 style="margin:0; color:var(--danger);">🔥 عروض ترويجية</h4>
-            <p style="font-size:10px;">خصم 30% على إعلانات قنوات الدراما والمسلسلات.</p>
+        <div id="admin-offers" class="card" style="border-right: 4px solid var(--danger);">
+            <h4 style="margin:0; color:var(--danger);" id="lang-offer-title">🔥 العروض النشطة</h4>
+            <div id="offer-list" style="font-size:11px; margin-top:5px; color:#94a3b8;">خصم 30% على قنوات الدراما - متاح الآن!</div>
+        </div>
+
+        <div class="card">
+            <h4 id="lang-vip-title" style="color:var(--gold); margin:0;">👑 Golden VIP Progress</h4>
+            <div class="vip-progress"><div class="vip-bar" id="vip-progress-bar" style="width: 0%;"></div></div>
+            <small style="font-size:9px; color:#94a3b8;">أنفق $5000 للوصول للمستوى الذهبي تلقائياً.</small>
         </div>
     </div>
 
     <div id="sec-promo" class="section">
-        <h3 style="color:var(--accent);">📣 بوابة المعلن</h3>
+        <h3 id="lang-adv-title">📣 بوابة المعلن Pro</h3>
         <div class="card">
-            <h4>📊 إحصائيات حملاتك</h4>
             <div class="grid-stats">
-                <div class="stat-card"><small>نشطة</small><span id="active-ads" class="stat-val" style="color:var(--accent);">0</span></div>
-                <div class="stat-card"><small>إجمالي الإنفاق</small><span id="total-spent" class="stat-val" style="color:var(--safe);">0.00</span></div>
+                <div class="stat-card"><small>نشطة</small><span class="stat-val" id="adv-active">0</span></div>
+                <div class="stat-card"><small>CTR %</small><span class="stat-val" id="adv-ctr" style="color:var(--safe);">0.0</span></div>
             </div>
-            <button class="btn-main" style="background:var(--safe); margin-top:15px;">إيداع رصيد جديد +</button>
+            <button class="btn-main" style="background:var(--safe);" onclick="showDeposit()">إيداع USDT (Min 10$)</button>
         </div>
         <div class="card">
-            <h4 style="color:var(--accent);">🚀 اشتراك المعلن Pro</h4>
-            <p style="font-size:10px; color:#94a3b8;">أولوية ظهور، تقارير دقيقة، وخصم إضافي ($29/شهرياً).</p>
+            <h4>🎯 استهداف ذكي</h4>
+            <select id="cat-filter"><option>كل الفئات</option><option>دراما تركية</option><option>تقنية</option></select>
+            <input type="number" placeholder="أقل عدد مشتركين (Min 1000)">
         </div>
     </div>
 
     <div id="sec-channels" class="section">
-        <h3 style="color:var(--safe);">📺 بوابة الناشر</h3>
+        <h3 id="lang-pub-title">📺 بوابة الناشر Elite</h3>
         <div class="card">
-            <h4>💰 الأرباح والسيولة</h4>
             <div class="grid-stats">
-                <div class="stat-card"><small>قابل للسحب</small><span id="withdrawable" class="stat-val" style="color:var(--safe);">0.00</span></div>
-                <div class="stat-card"><small>رصيد المكافآت</small><span id="rewards" class="stat-val" style="color:var(--accent);">0.00</span></div>
+                <div class="stat-card"><small>قابل للسحب</small><span class="stat-val" id="pub-with" style="color:var(--safe);">0.00</span></div>
+                <div class="stat-card"><small>بانتظار المقاصة</small><span class="stat-val" id="pub-pending" style="color:var(--gold);">0.00</span></div>
             </div>
-            <p style="font-size:9px; color:#94a3b8; margin-top:10px;">السحب متاح كل ثلاثاء (حد أدنى 20$).</p>
-            <button class="btn-main" style="background:var(--danger);">طلب سحب الأموال</button>
-        </div>
-        <div class="card" style="border-right: 4px solid var(--safe);">
-            <h4 style="color:var(--safe); margin:0;">🛡️ نظام الضمان (Escrow)</h4>
-            <p style="font-size:10px; color:#94a3b8;">تجميد المبلغ لضمان الحقوق بالكامل.</p>
+            <div class="stat-card" style="width:100%; margin-top:10px;">
+                <small>رصيد المكافآت (غير قابل للسحب)</small><span class="stat-val" id="pub-bonus">0.00</span>
+            </div>
+            <p style="font-size:9px; color:var(--danger); margin-top:10px;">⚠️ نظام المقاصة: 21 يوماً لضمان عدم الاحتيال. السحب كل ثلاثاء (عمولة $3).</p>
+            <button class="btn-main" style="background:var(--danger);">طلب سحب أموال</button>
         </div>
     </div>
 
     <div id="sec-referral" class="section">
-        <h3 style="color:var(--gold);">👥 نظام النمو (Growth)</h3>
-        <div class="grid-stats" style="margin-bottom:15px;">
-            <div class="stat-card"><small>إجمالي الإحالات</small><span class="stat-val" style="color:var(--accent);">179</span></div>
-            <div class="stat-card"><small>إجمالي القنوات</small><span class="stat-val" style="color:var(--safe);">31</span></div>
-            <div class="stat-card"><small>نشط (30 يوم)</small><span class="stat-val">7</span></div>
-            <div class="stat-card"><small>المكاسب $</small><span class="stat-val" style="color:var(--gold);">3.36</span></div>
+        <h3 id="lang-ref-title">👥 نظام النمو العالمي</h3>
+        <div class="grid-stats">
+            <div class="stat-card"><small>الإحالات</small><span class="stat-val" id="ref-count">0</span></div>
+            <div class="stat-card"><small>القنوات</small><span class="stat-val" id="ref-ch">0</span></div>
+            <div class="stat-card"><small>نشط (30يوم)</small><span class="stat-val" id="ref-act">0</span></div>
+            <div class="stat-card"><small>أرباح $</small><span class="stat-val" id="ref-earn" style="color:var(--gold);">0.00</span></div>
         </div>
-        
         <div class="card" style="border: 1px solid var(--accent);">
-            <h4 style="color:var(--accent);">💸 دخل سلبي من قناتك</h4>
-            <p style="font-size:10px; color:#94a3b8;">انشر منشوراً جاهزاً؛ ستحصل على 10% من أرباح ومصاريف من يسجل عبرك.</p>
-            <select><option>✅ هذا البحر سوف يفيض | الحلقة 24</option></select>
-            <button class="btn-main" onclick="tg.showAlert('جاري تجهيز المنشور للقناة...')">انشر وابدأ الربح 🚀</button>
-        </div>
-
-        <div class="card">
-            <input type="text" id="ref-link" readonly>
-            <button class="btn-main" onclick="copyRef()">نسخ الرابط</button>
+            <h4>💸 منشور ترويج جاهز</h4>
+            <p style="font-size:10px; color:#94a3b8;">عمولة 10% على كل عملية تتم عبر رابطك.</p>
+            <button class="btn-main" onclick="copyRef()">نسخ رابط الإحالة</button>
+            <button class="btn-main" style="background:var(--safe);" onclick="tg.showAlert('تم توليد المنشور الجاهز!')">توليد منشور ترويجي 🚀</button>
         </div>
     </div>
 
     <div id="sec-admin" class="section">
-        <h3 style="color:var(--danger);">🛠️ تحكم الإدارة (@Te_Bit)</h3>
-        <div class="card" style="border: 2px solid var(--danger);">
-            <textarea id="bc-msg" placeholder="نص رسالة البث..."></textarea>
-            <button class="btn-main" style="background:var(--danger);" onclick="sendBC()">إرسال بث عالمي 🚀</button>
+        <h3 style="color:var(--danger);">🛠️ الإدارة العليا (@Te_Bit)</h3>
+        <div class="card">
+            <h4>إدارة الأرصدة</h4>
+            <input type="text" id="adm-uid" placeholder="User ID">
+            <input type="number" id="adm-amount" placeholder="Amount">
+            <div class="grid-stats">
+                <button class="btn-main" style="background:var(--safe);" onclick="modBal('add')">إضافة +</button>
+                <button class="btn-main" style="background:var(--danger);" onclick="modBal('sub')">خصم -</button>
+            </div>
+        </div>
+        <div class="card">
+            <h4>البث والعروض</h4>
+            <textarea id="bc-text" placeholder="نص البث أو العرض الجديد..."></textarea>
+            <button class="btn-main" onclick="sendBC()">بث عالمي 🚀</button>
+            <button class="btn-main" style="background:var(--gold); color:black;" onclick="updateOffer()">تحديث عرض القائمة</button>
         </div>
     </div>
 </div>
 
 <div class="nav-tabs">
-    <div id="t-home" class="tab-btn tab-active" onclick="switchTab('home')">🏠 الرئيسية</div>
-    <div id="t-promo" class="tab-btn" onclick="switchTab('promo')">📣 المعلن</div>
-    <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺 الناشر</div>
-    <div id="t-referral" class="tab-btn" onclick="switchTab('referral')">👥 الإحالة</div>
-    <div id="t-admin" class="tab-btn" style="display:none;" onclick="switchTab('admin')">⚙️ الإدارة</div>
+    <div id="t-home" class="tab-btn tab-active" onclick="switchTab('home')">🏠</div>
+    <div id="t-promo" class="tab-btn" onclick="switchTab('promo')">📣</div>
+    <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺</div>
+    <div id="t-referral" class="tab-btn" onclick="switchTab('referral')">👥</div>
+    <div id="t-admin" class="tab-btn" style="display:none;" onclick="switchTab('admin')">⚙️</div>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
     const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
-    const user = tg.initDataUnsafe.user || { id: 549686235 };
+    const user = tg.initDataUnsafe.user || { id: 549686235, language_code: 'ar' };
 
+    // محرك اللغات والذكاء اللغوي (Law 4 & Localization Engine)
+    const translations = {
+        'ar': { bal: 'إجمالي الرصيد', pub: 'الناشر', adv: 'المعلن', ref: 'الإحالة' },
+        'ru': { bal: 'Общий баланс', pub: 'Издатель', adv: 'Рекламодатель', ref: 'Рефералы' },
+        'tr': { bal: 'Toplam Bakiye', pub: 'Yayıncı', adv: 'Reklamveren', ref: 'Referans' },
+        'en': { bal: 'Total Balance', pub: 'Publisher', adv: 'Advertiser', ref: 'Referral' }
+    };
+
+    function applyLocalization() {
+        const lang = user.language_code || 'en';
+        if(['ar', 'fa'].includes(lang)) {
+            document.body.dir = "rtl";
+        } else {
+            document.body.dir = "ltr";
+        }
+        // يمكن التوسع هنا لترجمة كل العناصر
+    }
+
+    // إدارة الدخول والصلاحيات (@Te_Bit)
     if(user.id.toString() === "549686235") document.getElementById('t-admin').style.display = 'block';
-    document.getElementById('ref-link').value = "https://t.me/Telega_IO_Bot?start=" + user.id;
 
     function switchTab(t) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
@@ -140,20 +174,42 @@
         tg.HapticFeedback.impactOccurred('medium');
     }
 
-    function copyRef() {
-        const link = document.getElementById('ref-link'); link.select();
-        document.execCommand('copy'); tg.showAlert("✅ تم نسخ الرابط");
-    }
-
+    // الربط السحابي والمزامنة اللحظية
     db.ref('users/' + user.id).on('value', snap => {
-        const d = snap.val() || { balance: 0, bonus: 0, spent: 0, ads: 0 };
-        document.getElementById('total-bal-home').innerText = (d.balance + d.bonus).toFixed(2) + " USDT";
-        document.getElementById('withdrawable').innerText = d.balance.toFixed(2);
-        document.getElementById('rewards').innerText = d.bonus.toFixed(2);
-        document.getElementById('active-ads').innerText = d.ads;
-        document.getElementById('total-spent').innerText = d.spent.toFixed(2);
+        const d = snap.val() || { balance: 0, bonus: 0, pending: 0, spent: 0, refs: 0 };
+        document.getElementById('total-bal-home').innerText = (d.balance + d.bonus).toFixed(2);
+        document.getElementById('pub-with').innerText = d.balance.toFixed(2);
+        document.getElementById('pub-pending').innerText = d.pending.toFixed(2);
+        document.getElementById('pub-bonus').innerText = d.bonus.toFixed(2);
+        document.getElementById('ref-count').innerText = d.refs;
+        
+        // شريط تقدم VIP
+        const progress = Math.min((d.spent / 5000) * 100, 100);
+        document.getElementById('vip-progress-bar').style.width = progress + "%";
+        if(progress >= 100) document.getElementById('user-rank').innerText = "Golden VIP";
     });
 
+    // وظائف الإدارة
+    function modBal(type) {
+        const uid = document.getElementById('adm-uid').value;
+        const amt = parseFloat(document.getElementById('adm-amount').value);
+        if(!uid || !amt) return tg.showAlert("بيانات ناقصة!");
+        const ref = db.ref('users/' + uid + '/balance');
+        ref.transaction(curr => (type === 'add' ? (curr || 0) + amt : (curr || 0) - amt));
+        tg.showAlert("تم تحديث رصيد المستخدم " + uid);
+    }
+
+    function updateOffer() {
+        const txt = document.getElementById('bc-text').value;
+        db.ref('system/current_offer').set(txt);
+        tg.showAlert("تم تحديث عرض القائمة الرئيسية");
+    }
+
+    db.ref('system/current_offer').on('value', snap => {
+        document.getElementById('offer-list').innerText = snap.val() || "لا توجد عروض حالياً";
+    });
+
+    applyLocalization();
     tg.expand();
 </script>
 </body>
