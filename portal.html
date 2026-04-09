@@ -110,20 +110,33 @@
     </div>
 
     <div id="sec-referral" class="section">
-        <h3 style="margin:15px;">👥 الإحالة والنمو</h3>
-        <div class="stats-grid-4" style="grid-template-columns: 1fr 1fr; gap:10px;">
-            <div class="stat-item"><small>الإحالات</small><br><b id="ref-count">0</b></div>
-            <div class="stat-item"><small>القنوات</small><br><b>0</b></div>
-            <div class="stat-item"><small>نشط (30 يوم)</small><br><b>0</b></div>
-            <div class="stat-item"><small>أرباحك $</small><br><b style="color:var(--gold);">0.00</b></div>
-        </div>
-        <div class="card" style="border: 1px solid var(--accent);">
-            <h4>💸 منشور ترويج جاهز</h4>
-            <p style="font-size:11px; color:#94a3b8;">اربح عمولة 10% من كل معاملة تتم عبر رابطك.</p>
-            <button class="btn btn-primary" onclick="generatePromoPost()">📤 توليد ونشر المنشور</button>
-            <button class="btn btn-outline" style="margin-top:10px;" onclick="copyRef()">نسخ رابط الإحالة</button>
+<div id="sec-referral" class="section">
+    <h3 style="margin: 15px;">👥 نظام النمو والمسابقات</h3>
+    
+    <div class="stats-grid-4">
+        <div class="stat-item"><small>إجمالي الإحالات</small><br><b id="ref-count-v3">0</b></div>
+        <div class="stat-item"><small>عمولتك (10%)</small><br><b id="ref-earn-v3" style="color:var(--safe);">0.00</b></div>
+        <div class="stat-item"><small>ترتيبك الحالي</small><br><b id="ref-rank-v3" style="color:var(--gold);">#--</b></div>
+        <div class="stat-item"><small>إجمالي أرباح الفريق</small><br><b id="ref-team-v3">0.00</b></div>
+    </div>
+
+    <div class="card" style="border: 1px solid var(--gold);">
+        <h4 style="margin:0; color:var(--gold);">🏆 لوحة المتصدرين (Top 5)</h4>
+        <div id="leaderboard-list" style="margin-top:10px; font-size:12px;">
+            <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span>1. @Te_dev (أمين)</span><span style="color:var(--gold);">5,200$</span>
+            </div>
         </div>
     </div>
+
+    <div class="card" style="border: 1px solid var(--accent);">
+        <h4>🚀 ماكينة التسويق الذكية</h4>
+        <p style="font-size:11px; color:#94a3b8;">منشور جاهز لجذب المعلنين (للمسلسلات والتقنية) والناشرين الطموحين.</p>
+        <button class="btn btn-primary" onclick="generateMegaPromo()">📤 توليد منشور ترويجي "جذاب"</button>
+        <button class="btn btn-outline" style="margin-top:10px;" onclick="copyRefLink()">🔗 نسخ رابط الإحالة الخاص بي</button>
+    </div>
+</div>
+
 
     <div id="sec-admin" class="section">
         <h3 style="color:var(--danger); margin:15px;">🛠️ لوحة تحكم Te_Bit</h3>
@@ -232,7 +245,7 @@
         if(prog >= 100) document.getElementById('user-rank').innerText = "GOLDEN VIP";
     });
 
-    // تحديث عروض أمين
+    // تحديث عروض 
     db.ref('system/offer').on('value', snap => {
         document.getElementById('offer-text').innerText = snap.val() || "خصم 30% للمعلنين الجدد!";
     });
@@ -257,6 +270,55 @@
         tg.showAlert("تم توليد المنشور بنجاح!");
     }
 
+    // وظيفة توليد المنشور الجذاب للمعلنين والناشرين
+function generateMegaPromo() {
+    const refLink = "https://t.me/Telega_IO_Bot?start=" + user.id;
+    const promoText = `
+🚀 *انضم إلى أكبر منصة وساطة إعلانية على تليجرام!* 🚀
+
+📢 *للمعلنين:*
+✅ استهدف جمهورك بدقة 
+✅ حماية كاملة لأموالك بنظام الضمان.
+✅ تقارير أداء لحظية ونسبة نكر (CTR) حقيقية.
+
+📺 *للناشرين:*
+✅ حوّل قناتك إلى مصدر دخل مستقر.
+✅ سحب أرباح أسبوعي (كل ثلاثاء).
+✅ نظام شفاف يحفظ حقك وحق المعلن.
+
+🔗 *سجل الآن وابدأ رحلة الربح:*
+${refLink}
+    `;
+    
+    // إرسال النص إلى تليجرام أو نسخه
+    tg.showPopup({
+        title: 'المنشور جاهز!',
+        message: 'تم توليد منشور احترافي لجذب العملاء، هل تريد نسخه؟',
+        buttons: [{type: 'ok', text: 'نسخ النص'}, {type: 'cancel', text: 'إغلاق'}]
+    }, (btnId) => {
+        if(btnId === 'ok') {
+            navigator.clipboard.writeText(promoText);
+            tg.showAlert("تم نسخ المنشور! انشره الآن في قنواتك.");
+        }
+    });
+}
+
+// وظيفة جلب لوحة المتصدرين من Firebase
+function loadLeaderboard() {
+    db.ref('leaderboard').orderByValue().limitToLast(5).on('value', snap => {
+        let html = '';
+        snap.forEach(child => {
+            html = `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span>👤 ${child.key}</span><span style="color:var(--gold);">${child.val()}$</span>
+            </div>` + html;
+        });
+        document.getElementById('leaderboard-list').innerHTML = html || "لا توجد بيانات حالياً";
+    });
+}
+
+// تشغيل اللوحة عند التحميل
+loadLeaderboard();
+    
     tg.expand();
 </script>
 </body>
