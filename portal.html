@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Premium Edition</title>
+    <title>Telega-IO Full Premium</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -17,14 +17,12 @@
         .main-content { padding: 15px; }
         .card { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
         
-        .feature-item { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px; margin-bottom: 8px; border-right: 3px solid var(--accent); }
-        .feature-title { font-weight: bold; color: var(--accent); display: block; font-size: 12px; }
-        .feature-desc { font-size: 10px; color: #94a3b8; line-height: 1.4; }
-
-        /* تنسيق العضويات الجديد */
+        /* تنسيق العضويات */
         .plan-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .plan-price { font-weight: bold; color: var(--gold); font-size: 14px; }
         .vip-badge { background: linear-gradient(45deg, #d4af37, #f1c40f); color: #000; padding: 2px 8px; border-radius: 5px; font-weight: bold; font-size: 10px; }
+
+        /* تنسيق المسابقات */
+        .contest-item { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--gold); }
 
         .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .tab-btn { flex: 1; text-align: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
@@ -34,9 +32,8 @@
         .section { display: none; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .bal-card { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; text-align: center; }
         input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; text-align: center; box-sizing: border-box; }
+        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 10px; height: 80px; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -49,104 +46,71 @@
 
     <div id="sec-home" class="section" style="display: block;">
         <div class="card" style="border: 1px solid var(--gold); text-align: center;">
-            <small>إجمالي الرصيد المتوفر 💰</small>
-            <h2 id="total-bal-home" style="color: var(--gold); margin: 5px 0;">0.00 USDT</h2>
+            <small>الرصيد المتاح (نظام الضمان) 🛡️</small>
+            <h2 id="total-bal-home" style="color: var(--gold); margin: 5px 0;">USDT 0.00</h2>
+            <button class="btn-main" style="background:var(--safe);">شحن المحفظة</button>
         </div>
 
         <div class="card">
-            <h4 style="margin:0; color:var(--accent);">📊 إحصائيات المنصة</h4>
-            <div class="balance-grid" style="margin-top:10px;">
-                <div class="bal-card"><span style="font-size:18px; font-weight:bold; color:var(--accent);">48K</span><br><small>متابع نشط</small></div>
-                <div class="bal-card"><span style="font-size:18px; font-weight:bold; color:var(--accent);">1.2M</span><br><small>مشاهدة</small></div>
-            </div>
-        </div>
-
-        <div class="card" style="border-right: 4px solid var(--gold);">
-            <h4 style="margin:0; color:var(--gold); margin-bottom: 12px;">💎 نظام العضويات والخطط (Subscription)</h4>
-            
+            <h4 style="color:var(--gold); margin-bottom: 12px;">💎 نظام العضويات والخطط</h4>
             <div class="plan-card">
-                <div>
-                    <span style="font-size:12px; font-weight:bold; display:block;">الخطة المجانية</span>
-                    <small style="color:#94a3b8; font-size:9px;">للمستخدمين العاديين بميزات قياسية.</small>
-                </div>
-                <span class="plan-price">مجاناً</span>
+                <span>الخطة المجانية</span>
+                <span style="font-size: 10px;">ميزات قياسية</span>
             </div>
-
-            <div class="plan-card" style="background: rgba(59, 130, 246, 0.05); border-color: var(--accent);">
-                <div>
-                    <span style="font-size:12px; font-weight:bold; display:block; color:var(--accent);">الخطة البريميوم</span>
-                    <small style="color:#94a3b8; font-size:9px;">خصم 5% فوري، أولوية الدعم، وظهور مميز.</small>
-                </div>
-                <span class="plan-price">$19<small>/شهر</small></span>
+            <div class="plan-card" style="border-color: var(--accent);">
+                <span>بريميوم ($19/شهر)</span>
+                <span style="color: var(--accent); font-size: 10px;">خصم 5% + دعم</span>
             </div>
-
-            <div class="plan-card" style="background: rgba(241, 196, 15, 0.05); border-color: var(--gold);">
-                <div>
-                    <span class="vip-badge">Golden VIP</span>
-                    <small style="color:#94a3b8; font-size:9px; display:block; margin-top:4px;">تُمنح تلقائياً لمن يتجاوز إنفاقه $5000 تقديراً للولاء.</small>
-                </div>
+            <div class="plan-card" style="border-color: var(--gold);">
+                <span class="vip-badge">Golden VIP</span>
+                <span style="font-size: 10px;">إنفاق +$5000</span>
             </div>
-        </div>
-
-        <div class="card" style="border-right: 4px solid var(--danger);">
-            <h4 style="margin:0; color:var(--danger);">🔥 عروض ترويجية</h4>
-            <p style="font-size:11px; margin:5px 0; color:#94a3b8;">تخفيضات تصل إلى 30% على إعلانات قنوات الدراما والتقنية.</p>
         </div>
     </div>
 
     <div id="sec-channels" class="section">
-        <h3 style="color: var(--safe);">📺 لوحة الناشر والمالية</h3>
         <div class="card">
-            <h4>📊 إدارة القنوات والمراقبة</h4>
-            <div class="feature-item">
-                <span class="feature-title">🤖 التصنيف الآلي ومراقب المشتركين</span>
-                <p class="feature-desc">تحديث دوري كل 6 ساعات وفحص تلقائي للاسم والوصف ضمن 10 أقسام.</p>
-            </div>
-            <button class="btn-main" style="background:var(--safe);">إضافة قناة للسوق +</button>
+            <h4>📊 نظام إدارة القنوات</h4>
+            <ul style="font-size: 11px; padding-right: 20px; color: #94a3b8;">
+                <li>تصنيف آلي ضمن 10 أقسام</li>
+                <li>تحديث المشتركين كل 6 ساعات</li>
+            </ul>
+            <button class="btn-main" style="background:var(--accent);">إضافة قناة للسوق +</button>
         </div>
 
-        <div class="card" style="border-top: 2px solid var(--gold);">
-            <h4 style="margin-top:0; color:var(--gold);">💰 المالية (USDT TRC20)</h4>
-            <div class="balance-grid">
-                <div class="bal-card"><small style="color:var(--safe);">قابل للسحب</small><br><span id="with-bal" style="font-weight:bold;">0.00</span></div>
-                <div class="bal-card"><small style="color:var(--accent);">رصيد المكافآت</small><br><span id="bon-bal" style="font-weight:bold;">0.00</span></div>
-            </div>
-            <p style="font-size: 9px; color: #64748b; margin-top: 8px;">سحب أسبوعي (الثلاثاء) بحد أدنى 20 USDT وقاعدة مقاصة 21 يوماً.</p>
-            <button class="btn-main" style="background:var(--danger);">طلب سحب الأرباح</button>
+        <div class="card">
+            <h4 style="color:var(--safe);">💰 المالية والسحب</h4>
+            <p style="font-size: 10px; color: #94a3b8;">قاعدة الـ 21 يوماً لضمان الموثوقية والمقاصة.</p>
+            <button class="btn-main" style="background:var(--danger);">سحب (الثلاثاء) - حد أدنى 20 USDT</button>
         </div>
     </div>
 
     <div id="sec-referral" class="section">
-        <h3 style="color: var(--gold);">👥 نظام الإحالة (Growth)</h3>
         <div class="card">
-            <h4 style="margin:0;">📈 برنامج العمولة المتدرج</h4>
-            <p style="font-size:11px; color:#94a3b8; margin:8px 0;">عمولات تصل إلى 10% للمعلنين و5% للناشرين مع لوحة متصدرين للمسابقات.</p>
-            <input type="text" id="ref-link" readonly>
-            <button class="btn-main" style="background:var(--accent); margin-top:10px;" onclick="copyRef()">نسخ رابط الإحالة</button>
-        </div>
-    </div>
-
-    <div id="sec-promo" class="section">
-        <h3 style="color: var(--accent);">📣 لوحة المعلن</h3>
-        <div class="card">
-            <h4>نظام الضمان (Escrow) 🛡️</h4>
-            <p style="font-size:11px; color:#94a3b8;">تجميد المبلغ لضمان النشر؛ حماية كاملة للمعلن والناشر.</p>
+            <h4 style="color:var(--gold);">🏆 مسابقات الإحالة (Leaderboard)</h4>
+            <div class="contest-item">
+                <span>🥇 @Ameen_TeBit</span>
+                <span style="color:var(--gold);">150 USDT</span>
+            </div>
+            <p style="font-size: 10px; color: #94a3b8; margin-top: 10px;">عمولات متدرجة من 5% إلى 10% للمعلنين.</p>
+            <input type="text" id="ref-link" readonly style="margin-top:10px;">
+            <button class="btn-main" onclick="copyRef()">نسخ رابط الإحالة</button>
         </div>
     </div>
 
     <div id="sec-admin" class="section">
         <div class="card" style="border: 2px solid var(--danger);">
-            <h3 style="color:var(--danger); margin:0 0 10px 0;">🚀 قيادة أمين (Te_Bit)</h3>
-            <button class="btn-main" onclick="tg.showAlert('تم تفعيل نظام العضويات الجديد')">تحديث النظام العالمي</button>
+            <h4 style="color:var(--danger);">🛠️ مركز قيادة أمين (Te_Bit)</h4>
+            <textarea placeholder="اكتب رسالة البث العالمية..."></textarea>
+            <button class="btn-main" style="background:var(--accent);">إطلاق البث العالمي 🚀</button>
         </div>
     </div>
 </div>
 
 <div class="nav-tabs">
-    <div id="t-home" class="tab-btn tab-active" onclick="switchTab('home')">🏠 الرئيسية</div>
-    <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺 الناشر</div>
-    <div id="t-promo" class="tab-btn" onclick="switchTab('promo')">📣 المعلن</div>
-    <div id="t-referral" class="tab-btn" onclick="switchTab('referral')">👥 الإحالة</div>
+    <div id="t-home" class="tab-btn tab-active" onclick="switchTab('home')">🏠 السوق</div>
+    <div id="t-channels" class="tab-btn" onclick="switchTab('channels')">📺 أعلن</div>
+    <div id="t-referral" class="tab-btn" onclick="switchTab('referral')">👥 النمو</div>
     <div id="t-admin" class="tab-btn" style="display:none;" onclick="switchTab('admin')">⚙️ الإدارة</div>
 </div>
 
@@ -156,7 +120,6 @@
     const user = tg.initDataUnsafe.user || { id: 549686235 };
 
     if(user.id.toString() === "549686235") document.getElementById('t-admin').style.display = 'block';
-
     document.getElementById('ref-link').value = "https://t.me/Telega_IO_Bot?start=" + user.id;
 
     function switchTab(tabId) {
@@ -164,22 +127,14 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
         document.getElementById('sec-' + tabId).style.display = 'block';
         document.getElementById('t-' + tabId).classList.add('tab-active');
-        tg.HapticFeedback.impactOccurred('medium');
     }
 
     function copyRef() {
         const link = document.getElementById('ref-link');
         link.select();
         document.execCommand('copy');
-        tg.showAlert("✅ تم نسخ رابط الإحالة");
+        tg.showAlert("✅ تم نسخ الرابط");
     }
-
-    db.ref('wallets/' + user.id).on('value', snap => {
-        const d = snap.val() || { balance: 0, bonus: 0 };
-        document.getElementById('total-bal-home').innerText = (d.balance + d.bonus).toFixed(2) + " USDT";
-        document.getElementById('with-bal').innerText = d.balance.toFixed(2);
-        document.getElementById('bon-bal').innerText = d.bonus.toFixed(2);
-    });
 
     tg.expand();
 </script>
