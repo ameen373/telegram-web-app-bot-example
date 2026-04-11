@@ -85,7 +85,7 @@
         </div>
         <div class="card">
             <h4>🎬 إدارة المحتوى</h4>
-            <button class="btn btn-primary" style="margin-top:10px;" onclick="tg.showAlert('فتح سوق القنوات...')">إنشاء حملة إعلانية 🎯</button>
+            <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openModal('modal-ads-type')">🎯 إنشاء حملة إعلانية</button>
         </div>
     </div>
 
@@ -204,6 +204,48 @@
     <div id="adm-tab" class="nav-item" style="display:none;" onclick="switchTab('admin')">⚙️<br>الإدارة</div>
 </div>
 
+    <div id="modal-ads-type" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">×</span>
+        <h3 style="color:var(--gold);">🚀 إنشاء حملة جديدة</h3>
+        <p style="font-size:12px; margin-bottom:15px;">اختر الطريقة التي تود بها ظهور إعلانك:</p>
+        
+        <button class="btn btn-outline" style="margin-bottom:10px; text-align:right;" onclick="showAdForm('click_view')">🖱️ النقر والمشاهدة</button>
+        <button class="btn btn-outline" style="margin-bottom:10px; text-align:right;" onclick="showAdForm('post_timed')">⏳ منشور لمدة 1/24 ساعة</button>
+        <button class="btn btn-outline" style="margin-bottom:10px; text-align:right;" onclick="showAdForm('forward_post')">🔗 إعلان عبر رابط منشور</button>
+        <button class="btn btn-outline" style="margin-bottom:20px; text-align:right;" onclick="showAdForm('manual_post')">📝 منشور يدوي (نص/وسائط)</button>
+        
+        <button class="btn btn-gold" onclick="openModal('modal-select-targets')">🔎 تحديد الأقسام والقنوات المستهدفة</button>
+    </div>
+</div>
+
+<div id="modal-select-targets" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">×</span>
+        <h3 style="color:var(--gold);">🎯 استهداف الجمهور</h3>
+        <input type="text" id="channel-search" placeholder="🔍 ابحث عن قسم أو قناة..." onkeyup="searchChannels()" 
+               style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; background:#222; border:1px solid #444; color:white;">
+        
+        <div id="targets-list" style="max-height: 300px; overflow-y: auto; text-align: right;">
+            <div class="category-header" style="color:var(--gold); margin:10px 0;">📂 الأقسام المتوفرة:</div>
+            <div class="target-item" style="padding:8px;"><input type="checkbox" id="c1"> <label for="c1">🎭 الترفيه</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c2"> <label for="c2">📰 الأخبار ووسائل الإعلام</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c3"> <label for="c3">🎬 الأفلام والمسلسلات</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c4"> <label for="c4">💄 الموضة والجمال</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c5"> <label for="c5">🎨 الفن والتصوير</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c6"> <label for="c6">💰 العملات المشفرة</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c7"> <label for="c7">💻 التقنيات</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c8"> <label for="c8">📚 تعليم</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c9"> <label for="c9">🍱 الطعام والطبخ</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c10"> <label for="c10">⚽ الصحة والرياضة</label></div>
+<div class="target-item" style="padding:8px;"><input type="checkbox" id="c11"> <label for="c11">✨ آخر</label> </div>
+
+            <div id="individual-channels-list"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:15px;" onclick="confirmTargets()">✅ تأكيد الوجهة</button>
+    </div>
+</div>
+    
 <script>
     const tg = window.Telegram.WebApp;
     const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
@@ -384,7 +426,37 @@ function submitDeposit() {
 
 // تشغيل اللوحة عند التحميل
 loadLeaderboard();
+// دالة البحث والفلترة
+function searchChannels() {
+    let input = document.getElementById('channel-search').value.toLowerCase();
+    let items = document.querySelectorAll('.target-item');
+    items.forEach(item => {
+        item.style.display = item.innerText.toLowerCase().includes(input) ? "block" : "none";
+    });
+}
 
+// دالة عرض نموذج البيانات بناء على نوع الحملة
+function showAdForm(type) {
+    closeModal();
+    let msg = (type === 'forward_post') ? "يرجى تزويدنا برابط المنشور" : "يرجى كتابة نص الإعلان";
+    tg.showPopup({
+        title: 'تفاصيل الحملة',
+        message: msg + " (سيتم فتح نموذج الإدخال الكامل في الخطوة القادمة)",
+        buttons: [{type: 'ok', text: 'موافق'}]
+    });
+}
+
+// دالة تأكيد الاستهداف
+function confirmTargets() {
+    let count = document.querySelectorAll('#targets-list input:checked').length;
+    if(count > 0) {
+        tg.showAlert("✅ تم تحديد " + count + " وجهة بنجاح");
+        closeModal();
+    } else {
+        tg.showAlert("⚠️ اختر قسماً واحداً على الأقل");
+    }
+}
+    
 </script>
 </body>
 </html>
