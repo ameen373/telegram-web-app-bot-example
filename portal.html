@@ -232,21 +232,7 @@
     function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
     // مزامنة البيانات (الـ 21 يوماً وفصل الأرصدة)
-    db.ref('users/' + user.id).on('value', snap => {
-        const d = snap.val() || { balance: 0, bonus: 0, pending: 0, spent: 0, refs: 0 };
-        document.getElementById('bal-total').innerText = (d.balance + d.bonus).toFixed(2);
-        document.getElementById('bal-avail').innerText = d.balance.toFixed(2);
-        document.getElementById('pub-avail').innerText = d.balance.toFixed(2);
-        document.getElementById('bal-bonus').innerText = d.bonus.toFixed(2);
-        document.getElementById('pub-bonus').innerText = d.bonus.toFixed(2);
-        document.getElementById('pub-locked').innerText = d.pending.toFixed(2);
-        document.getElementById('ref-count').innerText = d.refs;
-        document.getElementById('spent-amt').innerText = d.spent;
-        
-        const prog = Math.min((d.spent / 5000) * 100, 100);
-        document.getElementById('vip-bar').style.width = prog + "%";
-        if(prog >= 100) document.getElementById('user-rank').innerText = "GOLDEN VIP";
-    });
+    
 
     // تحديث عروض 
     db.ref('system/offer').on('value', snap => {
@@ -267,46 +253,36 @@
         }
     }
 
-    function generatePromoPost() {
-        const link = "https://t.me/Telega_IO_Bot?start=" + user.id;
-        const post = "🚀 اربح من قنواتك مع Telega-IO!\n✅ إيداع وسحب USDT\n✅ نظام حماية 21 يوم\n🔗 سجل الآن: " + link;
-        tg.showAlert("تم توليد المنشور بنجاح!");
-    }
+    
 
-    // وظيفة توليد المنشور الجذاب للمعلنين والناشرين
+// وظيفة جلب لوحة المتصدرين من Firebase
+
+    
 function generateMegaPromo() {
-    const refLink = "https://t.me/Telega_IO_Bot?start=" + user.id;
-    // تم تصحيح علامات التنصيص هنا ليعمل الرابط بشكل صحيح
-    const promoText = `🚀 انضم إلى منصتنا! \n كل من يسجل عبر الرابط سيصبح تابعاً لك وستحصل على 10% من مصروفاتهم وأرباحهم. \n رابطك الفريد: \n ${refLink}`;
+    const refLink = "https://t.me/Ads_telegabot?start=" + user.id;
+    const promoText = `🌟 انضم إلى شبكة telega.io pro وحقق نجاحك الإعلاني! 🌟
+
+👥 للمعلنين : استهدف جمهورك بدقة وحقق نتائج مذهلة!
+
+💰 للناشرين : اجني الأموال بسهولة من موقعك مع محتوى ملائم!
+
+🚀 انضم إلينا الآن وابدأ رحلتك نحو النجاح!
+
+🔗 رابط الإحالة الخاص بي:
+${refLink}`;
     
     tg.showPopup({
-        title: 'دخل سلبي من قناتك',
-        message: 'تم توليد منشور جاهز بضغط واحدة فقط، هل تريد النسخ؟',
-        buttons: [{type: 'ok', text: 'انشر وابدأ الربح'}, {type: 'cancel', text: 'إلغاء'}]
+        title: 'توليد منشور',
+        message: 'تم تجهيز المنشور، هل تريد نسخه؟',
+        buttons: [{id: 'copy', type: 'default', text: 'نسخ المنشور 📋'}]
     }, (btnId) => {
-        if(btnId === 'ok') {
+        if(btnId === 'copy') {
             navigator.clipboard.writeText(promoText);
-            tg.showAlert("تم نسخ المنشور بنجاح! انشره الآن.");
+            tg.showAlert("✅ تم نسخ المنشور بنجاح!");
         }
     });
 }
 
-// وظيفة جلب لوحة المتصدرين من Firebase
-function loadLeaderboard() {
-    db.ref('leaderboard').orderByValue().limitToLast(5).on('value', snap => {
-        let html = '';
-        snap.forEach(child => {
-            html = `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
-                <span>👤 ${child.key}</span><span style="color:var(--gold);">${child.val()}$</span>
-            </div>` + html;
-        });
-        document.getElementById('leaderboard-list').innerHTML = html || "لا توجد بيانات حالياً";
-    });
-}
-
-// تشغيل اللوحة عند التحميل
-loadLeaderboard();
-    
     tg.expand();
     // تشغيل أزرار التحكم في الرصيد (للأدمن فقط)
 function adminAction(type) {
@@ -323,36 +299,63 @@ function adminAction(type) {
     });
 }
 
-// تشغيل نظام سحب الأرباح الحقيقي
+// --- 1. نظام سحب الأرباح (مستقل) ---
 function checkWithdrawDay() {
-    if(new Date().getDay() !== 2) { // متاح الثلاثاء فقط كما في كودك
-        return tg.showPopup({title: 'تنبيه', message: "عذراً أمين، السحب متاح فقط يوم الثلاثاء كما طلبت."});
+    if(new Date().getDay() !== 2) { 
+        tg.showPopup({title: 'تنبيه', message: 'عذراً أمين، السحب متاح فقط يوم الثلاثاء كما طلبت.', buttons: [{type: 'close'}]});
+    } else {
+        const amount = document.getElementById('withdraw-amount').value;
+        if(amount < 20) return tg.showAlert("❌ الحد الأدنى للسحب هو 20 USDT");
+        
+        db.ref('withdrawals/').push({
+            uid: user.id,
+            amount: amount,
+            address: document.getElementById('withdraw-address').value,
+            status: 'pending',
+            time: Date.now()
+        }).then(() => {
+            tg.showAlert("🚀 تم إرسال طلب السحب للمراجعة بنجاح");
+            closeModal();
+        });
     }
-    
-    const amount = document.getElementById('withdraw-amount').value;
-    if(amount < 20) return tg.showAlert("❌ الحد الأدنى للسحب هو 20 USDT");
+}
 
-    // تسجيل الطلب في Firebase
-    db.ref('withdrawals/').push({
-        uid: user.id,
-        amount: amount,
-        address: document.getElementById('withdraw-address').value,
-        status: 'pending',
-        time: Date.now()
-    }).then(() => {
-        tg.showAlert("🚀 تم إرسال طلب السحب للمراجعة بنجاح");
-        closeModal();
+// --- 2. دالة لوحة المتصدرين ---
+function loadLeaderboard() {
+    db.ref('leaderboard').orderByValue().limitToLast(5).on('value', snap => {
+        let html = '';
+        snap.forEach(child => {
+            html = `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05)">
+                        <span>👤 ${child.key}</span><span style="color:var(--gold); font-weight:bold;">$${child.val()}</span>
+                    </div>` + html;
+        });
+        const listDiv = document.getElementById('leaderboard-list');
+        if(listDiv) listDiv.innerHTML = html || "لا توجد بيانات حالياً ⚠️";
     });
 }
+
+// --- 3. نظام النمو والمسابقات (تحديث تلقائي) ---
+db.ref('users/' + user.id).on('value', snap => {
+    const d = snap.val() || { balance: 0, bonus: 0, refs: 0, channels: 0, active30: 0 };
+    
+    if(document.getElementById('ref-count-v3')) document.getElementById('ref-count-v3').innerText = d.refs || 0;
+    if(document.getElementById('ref-channels-v3')) document.getElementById('ref-channels-v3').innerText = d.channels || 0;
+    if(document.getElementById('ref-earn-v3')) document.getElementById('ref-earn-v3').innerText = (d.bonus || 0).toFixed(2);
+    if(document.getElementById('ref-active-v3')) document.getElementById('ref-active-v3').innerText = d.active30 || 0;
+    
+    if(document.getElementById('bal-total')) document.getElementById('bal-total').innerText = (d.balance + d.bonus).toFixed(2);
+    if(document.getElementById('bal-avail')) document.getElementById('bal-avail').innerText = d.balance.toFixed(2);
+});
+
+// --- 4. نظام الإيداع ---
 function submitDeposit() {
     const hash = document.getElementById('deposit-hash').value;
     if(hash.length < 10) return tg.showAlert("❌ يرجى إدخال Hash ID صحيح");
-
+    
     db.ref('pending_deposits/' + user.id).set({
         hash: hash,
-        amount: "Pending Verification",
-        time: Date.now(),
-        status: "waiting"
+        status: "Pending Verification",
+        time: Date.now()
     }).then(() => {
         tg.showPopup({
             title: 'تم الاستلام',
@@ -362,7 +365,10 @@ function submitDeposit() {
         closeModal();
     });
 }
-    
+
+// تشغيل اللوحة عند التحميل
+loadLeaderboard();
+
 </script>
 </body>
 </html>
