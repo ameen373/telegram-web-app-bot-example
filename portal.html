@@ -245,6 +245,23 @@
         <button class="btn btn-primary" style="margin-top:15px;" onclick="confirmTargets()">✅ تأكيد الوجهة</button>
     </div>
 </div>
+    <div id="modal-add-ad-details" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h3 style="color: var(--gold);">📝 تفاصيل الإعلان</h3>
+        
+        <label>نص الإعلان:</label>
+        <textarea id="ad-text" placeholder="اكتب نص الإعلان هنا..." style="width:100%; height:100px; margin-bottom:15px; border-radius:8px; padding:10px; background:#222; color:white; border:1px solid #444;"></textarea>
+        
+        <label>رابط الزر (اختياري):</label>
+        <input type="text" id="ad-link" placeholder="https://t.me/..." style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; background:#222; color:white; border:1px solid #444;">
+        
+        <label>رابط الصورة/الفيديو:</label>
+        <input type="text" id="ad-media" placeholder="ضع رابط الميديا هنا..." style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; background:#222; color:white; border:1px solid #444;">
+        
+        <button class="btn btn-gold" onclick="previewAd()" style="width:100%;">👁️ معاينة الإعلان قبل النشر</button>
+    </div>
+    </div>
     
 <script>
     const tg = window.Telegram.WebApp;
@@ -449,13 +466,74 @@ function showAdForm(type) {
 // دالة تأكيد الاستهداف
 function confirmTargets() {
     let count = document.querySelectorAll('#targets-list input:checked').length;
-    if(count > 0) {
+    if (count > 0) {
         tg.showAlert("✅ تم تحديد " + count + " وجهة بنجاح");
-        closeModal();
+        closeModal(); // إغلاق نافذة الأقسام
+        setTimeout(() => {
+            openModal('modal-add-ad-details'); // فتح نافذة بيانات الإعلان الجديدة
+        }, 300);
     } else {
-        tg.showAlert("⚠️ اختر قسماً واحداً على الأقل");
+        tg.showAlert("⚠️ يرجى اختيار قسماً واحداً على الأقل");
     }
 }
+    function previewAd() {
+    const text = document.getElementById('ad-text').value;
+    const link = document.getElementById('ad-link').value;
+    const media = document.getElementById('ad-media').value;
+    const targets = document.querySelectorAll('#targets-list input:checked').length;
+
+    if (!text) return tg.showAlert("⚠️ يرجى كتابة نص الإعلان أولاً");
+
+    // حساب التكلفة الافتراضية (مثلاً 0.5 دولار لكل قسم)
+    const costPerTarget = 0.5; 
+    const totalCost = (targets * costPerTarget).toFixed(2);
+
+    tg.showPopup({
+        title: '📊 معاينة التكلفة',
+        message: `نص الإعلان: ${text}\nالوجهات المختارة: ${targets}\nالتكلفة الإجمالية: ${totalCost} USDT\n\nهل تريد الخصم من رصيدك والنشر؟`,
+        buttons: [
+            {id: 'publish', type: 'default', text: '✅ تأكيد ونشر'},
+            {id: 'cancel', type: 'destructive', text: '❌ إلغاء'}
+        ]
+    }, (buttonId) => {
+        if (buttonId === 'publish') {
+            processAdPayment(totalCost);
+        }
+    });
+    }
+    function processAdPayment(cost) {
+    const userRef = db.ref('users/' + user.id + '/balance');
+    
+    userRef.transaction((currentBalance) => {
+        if (currentBalance === null) return 0;
+        if (currentBalance < cost) {
+            tg.showAlert("❌ عذراً، رصيدك الحالي غير كافٍ لإتمام هذه العملية.");
+            return; // إلغاء العملية
+        }
+        return (parseFloat(currentBalance) - parseFloat(cost)).toFixed(2);
+    }).then((result) => {
+        if (result.committed) {
+            // حفظ بيانات الإعلان في قاعدة البيانات ليراها الأدمن
+            const adData = {
+                uid: user.id,
+                text: document.getElementById('ad-text').value,
+                link: document.getElementById('ad-link').value,
+                media: document.getElementById('ad-media').value,
+                cost: cost,
+                status: 'pending',
+                time: Date.now()
+            };
+            
+            db.ref('pending_ads/').push(adData).then(() => {
+                tg.showAlert("✅ تم خصم المبلغ وإرسال إعلانك للمراجعة بنجاح!");
+                closeModal();
+            });
+        }
+    }).catch((error) => {
+        console.error("Payment Error:", error);
+        tg.showAlert("⚠️ حدث خطأ أثناء معالجة الدفع، يرجى المحاولة لاحقاً.");
+    });
+    }
     
 </script>
 </body>
