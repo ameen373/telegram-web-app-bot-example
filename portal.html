@@ -252,65 +252,7 @@ function generateMegaPromo() {
         }
     });
 }
-    const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
-    const user = tg.initDataUnsafe.user || { id: 549686235, language_code: 'ar' };
 
-    // محرك اللغات والذكاء اللغوي (6 لغات)
-    const languages = ['ar', 'en', 'tr', 'ru', 'zh', 'fa'];
-    if(['ar', 'fa'].includes(user.language_code)) {
-        document.body.dir = "rtl";
-    } else {
-        document.body.dir = "ltr";
-    }
-
-    if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
-
-    function switchTab(t) {
-        document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById('sec-' + t).style.display = 'block';
-        document.getElementById('t-' + t).classList.add('active');
-        tg.HapticFeedback.impactOccurred('medium');
-    }
-
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-
-    // مزامنة البيانات (الـ 21 يوماً وفصل الأرصدة)
-
-
-// وظيفة نسخ رابط الإحالة المباشر
-function copyRefLink() {
-    const refLink = "https://t.me/Ads_telegabot?start=" + user.id;
-    
-    tg.showPopup({
-        title: 'رابط الإحالة الخاص بك',
-        message: refLink,
-        buttons: [{id: 'copy', type: 'default', text: 'تم النسخ (إغلاق)'}]
-    });
-
-    navigator.clipboard.writeText(refLink);
-    tg.HapticFeedback.notificationOccurred('success');
-}
-
-    // وظيفة توليد المنشور الجذاب للمعلنين والناشرين
-function generateMegaPromo() {
-    const refLink = "https://t.me/Ads_telegabot?start=" + user.id;
-    const promoText = `🌟 انضم إلى شبكة telega.io pro وحقق نجاحك الإعلاني! 🌟
-
-👥 للمعلنين: استهدف جمهورك بدقة وحقق نتائج مذهلة!
-
-💰 للناشرين: اجني الأموال بسهولة من موقعك مع محتوى ملائم!
-
-🚀 انضم إلينا الآن وابدأ رحلتك نحو النجاح!
-
-🔗 رابط الانضمام:
-${refLink}`;
-    
-    navigator.clipboard.writeText(promoText);
-    tg.showAlert("✅ تم توليد ونسخ المنشور الاحترافي بنجاح!");
-    tg.HapticFeedback.notificationOccurred('success');
-}
 
 // وظيفة جلب لوحة المتصدرين من Firebase
 
