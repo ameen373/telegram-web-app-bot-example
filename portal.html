@@ -298,7 +298,24 @@ function adminAction(type) {
         tg.showAlert("✅ تم تحديث رصيد المستخدم بنجاح");
     });
 }
-
+function copyRefLink() {
+    // إنشاء الرابط باستخدام معرف المستخدم الخاص بك
+    const refLink = "https://t.me/Ads_telegabot?start=" + user.id;
+    
+    // أمر النسخ الفعلي للمتصفح
+    navigator.clipboard.writeText(refLink).then(() => {
+        // إظهار تنبيه نجاح داخل تلجرام
+        tg.showAlert("✅ تم نسخ رابط الإحالة بنجاح!");
+    }).catch(err => {
+        // حل احتياطي في حال رفض المتصفح النسخ المباشر
+        tg.showPopup({
+            title: 'رابط الإحالة',
+            message: refLink,
+            buttons: [{type: 'ok', text: 'حسناً'}]
+        });
+    });
+}
+    
 // --- 1. نظام سحب الأرباح (مستقل) ---
 function checkWithdrawDay() {
     if(new Date().getDay() !== 2) { 
