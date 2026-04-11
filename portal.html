@@ -408,39 +408,23 @@ function loadLeaderboard() {
         if(listDiv) listDiv.innerHTML = html || "لا توجد بيانات حالياً ⚠️";
     });
 }
-
-// --- 3. نظام النمو والمسابقات (تحديث تلقائي) ---
+// --- نظام النمو والمسابقات (تحديث تلقائي مصلح) ---
 db.ref('users/' + user.id).on('value', snap => {
     const d = snap.val() || {};
+    
     const balance = Number(d.balance || 0);
     const bonus = Number(d.bonus || 0);
+    const refs = Number(d.refs || 0);
+    const channels = Number(d.channels || 0);
+    const active30 = Number(d.active30 || 0);
 
-    if(document.getElementById('ref-count-v3')) document.getElementById('ref-count-v3').innerText = d.refs || 0;
-    if(document.getElementById('ref-channels-v3')) document.getElementById('ref-channels-v3').innerText = d.channels || 0;
-    if(document.getElementById('ref-earn-v3')) document.getElementById('ref-earn-v3').innerText = bonus.toFixed(2);
-    if(document.getElementById('ref-active-v3')) document.getElementById('ref-active-v3').innerText = d.active30 || 0;
     if(document.getElementById('bal-total')) document.getElementById('bal-total').innerText = (balance + bonus).toFixed(2);
     if(document.getElementById('bal-avail')) document.getElementById('bal-avail').innerText = balance.toFixed(2);
+    if(document.getElementById('ref-count-v3')) document.getElementById('ref-count-v3').innerText = refs;
+    if(document.getElementById('ref-channels-v3')) document.getElementById('ref-channels-v3').innerText = channels;
+    if(document.getElementById('ref-earn-v3')) document.getElementById('ref-earn-v3').innerText = bonus.toFixed(2);
+    if(document.getElementById('ref-active-v3')) document.getElementById('ref-active-v3').innerText = active30;
 });
-
-// --- 4. نظام الإيداع ---
-function submitDeposit() {
-    const hash = document.getElementById('deposit-hash').value;
-    if(hash.length < 10) return tg.showAlert("❌ يرجى إدخال Hash ID صحيح");
-    
-    db.ref('pending_deposits/' + user.id).set({
-        hash: hash,
-        status: "Pending Verification",
-        time: Date.now()
-    }).then(() => {
-        tg.showPopup({
-            title: 'تم الاستلام',
-            message: 'شكراً أمين، تم إرسال طلبك للمراجعة. سيتم إضافة الرصيد بعد التأكد من الشبكة.',
-            buttons: [{type: 'ok'}]
-        });
-        closeModal();
-    });
-}
 
 // تشغيل اللوحة عند التحميل
 loadLeaderboard();
