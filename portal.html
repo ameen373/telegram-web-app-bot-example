@@ -151,22 +151,12 @@
     </div>
 </div>
 
-<div id="modal-deposit" class="modal">
-    <div class="modal-content">
-        <span style="float:right; cursor:pointer;" onclick="closeModal()">&times;</span>
-        <h3>💰 إيداع رصيد (USDT TRC20)</h3>
-        <p style="font-size:12px; color:var(--gold);">الحد الأدنى للإيداع: 10 USDT</p>
-        
-        <div style="background:#0b0f1a; padding:12px; border-radius:10px; margin:10px 0; word-break:break-all;">
-            <small>انسخ عنوان المحفظة أدناه:</small><br>
-            <b id="wallet-addr">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</b>
-            <button onclick="navigator.clipboard.writeText('TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV'); tg.showAlert('✅ تم نسخ العنوان');" style="margin-top:5px; padding:5px;">نسخ العنوان</button>
-        </div>
-
-        <input type="text" id="deposit-hash" placeholder="أدخل Hash ID المعاملة هنا">
-        <button class="btn btn-primary" style="margin-top:15px;" onclick="submitDeposit()">✅ تم التحويل - إرسال للمراجعة</button>
-    </div>
-</div>
+<div id="modal-deposit" class="modal"><div class="modal-content"><span style="float:left; cursor:pointer;" onclick="closeModal()">✕</span>
+    <h3>💳 إيداع USDT (TRC20)</h3>
+    <p style="font-size:12px;">العنوان (الحد الأدنى 10$):</p>
+    <div style="background:#0b0f1a; padding:12px; border-radius:10px; font-size:10px; color:var(--gold); word-break:break-all;">TXXXXX_WALLET_ADDRESS_XXXXX</div>
+    <button class="btn btn-primary" style="margin-top:15px;" onclick="tg.showAlert('أرسل الـ Hash ID للبوت')">تم التحويل ✅</button>
+</div></div>
 
 <div id="modal-withdraw" class="modal"><div class="modal-content"><span style="float:left; cursor:pointer;" onclick="closeModal()">✕</span>
     <h3>💰 سحب الأرباح</h3>
@@ -207,54 +197,102 @@
 
 <script>
     const tg = window.Telegram.WebApp;
-// --- 1. دالة التحديث التلقائي (يجب أن تكون مستقلة) ---
-db.ref('users/' + user.id).on('value', snap => {
-    const d = snap.val() || { balance: 0, bonus: 0, pending: 0, spent: 0, refs: 0, channels: 0, active30: 0 };
-    
-    // تحديث الأرصدة
-    const totalBal = (d.balance + d.bonus).toFixed(2);
-    if(document.getElementById('bal-total')) document.getElementById('bal-total').innerText = totalBal;
-    if(document.getElementById('bal-avail')) document.getElementById('bal-avail').innerText = d.balance.toFixed(2);
-    if(document.getElementById('bal-bonus')) document.getElementById('bal-bonus').innerText = d.bonus.toFixed(2);
-    
-    // تحديث عدادات الإحالة v3
-    if(document.getElementById('ref-count-v3')) document.getElementById('ref-count-v3').innerText = d.refs || 0;
-    if(document.getElementById('ref-channels-v3')) document.getElementById('ref-channels-v3').innerText = d.channels || 0;
-    if(document.getElementById('ref-earn-v3')) document.getElementById('ref-earn-v3').innerText = (d.bonus || 0).toFixed(2);
-    
-    // إظهار زر الإدارة لك
-    if(user.id.toString() === "549686235") {
-        if(document.getElementById('adm-tab')) document.getElementById('adm-tab').style.display = 'block';
+    const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
+    const user = tg.initDataUnsafe.user || { id: 549686235, language_code: 'ar' };
+
+    // محرك اللغات والذكاء اللغوي (6 لغات)
+    const languages = ['ar', 'en', 'tr', 'ru', 'zh', 'fa'];
+    if(['ar', 'fa'].includes(user.language_code)) {
+        document.body.dir = "rtl";
+    } else {
+        document.body.dir = "ltr";
     }
-});
 
-// --- 2. دالة تحديث العروض ---
-db.ref('system/offer').on('value', snap => {
-    if(document.getElementById('offer-text')) document.getElementById('offer-text').innerText = snap.val() || "";
-});
+    if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
-// --- 3. دالة توليد المنشور (مستقلة تماماً) ---
+    function switchTab(t) {
+        document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.getElementById('sec-' + t).style.display = 'block';
+        document.getElementById('t-' + t).classList.add('active');
+        tg.HapticFeedback.impactOccurred('medium');
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+
+    // مزامنة البيانات (الـ 21 يوماً وفصل الأرصدة)
+    db.ref('users/' + user.id).on('value', snap => {
+        const d = snap.val() || { balance: 0, bonus: 0, pending: 0, spent: 0, refs: 0 };
+        document.getElementById('bal-total').innerText = (d.balance + d.bonus).toFixed(2);
+        document.getElementById('bal-avail').innerText = d.balance.toFixed(2);
+        document.getElementById('pub-avail').innerText = d.balance.toFixed(2);
+        document.getElementById('bal-bonus').innerText = d.bonus.toFixed(2);
+        document.getElementById('pub-bonus').innerText = d.bonus.toFixed(2);
+        document.getElementById('pub-locked').innerText = d.pending.toFixed(2);
+        document.getElementById('ref-count').innerText = d.refs;
+        document.getElementById('spent-amt').innerText = d.spent;
+        
+        const prog = Math.min((d.spent / 5000) * 100, 100);
+        document.getElementById('vip-bar').style.width = prog + "%";
+        if(prog >= 100) document.getElementById('user-rank').innerText = "GOLDEN VIP";
+    });
+
+    // تحديث عروض 
+    db.ref('system/offer').on('value', snap => {
+        document.getElementById('offer-text').innerText = snap.val() || "خصم 30% للمعلنين الجدد!";
+    });
+
+    function updateOffer() {
+        const msg = document.getElementById('adm-msg').value;
+        if(msg) db.ref('system/offer').set(msg);
+        tg.showAlert("✅ تم تحديث العرض بنجاح");
+    }
+
+    function checkWithdrawDay() {
+        if(new Date().getDay() !== 2) {
+            tg.showPopup({title: 'تنبيه', message: 'عذراً أمين، السحب متاح فقط يوم الثلاثاء كما طلبت!', buttons: [{type: 'close'}]});
+        } else {
+            tg.showAlert("تم إرسال طلب السحب للمراجعة");
+        }
+    }
+
+    function generatePromoPost() {
+        const link = "https://t.me/Telega_IO_Bot?start=" + user.id;
+        const post = "🚀 اربح من قنواتك مع Telega-IO!\n✅ إيداع وسحب USDT\n✅ نظام حماية 21 يوم\n🔗 سجل الآن: " + link;
+        tg.showAlert("تم توليد المنشور بنجاح!");
+    }
+
+    // وظيفة توليد المنشور الجذاب للمعلنين والناشرين
 function generateMegaPromo() {
-    const refLink = "https://t.me/Ads_telegabot?start=" + user.id;
-    const promoText = `🌟 انضم إلى شبكة telega.io pro وحقق نجاحك الإعلاني! 🌟
-👥 للمعلنين: استهدف جمهورك بدقة!
-💰 للناشرين: اجني الأموال بسهولة!
-🔗 رابط الانضمام: ${refLink}`;
+    const refLink = "https://t.me/Telega_IO_Bot?start=" + user.id;
+    // تم تصحيح علامات التنصيص هنا ليعمل الرابط بشكل صحيح
+    const promoText = `🚀 انضم إلى منصتنا! \n كل من يسجل عبر الرابط سيصبح تابعاً لك وستحصل على 10% من مصروفاتهم وأرباحهم. \n رابطك الفريد: \n ${refLink}`;
     
     tg.showPopup({
-        title: 'مشاركة النجاح',
-        message: 'تم توليد المنشور، هل تريد نسخه؟',
-        buttons: [{id: 'ok', type: 'default', text: 'نسخ الآن'}]
+        title: 'دخل سلبي من قناتك',
+        message: 'تم توليد منشور جاهز بضغط واحدة فقط، هل تريد النسخ؟',
+        buttons: [{type: 'ok', text: 'انشر وابدأ الربح'}, {type: 'cancel', text: 'إلغاء'}]
     }, (btnId) => {
         if(btnId === 'ok') {
             navigator.clipboard.writeText(promoText);
-            tg.showAlert("✅ تم نسخ المنشور بنجاح!");
+            tg.showAlert("تم نسخ المنشور بنجاح! انشره الآن.");
         }
     });
 }
 
-
 // وظيفة جلب لوحة المتصدرين من Firebase
+function loadLeaderboard() {
+    db.ref('leaderboard').orderByValue().limitToLast(5).on('value', snap => {
+        let html = '';
+        snap.forEach(child => {
+            html = `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span>👤 ${child.key}</span><span style="color:var(--gold);">${child.val()}$</span>
+            </div>` + html;
+        });
+        document.getElementById('leaderboard-list').innerHTML = html || "لا توجد بيانات حالياً";
+    });
+}
 
 // تشغيل اللوحة عند التحميل
 loadLeaderboard();
@@ -281,20 +319,7 @@ function checkWithdrawDay() {
         return tg.showPopup({title: 'تنبيه', message: "عذراً أمين، السحب متاح فقط يوم الثلاثاء كما طلبت."});
     }
     
-    const amount = document.getEfunction loadLeaderboard() {
-    db.ref('leaderboard').orderByValue().limitToLast(5).on('value', snap => {
-        let html = '';
-        snap.forEach(child => {
-            html = `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
-                <span>👤 ${child.key}</span>
-                <span style="color:var(--gold); font-weight:bold;">${child.val()}$</span>
-            </div>` + html;
-        });
-        document.getElementById('leaderboard-list').innerHTML = html || "لا توجد بيانات حالياً ⚠️";
-    });
-}
-    
-lementById('withdraw-amount').value;
+    const amount = document.getElementById('withdraw-amount').value;
     if(amount < 20) return tg.showAlert("❌ الحد الأدنى للسحب هو 20 USDT");
 
     // تسجيل الطلب في Firebase
@@ -306,24 +331,6 @@ lementById('withdraw-amount').value;
         time: Date.now()
     }).then(() => {
         tg.showAlert("🚀 تم إرسال طلب السحب للمراجعة بنجاح");
-        closeModal();
-    });
-}
-function submitDeposit() {
-    const hash = document.getElementById('deposit-hash').value;
-    if(hash.length < 10) return tg.showAlert("❌ يرجى إدخال Hash ID صحيح");
-
-    db.ref('pending_deposits/' + user.id).set({
-        hash: hash,
-        amount: "Pending Verification",
-        time: Date.now(),
-        status: "waiting"
-    }).then(() => {
-        tg.showPopup({
-            title: 'تم الاستلام',
-            message: 'شكراً أمين، تم إرسال طلبك للمراجعة. سيتم إضافة الرصيد بعد التأكد من الشبكة.',
-            buttons: [{type: 'ok'}]
-        });
         closeModal();
     });
 }
