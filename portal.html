@@ -257,11 +257,36 @@
         }
     }
 
-    function generatePromoPost() {
-        const link = "https://t.me/Telega_IO_Bot?start=" + user.id;
-        const post = "🚀 اربح من قنواتك مع Telega-IO!\n✅ إيداع وسحب USDT\n✅ نظام حماية 21 يوم\n🔗 سجل الآن: " + link;
-        tg.showAlert("تم توليد المنشور بنجاح!");
-    }
+    // وظيفة توليد المنشور الجذاب
+function generateMegaPromo() {
+    const refLink = "https://t.me/Ads_telegabot?start=" + user.id;
+    const promoText = `🚀 انضم إلى منصتنا! \n كل من يسجل عبر الرابط سيصبح تابعاً لك وستحصل على 10% من مصروفاتهم وأرباحهم. \n رابطك الفريد: \n ${refLink}`;
+    
+    tg.showPopup({
+        title: 'دخل سلبي من قناتك',
+        message: 'تم توليد منشور جاهز، هل تريد النسخ؟',
+        buttons: [{id: 'ok', type: 'default', text: 'نسخ وانشر الآن'}, {type: 'cancel', text: 'إلغاء'}]
+    }, (btnId) => {
+        if(btnId === 'ok') {
+            navigator.clipboard.writeText(promoText);
+            tg.showAlert("✅ تم نسخ المنشور بنجاح!");
+        }
+    });
+}
+
+// وظيفة نسخ رابط الإحالة المباشر
+function copyRefLink() {
+    const refLink = "https://t.me/Ads_telegabot?start=" + user.id;
+    
+    tg.showPopup({
+        title: 'رابط الإحالة الخاص بك',
+        message: refLink,
+        buttons: [{id: 'copy', type: 'default', text: 'تم النسخ (إغلاق)'}]
+    });
+
+    navigator.clipboard.writeText(refLink);
+    tg.HapticFeedback.notificationOccurred('success');
+}
 
     // وظيفة توليد المنشور الجذاب للمعلنين والناشرين
 function generateMegaPromo() {
@@ -280,21 +305,6 @@ function generateMegaPromo() {
         }
     });
 }
-function copyRefLink() {
-    const refLink = "https://t.me/Te_Bit_bot?start=" + user.id;
-    
-    // إظهار نافذة تليجرام الأصلية لضمان النسخ اليدوي
-    tg.showPopup({
-        title: 'رابط الإحالة الخاص بك',
-        message: refLink,
-        buttons: [{id: 'copy', type: 'default', text: 'حسناً (تم النسخ)'}]
-    });
-
-    // محاولة النسخ التلقائي في الخلفية
-    navigator.clipboard.writeText(refLink);
-    tg.HapticFeedback.notificationOccurred('success');
-}
-    
 
 // وظيفة جلب لوحة المتصدرين من Firebase
 function loadLeaderboard() {
