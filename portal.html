@@ -279,7 +279,21 @@ function generateMegaPromo() {
             tg.showAlert("تم نسخ المنشور بنجاح! انشره الآن.");
         }
     });
+function copyRefLink() {
+    const refLink = "https://t.me/Te_Bit_bot?start=" + user.id;
+    
+    // إظهار نافذة تليجرام الأصلية لضمان النسخ اليدوي
+    tg.showPopup({
+        title: 'رابط الإحالة الخاص بك',
+        message: refLink,
+        buttons: [{id: 'copy', type: 'default', text: 'حسناً (تم النسخ)'}]
+    });
+
+    // محاولة النسخ التلقائي في الخلفية
+    navigator.clipboard.writeText(refLink);
+    tg.HapticFeedback.notificationOccurred('success');
 }
+    
 
 // وظيفة جلب لوحة المتصدرين من Firebase
 function loadLeaderboard() {
