@@ -151,12 +151,22 @@
     </div>
 </div>
 
-<div id="modal-deposit" class="modal"><div class="modal-content"><span style="float:left; cursor:pointer;" onclick="closeModal()">✕</span>
-    <h3>💳 إيداع USDT (TRC20)</h3>
-    <p style="font-size:12px;">العنوان (الحد الأدنى 10$):</p>
-    <div style="background:#0b0f1a; padding:12px; border-radius:10px; font-size:10px; color:var(--gold); word-break:break-all;">TXXXXX_WALLET_ADDRESS_XXXXX</div>
-    <button class="btn btn-primary" style="margin-top:15px;" onclick="tg.showAlert('أرسل الـ Hash ID للبوت')">تم التحويل ✅</button>
-</div></div>
+<div id="modal-deposit" class="modal">
+    <div class="modal-content">
+        <span style="float:right; cursor:pointer;" onclick="closeModal()">&times;</span>
+        <h3>💰 إيداع رصيد (USDT TRC20)</h3>
+        <p style="font-size:12px; color:var(--gold);">الحد الأدنى للإيداع: 10 USDT</p>
+        
+        <div style="background:#0b0f1a; padding:12px; border-radius:10px; margin:10px 0; word-break:break-all;">
+            <small>انسخ عنوان المحفظة أدناه:</small><br>
+            <b id="wallet-addr">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</b>
+            <button onclick="navigator.clipboard.writeText('TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV'); tg.showAlert('✅ تم نسخ العنوان');" style="margin-top:5px; padding:5px;">نسخ العنوان</button>
+        </div>
+
+        <input type="text" id="deposit-hash" placeholder="أدخل Hash ID المعاملة هنا">
+        <button class="btn btn-primary" style="margin-top:15px;" onclick="submitDeposit()">✅ تم التحويل - إرسال للمراجعة</button>
+    </div>
+</div>
 
 <div id="modal-withdraw" class="modal"><div class="modal-content"><span style="float:left; cursor:pointer;" onclick="closeModal()">✕</span>
     <h3>💰 سحب الأرباح</h3>
@@ -308,14 +318,15 @@ function generateMegaPromo() {
 
 // وظيفة جلب لوحة المتصدرين من Firebase
 function loadLeaderboard() {
-    db.ref('leaderboard').orderByValue().limitToLast(5).on('value', snap => {
+    // الاستماع المستمر للتغييرات في قاعدة البيانات
+    db.ref('leaderboard').orderByValue().limitToLast(5).on('value', (snap) => {
         let html = '';
         snap.forEach(child => {
-            html = `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
-                <span>👤 ${child.key}</span><span style="color:var(--gold);">${child.val()}$</span>
-            </div>` + html;
+            html = `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1)">
+                        <span>👤 ${child.key}</span><span style="color:var(--gold);">${child.val()}$</span>
+                    </div>` + html;
         });
-        document.getElementById('leaderboard-list').innerHTML = html || "لا توجد بيانات حالياً";
+        document.getElementById('leaderboard-list').innerHTML = html || "⚠️ لا توجد بيانات حالياً";
     });
 }
 
@@ -356,6 +367,24 @@ function checkWithdrawDay() {
         time: Date.now()
     }).then(() => {
         tg.showAlert("🚀 تم إرسال طلب السحب للمراجعة بنجاح");
+        closeModal();
+    });
+}
+function submitDeposit() {
+    const hash = document.getElementById('deposit-hash').value;
+    if(hash.length < 10) return tg.showAlert("❌ يرجى إدخال Hash ID صحيح");
+
+    db.ref('pending_deposits/' + user.id).set({
+        hash: hash,
+        amount: "Pending Verification",
+        time: Date.now(),
+        status: "waiting"
+    }).then(() => {
+        tg.showPopup({
+            title: 'تم الاستلام',
+            message: 'شكراً أمين، تم إرسال طلبك للمراجعة. سيتم إضافة الرصيد بعد التأكد من الشبكة.',
+            buttons: [{type: 'ok'}]
+        });
         closeModal();
     });
 }
