@@ -323,6 +323,43 @@ function loadLeaderboard() {
 loadLeaderboard();
     
     tg.expand();
+    // تشغيل أزرار التحكم في الرصيد (للأدمن فقط)
+function adminAction(type) {
+    const targetUid = document.getElementById('adm-uid').value;
+    const amount = parseFloat(document.getElementById('adm-val').value);
+    
+    if(!targetUid || !amount) return tg.showAlert("❌ أدخل المعرف والمبلغ أولاً");
+
+    const userRef = db.ref('users/' + targetUid + '/balance');
+    userRef.transaction((current) => {
+        return type === 'add' ? (current || 0) + amount : (current || 0) - amount;
+    }).then(() => {
+        tg.showAlert("✅ تم تحديث رصيد المستخدم بنجاح");
+    });
+}
+
+// تشغيل نظام سحب الأرباح الحقيقي
+function checkWithdrawDay() {
+    if(new Date().getDay() !== 2) { // متاح الثلاثاء فقط كما في كودك
+        return tg.showPopup({title: 'تنبيه', message: "عذراً أمين، السحب متاح فقط يوم الثلاثاء كما طلبت."});
+    }
+    
+    const amount = document.getElementById('withdraw-amount').value;
+    if(amount < 20) return tg.showAlert("❌ الحد الأدنى للسحب هو 20 USDT");
+
+    // تسجيل الطلب في Firebase
+    db.ref('withdrawals/').push({
+        uid: user.id,
+        amount: amount,
+        address: document.getElementById('withdraw-address').value,
+        status: 'pending',
+        time: Date.now()
+    }).then(() => {
+        tg.showAlert("🚀 تم إرسال طلب السحب للمراجعة بنجاح");
+        closeModal();
+    });
+}
+    
 </script>
 </body>
 </html>
