@@ -438,10 +438,7 @@ function searchChannels() {
 
 // دالة عرض نموذج البيانات بناء على نوع الحملة
 function showAdForm(type) {
-function showAdForm(type) {
     closeModal();
-    
-    // تحويل الكود التقني لاسم عربي مفهوم
     let typeName = "إعلان جديد";
     if(type === 'click_view') typeName = "النقر والمشاهدة";
     if(type === 'forward_post') typeName = "توجيه منشور";
@@ -453,19 +450,20 @@ function showAdForm(type) {
         tg.showAlert("📝 يرجى تعبئة بيانات حملة: " + typeName);
     }, 200);
 }
-    
+
 function confirmTargets() {
     let count = document.querySelectorAll('#targets-list input:checked').length;
     if (count > 0) {
         tg.showAlert("✅ تم تحديد " + count + " وجهة بنجاح");
-        closeModal(); // إغلاق نافذة الأقسام
+        closeModal();
         setTimeout(() => {
-            openModal('modal-add-ad-details'); // فتح نافذة بيانات الإعلان الجديدة
+            openModal('modal-add-ad-details');
         }, 300);
     } else {
         tg.showAlert("⚠️ يرجى اختيار قسماً واحداً على الأقل");
     }
 }
+    
     function previewAd() {
     const text = document.getElementById('ad-text').value;
     const link = document.getElementById('ad-link').value;
