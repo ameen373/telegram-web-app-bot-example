@@ -411,12 +411,11 @@ function loadLeaderboard() {
 // --- نظام النمو والمسابقات (تحديث تلقائي مصلح) ---
 db.ref('users/' + user.id).on('value', snap => {
     const d = snap.val() || {};
-    
-    const balance = Number(d.balance || 0);
-    const bonus = Number(d.bonus || 0);
-    const refs = Number(d.refs || 0);
-    const channels = Number(d.channels || 0);
-    const active30 = Number(d.active30 || 0);
+const d = snap.val() || {};
+// استخدام parseFloat مع ضمان وجود قيمة افتراضية 0
+const balance = parseFloat(d.balance) || 0;
+const bonus = parseFloat(d.bonus) || 0;
+const refs = parseInt(d.refs) || 0;
 
     if(document.getElementById('bal-total')) document.getElementById('bal-total').innerText = (balance + bonus).toFixed(2);
     if(document.getElementById('bal-avail')) document.getElementById('bal-avail').innerText = balance.toFixed(2);
@@ -439,18 +438,22 @@ function searchChannels() {
 
 // دالة عرض نموذج البيانات بناء على نوع الحملة
 function showAdForm(type) {
-    // إغلاق نافذة اختيار نوع الحملة الحالية
-    closeModal(); 
+function showAdForm(type) {
+    closeModal();
+    
+    // تحويل الكود التقني لاسم عربي مفهوم
+    let typeName = "إعلان جديد";
+    if(type === 'click_view') typeName = "النقر والمشاهدة";
+    if(type === 'forward_post') typeName = "توجيه منشور";
+    if(type === 'post_timed') typeName = "منشور مؤقت 1/24";
+    if(type === 'manual_post') typeName = "منشور يدوي";
 
-    // تأخير بسيط لضمان سلاسة الانتقال ثم فتح نافذة تفاصيل الإعلان
     setTimeout(() => {
         openModal('modal-add-ad-details');
-        // تنبيه المستخدم بنوع الحملة التي اختارها
-        tg.showAlert("📝 يرجى تعبئة بيانات الحملة من نوع: " + type);
+        tg.showAlert("📝 يرجى تعبئة بيانات حملة: " + typeName);
     }, 200);
 }
-
-// دالة تأكيد الاستهداف
+    
 function confirmTargets() {
     let count = document.querySelectorAll('#targets-list input:checked').length;
     if (count > 0) {
