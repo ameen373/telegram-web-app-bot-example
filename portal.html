@@ -135,80 +135,78 @@
             <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openModal('modal-ads-type')">🎯 إنشاء حملة إعلانية</button>
         </div>
     </div>
+
 <div id="sec-channels" class="section" style="display: none; padding: 15px;">
     
-    <h3 style="text-align: center; color: var(--gold); margin-bottom: 20px;">📊 بوابة الناشر Elite</h3>
+    <h3 style="text-align: center; color: var(--gold); margin-bottom: 20px;">📊 لوحة تحكم الناشر</h3>
 
     <div class="stats-grid">
-        <div class="stat-card" style="border-color: rgba(52, 152, 219, 0.3);">
-            <span style="font-size: 20px;">🖱️</span>
-            <h4 style="margin: 5px 0; font-size: 13px; color: #3498db;">النقرات (CPC)</h4>
-            <p id="stat-clicks" style="font-weight: bold; margin: 0; font-size: 18px;">0</p>
-            <div style="font-size: 11px; color: var(--safe); margin-top: 5px;">ربح: $<span id="profit-clicks">0.00</span></div>
+        <div class="stat-card">
+            <h4 style="color: #3498db; font-size: 12px;">🖱️ النقرات</h4>
+            <p id="stat-clicks" style="font-size: 18px; font-weight: bold; margin: 5px 0;">0</p>
+            <small>ربح: $<span id="profit-clicks">0.00</span></small>
         </div>
-
-        <div class="stat-card" style="border-color: rgba(46, 204, 113, 0.3);">
-            <span style="font-size: 20px;">🚀</span>
-            <h4 style="margin: 5px 0; font-size: 13px; color: #2ecc71;">المشاهدات (CPM)</h4>
-            <p id="stat-views" style="font-weight: bold; margin: 0; font-size: 18px;">0</p>
-            <div style="font-size: 11px; color: var(--safe); margin-top: 5px;">ربح: $<span id="profit-views">0.00</span></div>
+        <div class="stat-card">
+            <h4 style="color: #2ecc71; font-size: 12px;">🚀 المشاهدات</h4>
+            <p id="stat-views" style="font-size: 18px; font-weight: bold; margin: 5px 0;">0</p>
+            <small>ربح: $<span id="profit-views">0.00</span></small>
         </div>
-
-        <div class="stat-card" style="border-color: rgba(155, 89, 182, 0.3);">
-            <span style="font-size: 20px;">⏰</span>
-            <h4 style="margin: 5px 0; font-size: 13px; color: #9b59b6;">منشورات (24h)</h4>
-            <p id="stat-timed" style="font-weight: bold; margin: 0; font-size: 18px;">0</p>
-            <div style="font-size: 11px; color: var(--safe); margin-top: 5px;">ربح: $<span id="profit-timed">0.00</span></div>
-        </div>
-
-        <div class="stat-card" style="background: var(--gold-linear); grid-column: span 2; text-align: center;">
-            <h4 style="margin: 0; color: #000; font-size: 15px;">💰 إجمالي أرباح الناشر</h4>
-            <h2 style="margin: 5px 0; color: #000; font-size: 24px;">$<span id="total-net-earnings">0.00</span></h2>
+        <div class="stat-card" style="grid-column: span 2; background: var(--gold-linear); color: #000;">
+            <h4 style="margin: 0;">💰 إجمالي الأرباح الصافية</h4>
+            <h2 style="margin: 5px 0;">$<span id="total-net-earnings">0.00</span></h2>
         </div>
     </div>
 
-    <div class="add-channel-box" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="color: var(--accent); margin-bottom: 15px;">➕ إضافة قناة جديدة</h4>
+    <hr class="separator">
+
+    <div class="add-channel-box">
+        <h3 style="color: var(--accent);"><i class="fas fa-plus-circle"></i> إضافة قناة جديدة</h3>
         
-        <input type="text" id="ch-name" placeholder="اسم القناة">
-        <input type="text" id="ch-link" placeholder="رابط القناة https://t.me/...">
-        
-        <select id="ch-category">
-            <option disabled selected>📂 نوع المحتوى...</option>
-            <option value="ent">الترفيه 🎭</option>
-            <option value="news">الاخبار ووسائل الاعلام 📰</option>
-            <option value="movies">الافلام والمسلسلات 🎬</option>
-            <option value="fashion">الموضة والجمال 💄</option>
-            <option value="art">الفن والتصوير 📸</option>
-            <option value="crypto">العملات المشفره 💰</option>
-            <option value="tech">التقنيات 💻</option>
-            <option value="education">تعليم 📚</option>
-            <option value="food">الطعام والطبخ 🍳</option>
-            <option value="health">الصحة والرياضة ⚽</option>
-            <option value="other">اخر ✨</option>
+        <label>🏷️ اسم القناة:</label>
+        <input type="text" id="ch-name" placeholder="أدخل اسم القناة">
+
+        <label>🔗 رابط القناة:</label>
+        <input type="text" id="ch-link" placeholder="@username أو https://t.me/...">
+
+        <label>📂 محتوى القناة:</label>
+        <select id="ch-category" class="custom-select">
+            <option value="" disabled selected>اختر نوع المحتوى...</option>
+            <option value="entertainment">ترفيه 🎭</option>
+            <option value="news">أخبار 📰</option>
+            <option value="movies">أفلام ومسلسلات 🎬</option>
+            <option value="crypto">عملات مشفرة 💰</option>
+            <option value="tech">تقنية 💻</option>
+            <option value="other">أخرى ✨</option>
         </select>
 
-        <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
-            <p style="margin-bottom: 8px;">⏰ سعر المنشور (24h): <input type="number" id="price-24h" placeholder="سعرك $" style="width:60px; height:22px; padding:2px; display:inline;"> (عمولتنا 10%)</p>
-            <p style="margin-bottom: 8px;">🖱️ نقرات (CPC): <b style="color:var(--safe);">5$ / 1000</b> (سعر ثابت)</p>
-            <p>🚀 مشاهدات (CPM): <b style="color:var(--safe);">1$ / 1000</b> (سعر ثابت)</p>
-        </div>
-
-        <select id="ch-region" style="margin-bottom: 15px;">
-            <option value="all">🌍 جميع دول العالم</option>
-            <option value="arab">🇸🇦 الوطن العربي</option>
-            <option value="gulf">🇰🇼 الخليج العربي</option>
-            <option value="maghreb">🇲🇦 المغرب العربي</option>
-            <option value="europe">🇪🇺 أوروبا</option>
+        <label>🌍 المنطقة المستهدفة:</label>
+        <select id="ch-region" class="custom-select">
+            <option value="global">العالم أجمع (Global)</option>
+            <option value="arab">الوطن العربي 🇸🇦</option>
+            <option value="europe">أوروبا وأمريكا 🇪🇺</option>
         </select>
 
-        <div style="background: rgba(255, 193, 7, 0.1); border-right: 4px solid #ffc107; padding: 10px; font-size: 12px; margin-bottom: 15px; text-align: right;">
-            <b style="color:#ffc107;">⚠️ انتباه:</b> لإضافة قناة، يجب إضافة البوت كمسؤول بصلحية "نشر الرسائل". المتطلبات: +1000 مشترك وعمر القناة +1 شهر.
+        <div class="pricing-section">
+             <label>⏰ سعر المنشور (24h):</label>
+             <input type="number" id="price-24h" placeholder="0.00 $">
+             <small>خصم 10% تلقائياً كعمولة للمنصة</small>
         </div>
 
-        <button class="btn-action" style="background:var(--gold-linear); color:#000;" onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')">🤖 إضافة البوت كمسؤول</button>
-        <button class="btn-action" style="background:transparent; border:1px solid white; color:white;" onclick="checkBotAdmin()">🔍 تحقق من وجود البوت</button>
-        <button class="btn-action" style="background:var(--safe); color:white;" onclick="submitChannelRequest()">✅ تقديم الطلب</button>
+        <div class="instructions" style="margin-top: 15px;">
+            ⚠️ <b>تنبيه:</b> يجب إضافة البوت <b>@Ads_telegabot</b> كمسؤول أولاً.
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-primary" style="background: #0088cc;" onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')">🤖 إضافة البوت كمسؤول</button>
+            <button class="btn btn-primary" style="background: var(--safe);" onclick="submitChannelRequest()">✅ تقديم الطلب للمراجعة</button>
+        </div>
+    </div>
+
+    <hr class="separator">
+
+    <h4 style="color: var(--gold); margin-top: 20px;">📺 قنواتي المضافة</h4>
+    <div id="my-channels-list" style="margin-top: 10px;">
+        <p style="text-align: center; color: #888; font-size: 12px;">لا توجد قنوات مضافة حالياً</p>
     </div>
 </div>
     
@@ -560,45 +558,82 @@ function confirmTargets() {
     }
 }
 
-    // دالة التنقل - تدعم قسم الناشر الجديد
+// دالة لتقديم الطلب وحفظه في Firebase
+function submitChannelRequest() {
+    const name = document.getElementById('ch-name').value;
+    const link = document.getElementById('ch-link').value;
+    const category = document.getElementById('ch-category').value;
+    const price = document.getElementById('price-24h').value;
+    const region = document.getElementById('ch-region').value;
+
+    if (!name || !link || !category || !price) {
+        return tg.showAlert("⚠️ يرجى ملء جميع الحقول المطلوبة!");
+    }
+
+    const channelData = {
+        owner_id: user.id,
+        channel_name: name,
+        channel_link: link,
+        category: category,
+        price_24h: price,
+        region: region,
+        status: "pending", // قيد المراجعة
+        created_at: new Date().toISOString()
+    };
+
+    // حفظ في قاعدة البيانات تحت مسار الطلبات وأيضاً تحت مسار المستخدم لرؤيتها فوراً
+    const newRef = db.ref('ads_requests').push();
+    newRef.set(channelData).then(() => {
+        db.ref('users/' + user.id + '/my_channels/' + newRef.key).set(channelData);
+        tg.showAlert("✅ تم إرسال طلبك بنجاح! سيظهر في قائمتك كـ 'قيد المراجعة'.");
+        
+        // تفريغ الحقول
+        document.getElementById('ch-name').value = "";
+        document.getElementById('ch-link').value = "";
+    });
+}
+
+// دالة لعرض قنوات المستخدم داخل قسم الناشر
+function loadUserChannels(userId) {
+    db.ref('users/' + userId + '/my_channels').on('value', (snap) => {
+        const listDiv = document.getElementById('my-channels-list');
+        listDiv.innerHTML = '';
+        const data = snap.val();
+
+        if (!data) {
+            listDiv.innerHTML = '<p style="text-align: center; color: #888; font-size: 12px;">لا توجد قنوات مضافة حالياً</p>';
+            return;
+        }
+
+        Object.values(data).forEach(ch => {
+            const statusColor = ch.status === 'active' ? 'var(--safe)' : '#ffc107';
+            const statusText = ch.status === 'active' ? 'نشطة' : 'قيد المراجعة';
+            
+            listDiv.innerHTML += `
+                <div class="stat-card" style="margin-bottom: 10px; border-right: 4px solid ${statusColor};">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <b style="color: white;">${ch.channel_name}</b>
+                        <span style="font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.1); color: ${statusColor};">${statusText}</span>
+                    </div>
+                    <div style="font-size: 11px; margin-top: 5px; color: #aaa;">رابط: ${ch.channel_link}</div>
+                    <div style="font-size: 11px; color: var(--gold);">السعر: ${ch.price_24h}$</div>
+                </div>
+            `;
+        });
+    });
+}
+
+// تعديل دالة التنقل لتشغيل جلب القنوات
 function showSection(id) {
     document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
     const target = document.getElementById(id);
-    if (target) { target.style.display = 'block'; }
-    
-    // جلب البيانات فوراً عند فتح قسم الناشر
-    if (id === 'sec-channels' && typeof user !== 'undefined') {
+    if (target) target.style.display = 'block';
+
+    if (id === 'sec-channels' && user.id) {
         updatePublisherStats(user.id);
+        loadUserChannels(user.id); // استدعاء عرض القنوات المضافة
     }
-}
-
-// دالة جلب الإحصائيات من Firebase وحساب الأرباح
-function updatePublisherStats(userId) {
-    if (!userId) return;
-    db.ref('users/' + userId + '/stats').on('value', (snap) => {
-        const d = snap.val() || {};
-        
-        const clicks = d.clicks || 0;
-        const views = d.views || 0;
-        const timed = d.timed_posts || 0;
-
-        // الحسابات (بعد خصم عمولتك)
-        const clickProfit = (clicks * 0.0045); 
-        const viewProfit = (views * 0.0009);  
-        const timedProfit = d.timed_earnings || 0;
-
-        // تحديث الأرقام في الواجهة
-        document.getElementById('stat-clicks').innerText = clicks;
-        document.getElementById('profit-clicks').innerText = clickProfit.toFixed(2);
-        document.getElementById('stat-views').innerText = views;
-        document.getElementById('profit-views').innerText = viewProfit.toFixed(2);
-        document.getElementById('stat-timed').innerText = timed;
-        document.getElementById('profit-timed').innerText = timedProfit.toFixed(2);
-        
-        const total = clickProfit + viewProfit + timedProfit;
-        document.getElementById('total-net-earnings').innerText = total.toFixed(2);
-    });
-}
+    }
     
 </script>
 </body>
