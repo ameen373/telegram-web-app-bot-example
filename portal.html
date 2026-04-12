@@ -408,35 +408,19 @@ function loadLeaderboard() {
         if(listDiv) listDiv.innerHTML = html || "لا توجد بيانات حالياً ⚠️";
     });
 }
-// --- نظام النمو والمسابقات (تحديث تلقائي مصلح) ---
+    // --- 3. نظام النمو والمسابقات (تحديث تلقائي مصلح) ---
 db.ref('users/' + user.id).on('value', snap => {
     const d = snap.val() || {};
-const d = snap.val() || {};
-// استخدام parseFloat مع ضمان وجود قيمة افتراضية 0
-const balance = parseFloat(d.balance) || 0;
-const bonus = parseFloat(d.bonus) || 0;
-const refs = parseInt(d.refs) || 0;
+    const balance = Number(d.balance || 0);
+    const bonus = Number(d.bonus || 0);
 
     if(document.getElementById('bal-total')) document.getElementById('bal-total').innerText = (balance + bonus).toFixed(2);
     if(document.getElementById('bal-avail')) document.getElementById('bal-avail').innerText = balance.toFixed(2);
-    if(document.getElementById('ref-count-v3')) document.getElementById('ref-count-v3').innerText = refs;
-    if(document.getElementById('ref-channels-v3')) document.getElementById('ref-channels-v3').innerText = channels;
+    if(document.getElementById('ref-count-v3')) document.getElementById('ref-count-v3').innerText = d.refs || 0;
     if(document.getElementById('ref-earn-v3')) document.getElementById('ref-earn-v3').innerText = bonus.toFixed(2);
-    if(document.getElementById('ref-active-v3')) document.getElementById('ref-active-v3').innerText = active30;
-});
+}); 
 
-// تشغيل اللوحة عند التحميل
-loadLeaderboard();
-// دالة البحث والفلترة
-function searchChannels() {
-    let input = document.getElementById('channel-search').value.toLowerCase();
-    let items = document.querySelectorAll('.target-item');
-    items.forEach(item => {
-        item.style.display = item.innerText.toLowerCase().includes(input) ? "block" : "none";
-    });
-}
-
-// دالة عرض نموذج البيانات بناء على نوع الحملة
+// --- 4. وظائف واجهة الإعلانات ---
 function showAdForm(type) {
     closeModal();
     let typeName = "إعلان جديد";
@@ -460,16 +444,18 @@ function confirmTargets() {
             openModal('modal-add-ad-details');
         }, 300);
     } else {
-        tg.showAlert("⚠️ يرجى اختيار قسماً واحداً على الأقل");
+        tg.showAlert("⚠️ يرجى اختيار قسم واحد على الأقل");
     }
 }
-    
-    function previewAd() {
-    const text = document.getElementById('ad-text').value;
-    const link = document.getElementById('ad-link').value;
-    const media = document.getElementById('ad-media').value;
-    const targets = document.querySelectorAll('#targets-list input:checked').length;
 
+function searchChannels() {
+    let input = document.getElementById('channel-search').value.toLowerCase();
+    let items = document.querySelectorAll('.target-item');
+    items.forEach(item => {
+        item.style.display = item.innerText.toLowerCase().includes(input) ? "block" : "none";
+    });
+}
+    
     if (!text) return tg.showAlert("⚠️ يرجى كتابة نص الإعلان أولاً");
 
     // حساب التكلفة الافتراضية (مثلاً 0.5 دولار لكل قسم)
