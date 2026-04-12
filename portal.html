@@ -42,53 +42,23 @@
         .progress-bg { height: 8px; background: #1e293b; border-radius: 10px; margin: 10px 0; }
         .progress-fill { height: 100%; background: var(--gold); border-radius: 10px; width: 0%; transition: 1s ease-in-out; }
 
-/* تحسين ظهور العناصر في الخلفية السوداء */
+/* تحسين ظهور عناصر الناشر */
 .input-premium {
-    width: 100%;
-    background: #1a1a1a !important; /* خلفية افتح قليلاً من السوداء */
-    border: 1px solid #444 !important;
-    color: #ffffff !important; /* نص أبيض واضح */
-    padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    outline: none;
+    width: 100%; background: #1a1a1a; border: 1px solid #444; color: #fff;
+    padding: 12px; border-radius: 12px; margin-bottom: 12px; outline: none;
 }
-
-/* زر إضافة قناة - جعله بارزاً جداً */
 .btn-premium-add {
-    background: var(--gold-linear) !important;
-    color: #000000 !important; /* نص أسود على خلفية ذهبية */
-    width: 100%;
-    padding: 15px;
-    border-radius: 50px;
-    font-weight: 800;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: var(--gold-linear); color: #000; width: 100%; padding: 15px;
+    border-radius: 50px; font-weight: bold; border: none; cursor: pointer;
+    box-shadow: 0 4px 15px rgba(212,175,55,0.3);
 }
-
-/* تنسيق كروت الإحصائيات لتبدو واضحة */
-.stat-card {
-    background: rgba(255, 255, 255, 0.07) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-    padding: 15px;
-    border-radius: 15px;
+.stat-card-new {
+    background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);
+    padding: 15px; border-radius: 15px; text-align: center;
 }
-
-/* وسم التنبيه */
-.warning-box {
-    background: rgba(255, 193, 7, 0.15) !important;
-    border-right: 4px solid #ffc107 !important;
-    color: #ffd54f !important; /* لون ذهبي فاتح للنص */
-    padding: 12px;
-    font-size: 11px;
-    margin-bottom: 15px;
-    line-height: 1.6;
+#publisher-panel {
+    display: none; background: #111; padding: 20px; border-radius: 20px;
+    border: 1.5px solid var(--gold); margin-bottom: 30px;
 }
             
     </style>
@@ -139,44 +109,35 @@
         </div>
     </div>
 
-<div id="sec-channels" class="section" style="display: none; padding: 15px;">
-    
-    <div class="stats-grid">
-        <div class="stat-card" style="border-bottom: 4px solid #3498db;">
-            <h4 style="color: #3498db; font-size: 12px;">🖱️ النقرات (CPC)</h4>
-            <p id="stat-clicks" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</p>
-            <div class="profit-tag">الربح: $<span id="profit-clicks">0.00</span></div>
+    <div id="sec-channels" class="section" style="display: none; padding: 15px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <div class="stat-card-new" style="border-bottom: 3px solid #3498db;">
+            <h4 style="color: #3498db; font-size: 11px; margin: 0;">🖱️ نقرات (CPC)</h4>
+            <p id="stat-clicks" style="font-size: 18px; font-weight: bold; margin: 5px 0;">0</p>
+            <div style="font-size: 10px; color: #2ecc71;">الربح: $<span id="profit-clicks">0.00</span></div>
         </div>
-
-        <div class="stat-card" style="border-bottom: 4px solid #2ecc71;">
-            <h4 style="color: #2ecc71; font-size: 12px;">🚀 المشاهدات (CPM)</h4>
-            <p id="stat-views" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</p>
-            <div class="profit-tag">الربح: $<span id="profit-views">0.00</span></div>
+        <div class="stat-card-new" style="border-bottom: 3px solid #2ecc71;">
+            <h4 style="color: #2ecc71; font-size: 11px; margin: 0;">🚀 مشاهدات (CPM)</h4>
+            <p id="stat-views" style="font-size: 18px; font-weight: bold; margin: 5px 0;">0</p>
+            <div style="font-size: 10px; color: #2ecc71;">الربح: $<span id="profit-views">0.00</span></div>
         </div>
-
-        <div class="stat-card" style="border-bottom: 4px solid #9b59b6;">
-            <h4 style="color: #9b59b6; font-size: 12px;">⏰ منشورات (24h)</h4>
-            <p id="stat-timed" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</p>
-            <div class="profit-tag">الربح: $<span id="profit-timed">0.00</span></div>
+        <div class="stat-card-new" style="border-bottom: 3px solid #9b59b6;">
+            <h4 style="color: #9b59b6; font-size: 11px; margin: 0;">⏰ منشورات (24h)</h4>
+            <p id="stat-timed" style="font-size: 18px; font-weight: bold; margin: 5px 0;">0</p>
+            <div style="font-size: 10px; color: #2ecc71;">الربح: $<span id="profit-timed">0.00</span></div>
         </div>
-
-        <div class="stat-card" style="background: var(--gold-linear); color: #000; border:none;">
-            <h4 style="margin: 0; font-size: 12px;">💰 الإجمالي الصافي</h4>
-            <h2 style="margin: 5px 0;">$<span id="total-net-earnings">0.00</span></h2>
+        <div class="stat-card-new" style="background: var(--gold-linear); color: #000; border: none;">
+            <h4 style="margin: 0; font-size: 12px; font-weight: bold;">💰 الإجمالي الصافي</h4>
+            <h2 style="margin: 5px 0; font-size: 22px;">$<span id="total-net-earnings">0.00</span></h2>
         </div>
     </div>
 
-    <button class="btn-premium-add" onclick="togglePublisherPanel()">
-        ➕ إضافة قناة جديدة للمنصة
-    </button>
+    <button class="btn-premium-add" onclick="togglePublisherPanel()">➕ إضافة قناة جديدة للمنصة</button>
 
     <div id="publisher-panel">
-        <h3 style="color: var(--gold); text-align: center; margin-bottom: 20px;">📝 بيانات القناة</h3>
-        
-        <input type="text" id="ch-name" class="input-premium" placeholder="🏷️ اسم قناتك">
+        <h4 style="color: var(--gold); text-align: center; margin-bottom: 15px;">📝 بيانات القناة الجديدة</h4>
+        <input type="text" id="ch-name" class="input-premium" placeholder="🏷️ اسم القناة">
         <input type="text" id="ch-link" class="input-premium" placeholder="🔗 رابط القناة @username">
-        
-        <label style="color:#888; font-size:12px;">📂 تصنيف المحتوى:</label>
         <select id="ch-category" class="input-premium">
             <option value="entertainment">الترفيه 🎭</option>
             <option value="news">الاخبار ووسائل الاعلام 📰</option>
@@ -190,32 +151,18 @@
             <option value="health">الصحة والرياضة ⚽</option>
             <option value="other">اخر ✨</option>
         </select>
-
-        <label style="color:#888; font-size:12px;">🌍 المنطقة المستهدفة:</label>
-        <select id="ch-region" class="input-premium">
-            <option value="all">جميع دول العالم 🌍</option>
-            <option value="arab">الوطن العربي 🇸🇦</option>
-            <option value="gulf">دول الخليج 🇰🇼</option>
-        </select>
-
-        <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:15px; font-size:13px; border:1px solid #333;">
-            <p style="margin-bottom:10px;">⏰ <b>منشور (24h):</b> <input type="number" id="price-24h" placeholder="سعرك $" style="width:60px; background:none; border:1px solid var(--gold); color:white; border-radius:5px;"> <small>(عمولتنا 10%)</small></p>
-            <p style="margin-bottom:10px;">🖱️ <b>نقرات (CPC):</b> <span style="color:var(--safe);">5$ / 1000</span> <small>(ثابت + عمولة 10%)</small></p>
-            <p>🚀 <b>مشاهدات (CPM):</b> <span style="color:var(--safe);">1$ / 1000</span> <small>(ثابت + عمولة 10%)</small></p>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; font-size: 13px;">
+            <p>⏰ سعر الـ 24h: <input type="number" id="price-24h" style="width: 50px; background: #000; color: #fff; border: 1px solid var(--gold);"> $</p>
+            <p>🖱️ نقرات (CPC): <b style="color: #2ecc71;">5$ ثابت</b></p>
+            <p>🚀 مشاهدات (CPM): <b style="color: #2ecc71;">1$ ثابت</b></p>
         </div>
-
-        <div style="background: rgba(255, 193, 7, 0.1); border-right: 4px solid #ffc107; padding: 10px; font-size: 11px; margin-bottom: 20px; color:#ddd;">
-            ⚠️ يجب إضافة <b>@Ads_telegabot</b> كمسؤول. المتطلبات: +1000 مشترك وعمر القناة +1 شهر.
-        </div>
-
-        <button class="btn-premium-add" style="background:#0088cc; color:white; box-shadow:none;" onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')">🤖 1. إضافة البوت كمسؤول</button>
-        <button onclick="tg.showAlert('🔍 يتم الآن التحقق من الصلاحيات...')" style="width:100%; padding:10px; background:none; border:1px solid #444; color:white; border-radius:10px; margin-bottom:10px;">🔍 2. تحقق من الإضافة</button>
-        <button onclick="submitEliteChannel()" style="width:100%; padding:15px; background:var(--safe); border:none; color:white; border-radius:12px; font-weight:bold; font-size:16px;">🚀 3. تقديم القناة للمراجعة</button>
+        <button onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')" style="width: 100%; padding: 12px; background: #0088cc; color: #fff; border: none; border-radius: 10px; margin-bottom: 10px; font-weight: bold;">🤖 1. إضافة البوت كمسؤول</button>
+        <button onclick="submitEliteChannel()" style="width: 100%; padding: 15px; background: #2ecc71; color: #fff; border: none; border-radius: 10px; font-weight: bold;">✅ 2. تقديم الطلب الآن</button>
     </div>
 
-    <h4 style="color:#666; font-size:14px; margin-bottom:15px;">📺 قنواتك المسجلة:</h4>
+    <h4 style="color: #666; font-size: 14px; margin-top: 20px;">📺 قنواتك المسجلة:</h4>
     <div id="my-elite-channels"></div>
-</div>
+    </div>
     
 <div id="sec-referral" class="section">
     <h3 style="margin: 15px;">👥 نظام النمو والمسابقات</h3>
@@ -565,48 +512,34 @@ function confirmTargets() {
     }
 }
 
-// فتح وإغلاق اللوحة
 function togglePublisherPanel() {
     const p = document.getElementById('publisher-panel');
     p.style.display = (p.style.display === 'none' || p.style.display === '') ? 'block' : 'none';
 }
 
-// حساب الأرباح الدقيق (أهم جزء لثقة الناشر)
 function updatePublisherStats(userId) {
     db.ref('users/' + userId + '/stats').on('value', (snap) => {
         const d = snap.val() || {};
-        const c = d.clicks || 0, v = d.views || 0, t = d.timed_posts || 0;
-
-        // الحسابات (صافي الربح للناشر بعد خصم 10% لصالح أمين)
-        const cp = c * 0.0045; // 4.5$ لكل 1000 نقرة
-        const vp = v * 0.0009; // 0.9$ لكل 1000 ظهور
-        const tp = parseFloat(d.timed_earnings || 0);
-
-        document.getElementById('stat-clicks').innerText = c;
+        const clicks = d.clicks || 0, views = d.views || 0, timed = d.timed_posts || 0;
+        const cp = clicks * 0.0045, vp = views * 0.0009, tp = parseFloat(d.timed_earnings || 0);
+        
+        document.getElementById('stat-clicks').innerText = clicks;
         document.getElementById('profit-clicks').innerText = cp.toFixed(2);
-        document.getElementById('stat-views').innerText = v;
+        document.getElementById('stat-views').innerText = views;
         document.getElementById('profit-views').innerText = vp.toFixed(2);
-        document.getElementById('stat-timed').innerText = t;
+        document.getElementById('stat-timed').innerText = timed;
         document.getElementById('profit-timed').innerText = tp.toFixed(2);
         document.getElementById('total-net-earnings').innerText = (cp + vp + tp).toFixed(2);
     });
 }
 
-// تقديم الطلب
 function submitEliteChannel() {
-    const n = document.getElementById('ch-name').value;
-    const l = document.getElementById('ch-link').value;
-    const p = document.getElementById('price-24h').value;
-
-    if(!n || !l || !p) return tg.showAlert("⚠️ أكمل البيانات أولاً!");
-
-    const data = {
-        name: n, link: l, price: p, status: 'pending', owner: user.id, date: new Date().toISOString()
-    };
-
+    const n = document.getElementById('ch-name').value, l = document.getElementById('ch-link').value, p = document.getElementById('price-24h').value;
+    if(!n || !l || !p) return tg.showAlert("⚠️ أكمل البيانات!");
+    
+    const data = { name: n, link: l, price: p, status: 'pending', date: new Date().toISOString() };
     db.ref('users/' + user.id + '/my_channels').push(data).then(() => {
-        db.ref('admin_requests').push(data);
-        tg.showAlert("✅ تم إرسال قناتك! سيتم مراجعتها خلال 24 ساعة.");
+        tg.showAlert("✅ تم تقديم طلبك!");
         togglePublisherPanel();
     });
 }
