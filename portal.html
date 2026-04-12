@@ -240,28 +240,11 @@
 <div class="target-item" style="padding:8px;"><input type="checkbox" id="c10"> <label for="c10">⚽ الصحة والرياضة</label></div>
 <div class="target-item" style="padding:8px;"><input type="checkbox" id="c11"> <label for="c11">✨ آخر</label> </div>
 
-            <div id="individual-channels-list"></div>
+<div id="individual-channels-list"></div>
         </div>
         <button class="btn btn-primary" style="margin-top:15px;" onclick="confirmTargets()">✅ تأكيد الوجهة</button>
     </div>
 </div>
-    <div id="modal-add-ad-details" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h3 style="color: var(--gold);">📝 تفاصيل الإعلان</h3>
-        
-        <label>نص الإعلان:</label>
-        <textarea id="ad-text" placeholder="اكتب نص الإعلان هنا..." style="width:100%; height:100px; margin-bottom:15px; border-radius:8px; padding:10px; background:#222; color:white; border:1px solid #444;"></textarea>
-        
-        <label>رابط الزر (اختياري):</label>
-        <input type="text" id="ad-link" placeholder="https://t.me/..." style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; background:#222; color:white; border:1px solid #444;">
-        
-        <label>رابط الصورة/الفيديو:</label>
-        <input type="text" id="ad-media" placeholder="ضع رابط الميديا هنا..." style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; background:#222; color:white; border:1px solid #444;">
-        
-        <button class="btn btn-gold" onclick="previewAd()" style="width:100%;">👁️ معاينة الإعلان قبل النشر</button>
-    </div>
-    </div>
     
 <script>
     const tg = window.Telegram.WebApp;
@@ -408,46 +391,42 @@ function loadLeaderboard() {
         if(listDiv) listDiv.innerHTML = html || "لا توجد بيانات حالياً ⚠️";
     });
 }
-    // --- 3. نظام النمو والمسابقات (تحديث تلقائي مصلح) ---
+
+// --- 3. نظام النمو والمسابقات (تحديث تلقائي) ---
 db.ref('users/' + user.id).on('value', snap => {
-    const d = snap.val() || {};
-    const balance = Number(d.balance || 0);
-    const bonus = Number(d.bonus || 0);
-
-    if(document.getElementById('bal-total')) document.getElementById('bal-total').innerText = (balance + bonus).toFixed(2);
-    if(document.getElementById('bal-avail')) document.getElementById('bal-avail').innerText = balance.toFixed(2);
+    const d = snap.val() || { balance: 0, bonus: 0, refs: 0, channels: 0, active30: 0 };
+    
     if(document.getElementById('ref-count-v3')) document.getElementById('ref-count-v3').innerText = d.refs || 0;
-    if(document.getElementById('ref-earn-v3')) document.getElementById('ref-earn-v3').innerText = bonus.toFixed(2);
-}); 
+    if(document.getElementById('ref-channels-v3')) document.getElementById('ref-channels-v3').innerText = d.channels || 0;
+    if(document.getElementById('ref-earn-v3')) document.getElementById('ref-earn-v3').innerText = (d.bonus || 0).toFixed(2);
+    if(document.getElementById('ref-active-v3')) document.getElementById('ref-active-v3').innerText = d.active30 || 0;
+    
+    if(document.getElementById('bal-total')) document.getElementById('bal-total').innerText = (d.balance + d.bonus).toFixed(2);
+    if(document.getElementById('bal-avail')) document.getElementById('bal-avail').innerText = d.balance.toFixed(2);
+});
 
-// --- 4. وظائف واجهة الإعلانات ---
-function showAdForm(type) {
-    closeModal();
-    let typeName = "إعلان جديد";
-    if(type === 'click_view') typeName = "النقر والمشاهدة";
-    if(type === 'forward_post') typeName = "توجيه منشور";
-    if(type === 'post_timed') typeName = "منشور مؤقت 1/24";
-    if(type === 'manual_post') typeName = "منشور يدوي";
-
-    setTimeout(() => {
-        openModal('modal-add-ad-details');
-        tg.showAlert("📝 يرجى تعبئة بيانات حملة: " + typeName);
-    }, 200);
-}
-
-function confirmTargets() {
-    let count = document.querySelectorAll('#targets-list input:checked').length;
-    if (count > 0) {
-        tg.showAlert("✅ تم تحديد " + count + " وجهة بنجاح");
+// --- 4. نظام الإيداع ---
+function submitDeposit() {
+    const hash = document.getElementById('deposit-hash').value;
+    if(hash.length < 10) return tg.showAlert("❌ يرجى إدخال Hash ID صحيح");
+    
+    db.ref('pending_deposits/' + user.id).set({
+        hash: hash,
+        status: "Pending Verification",
+        time: Date.now()
+    }).then(() => {
+        tg.showPopup({
+            title: 'تم الاستلام',
+            message: 'شكراً أمين، تم إرسال طلبك للمراجعة. سيتم إضافة الرصيد بعد التأكد من الشبكة.',
+            buttons: [{type: 'ok'}]
+        });
         closeModal();
-        setTimeout(() => {
-            openModal('modal-add-ad-details');
-        }, 300);
-    } else {
-        tg.showAlert("⚠️ يرجى اختيار قسم واحد على الأقل");
-    }
+    });
 }
 
+// تشغيل اللوحة عند التحميل
+loadLeaderboard();
+// دالة البحث والفلترة
 function searchChannels() {
     let input = document.getElementById('channel-search').value.toLowerCase();
     let items = document.querySelectorAll('.target-item');
@@ -455,60 +434,30 @@ function searchChannels() {
         item.style.display = item.innerText.toLowerCase().includes(input) ? "block" : "none";
     });
 }
-    
-    if (!text) return tg.showAlert("⚠️ يرجى كتابة نص الإعلان أولاً");
 
-    // حساب التكلفة الافتراضية (مثلاً 0.5 دولار لكل قسم)
-    const costPerTarget = 0.5; 
-    const totalCost = (targets * costPerTarget).toFixed(2);
-
+// دالة عرض نموذج البيانات بناء على نوع الحملة
+function showAdForm(type) {
+    closeModal();
+    let msg = (type === 'forward_post') ? "يرجى تزويدنا برابط المنشور" : "يرجى كتابة نص الإعلان";
     tg.showPopup({
-        title: '📊 معاينة التكلفة',
-        message: `نص الإعلان: ${text}\nالوجهات المختارة: ${targets}\nالتكلفة الإجمالية: ${totalCost} USDT\n\nهل تريد الخصم من رصيدك والنشر؟`,
-        buttons: [
-            {id: 'publish', type: 'default', text: '✅ تأكيد ونشر'},
-            {id: 'cancel', type: 'destructive', text: '❌ إلغاء'}
-        ]
-    }, (buttonId) => {
-        if (buttonId === 'publish') {
-            processAdPayment(totalCost);
-        }
+        title: 'تفاصيل الحملة',
+        message: msg + " (سيتم فتح نموذج الإدخال الكامل في الخطوة القادمة)",
+        buttons: [{type: 'ok', text: 'موافق'}]
     });
+}
+
+// دالة تأكيد الاستهداف
+function confirmTargets() {
+    let count = document.querySelectorAll('#targets-list input:checked').length;
+    if(count > 0) {
+        tg.showAlert("✅ تم تحديد " + count + " وجهة بنجاح");
+        closeModal();
+    } else {
+        tg.showAlert("⚠️ اختر قسماً واحداً على الأقل");
     }
-    function processAdPayment(cost) {
-    const userRef = db.ref('users/' + user.id + '/balance');
-    
-    userRef.transaction((currentBalance) => {
-        if (currentBalance === null) return 0;
-        if (currentBalance < cost) {
-            tg.showAlert("❌ عذراً، رصيدك الحالي غير كافٍ لإتمام هذه العملية.");
-            return; // إلغاء العملية
-        }
-        return (parseFloat(currentBalance) - parseFloat(cost)).toFixed(2);
-    }).then((result) => {
-        if (result.committed) {
-            // حفظ بيانات الإعلان في قاعدة البيانات ليراها الأدمن
-            const adData = {
-                uid: user.id,
-                text: document.getElementById('ad-text').value,
-                link: document.getElementById('ad-link').value,
-                media: document.getElementById('ad-media').value,
-                cost: cost,
-                status: 'pending',
-                time: Date.now()
-            };
-            
-            db.ref('pending_ads/').push(adData).then(() => {
-                tg.showAlert("✅ تم خصم المبلغ وإرسال إعلانك للمراجعة بنجاح!");
-                closeModal();
-            });
-        }
-    }).catch((error) => {
-        console.error("Payment Error:", error);
-        tg.showAlert("⚠️ حدث خطأ أثناء معالجة الدفع، يرجى المحاولة لاحقاً.");
-    });
-    }
+}
     
 </script>
 </body>
 </html>
+ 
