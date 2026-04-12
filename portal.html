@@ -622,6 +622,21 @@ function confirmTargets() {
         tg.showAlert("⚠️ اختر قسماً واحداً على الأقل");
     }
 }
+    function showSection(id) {
+    // إخفاء كل الأقسام التي تحمل كلاس section
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    
+    // إظهار القسم الذي تم الضغط عليه
+    const target = document.getElementById(id);
+    if (target) {
+        target.style.display = 'block';
+    }
+
+    // تحديث البيانات إذا دخل المستخدم لقسم الناشر
+    if (id === 'sec-channels' && typeof user !== 'undefined') {
+        updatePublisherStats(user.id);
+    }
+    }
     
 </script>
 </body>
