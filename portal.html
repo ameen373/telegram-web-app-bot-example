@@ -42,60 +42,53 @@
         .progress-bg { height: 8px; background: #1e293b; border-radius: 10px; margin: 10px 0; }
         .progress-fill { height: 100%; background: var(--gold); border-radius: 10px; width: 0%; transition: 1s ease-in-out; }
 
-/* تصميم أمين الملكي */
-.stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 25px;
+/* تحسين ظهور العناصر في الخلفية السوداء */
+.input-premium {
+    width: 100%;
+    background: #1a1a1a !important; /* خلفية افتح قليلاً من السوداء */
+    border: 1px solid #444 !important;
+    color: #ffffff !important; /* نص أبيض واضح */
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    outline: none;
 }
 
-.stat-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 18px;
-    padding: 15px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.stat-card:hover { transform: translateY(-5px); border-color: var(--gold); }
-
-.profit-tag { font-size: 11px; color: var(--safe); font-weight: bold; }
-
+/* زر إضافة قناة - جعله بارزاً جداً */
 .btn-premium-add {
-    background: var(--gold-linear);
-    color: #000;
+    background: var(--gold-linear) !important;
+    color: #000000 !important; /* نص أسود على خلفية ذهبية */
     width: 100%;
     padding: 15px;
     border-radius: 50px;
     font-weight: 800;
     font-size: 16px;
     border: none;
-    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
     cursor: pointer;
-    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#publisher-panel {
-    display: none;
-    background: rgba(0,0,0,0.6);
-    border-radius: 25px;
-    padding: 20px;
-    border: 1.5px solid var(--gold);
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
-    margin-bottom: 30px;
+/* تنسيق كروت الإحصائيات لتبدو واضحة */
+.stat-card {
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    padding: 15px;
+    border-radius: 15px;
 }
 
-.input-premium {
-    width: 100%;
-    background: #111;
-    border: 1px solid #333;
-    color: #fff;
+/* وسم التنبيه */
+.warning-box {
+    background: rgba(255, 193, 7, 0.15) !important;
+    border-right: 4px solid #ffc107 !important;
+    color: #ffd54f !important; /* لون ذهبي فاتح للنص */
     padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 12px;
+    font-size: 11px;
+    margin-bottom: 15px;
+    line-height: 1.6;
 }
             
     </style>
