@@ -409,6 +409,7 @@
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById('sec-' + t).style.display = 'block';
+        if (t === 'channels') updatePublisherStats(user.id);
         document.getElementById('t-' + t).classList.add('active');
         tg.HapticFeedback.impactOccurred('medium');
     }
@@ -600,11 +601,6 @@ function confirmTargets() {
     }
 }
 
-    // تهيئة واجهة تليجرام (أول خطوة لضمان عمل السمة)
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand(); // توسيع الواجهة لتملأ شاشة الهاتف
-
 // فتح وإغلاق اللوحة مع اهتزاز خفيف
 function togglePublisherPanel() {
     const p = document.getElementById('publisher-panel');
@@ -624,16 +620,19 @@ function updatePublisherStats(userId) {
     db.ref('users/' + userId + '/stats').on('value', (snap) => {
         const d = snap.val() || {};
         
-        // جلب القيم مع التأكد من وجودها (إصلاح الرموز الناقصة)
-        const c = d.clicks || 0;
-        const v = d.views || 0;
-        const t = d.timed_posts || 0;
+// السطر 627 وما بعده بعد التصحيح:
+const c = d.clicks || 0;
+const v = d.views || 0;
+const t = d.timed_posts || 0;
 
-        // الحسابات (صافي الربح للناشر بعد خصم عمولتك 10%)
-        // الربح الصافي للناشر: 4.5$ للنقرات و 0.9$ للمشاهدات
-        const cp = c * 0.0045; 
-        const vp = v * 0.0009; 
-        const tp = parseFloat(d.timed_earnings || 0);
+// الحسابات الصحيحة (صافي الربح للناشر)
+const cp = c * 0.0045; // 4.5$ لكل 1000 نقرة
+const vp = v * 0.0009; // 0.9$ لكل 1000 مشاهدة (تم التصحيح من 0.0000)
+const tp = parseFloat(d.timed_earnings || 0);
+
+const total = cp + vp + tp;
+document.getElementById('total-net-earnings').innerText = total.toFixed(2);
+        
 
         // تحديث العناصر في الـ HTML
         document.getElementById('stat-clicks').innerText = c.toLocaleString();
