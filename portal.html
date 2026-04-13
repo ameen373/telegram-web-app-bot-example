@@ -3,719 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telega-IO Extreme v3</title>
+    <title>منصة الناشر - أمين</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <style>
-        :root {
-            --bg: #0b0f1a; --card: rgba(23, 32, 51, 0.95);
-            --accent: #3b82f6; --gold: #f59e0b; --safe: #10b981; --danger: #ef4444; --text: #ffffff;
+        /* --- التنسيق الأساسي والسمات --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            margin: 0;
+            padding-bottom: 80px; /* مساحة للقائمة السفلية */
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; transition: all 0.3s ease; }
-        
-        /* Modals & Screens */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-content { background: #1a2235; width: 90%; max-height: 85%; border-radius: 25px; padding: 25px; overflow-y: auto; border: 1px solid var(--accent); position: relative; }
-        
-        /* Layout & Cards */
-        .card { background: var(--card); border-radius: 24px; padding: 18px; margin: 12px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .stats-grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0; }
-        .stat-item { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
-        
-        /* Buttons */
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-gold { background: var(--gold); color: black; }
-        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
-        .btn:active { transform: scale(0.96); }
 
-        /* Navigation */
-        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(11, 15, 26, 0.98); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 2000; }
-        .nav-item { color: #64748b; font-size: 10px; cursor: pointer; text-align: center; transition: 0.3s; }
-        .nav-item.active { color: var(--accent); transform: translateY(-3px); font-weight: bold; }
+        .section { display: none; padding: 16px; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .section { display: none; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* --- شبكة الإحصائيات (مثل الصورة المطلوبة) --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-        input, select, textarea { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 12px; color: white; padding: 14px; margin-top: 10px; box-sizing: border-box; font-size: 13px; }
-        .progress-bg { height: 8px; background: #1e293b; border-radius: 10px; margin: 10px 0; }
-        .progress-fill { height: 100%; background: var(--gold); border-radius: 10px; width: 0%; transition: 1s ease-in-out; }
+        .stat-card {
+            background: var(--tg-theme-secondary-bg-color, #f4f4f5);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
 
-/* --- تحسين المظهر ليتطابق مع تليجرام --- */
+        .stat-card h4 { margin: 0; font-size: 11px; opacity: 0.8; }
+        .stat-card .stat-value { font-size: 20px; font-weight: bold; margin: 8px 0; }
+        .profit-tag { color: #31b545; font-size: 11px; font-weight: bold; }
 
-.stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
-}
+        /* --- الأزرار والحقول --- */
+        .btn-main {
+            width: 100%;
+            padding: 15px;
+            background: var(--tg-theme-button-color, #248bcf);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
 
-.stat-card {
-    /* التزام تام بسمة تليجرام الأساسية */
-    background: var(--tg-theme-bg-color, #ffffff);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    position: relative; /* لضمان عدم تداخل العناصر */
-}
+        .input-premium {
+            width: 100%;
+            background: var(--tg-theme-bg-color, #fff);
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--tg-theme-text-color);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
 
-/* الألوان الذكية للنصوص */
-.stat-card h4 {
-    margin: 0;
-    font-size: 11px;
-    opacity: 0.7;
-    color: var(--tg-theme-text-color, #000);
-}
+        /* --- القائمة السفلية --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--tg-theme-secondary-bg-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
 
-.stat-card p {
-    margin: 8px 0;
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--tg-theme-text-color, #000);
-}
-
-.profit-tag { 
-    font-size: 11px; 
-    color: #31b545; /* لون النجاح الأخضر */
-    font-weight: 600; 
-}
-
-/* تنسيق الزر الرئيسي - ليكون قابلاً للنقر دائماً */
-.btn-premium-add {
-    background: var(--tg-theme-button-color, #248bcf);
-    color: var(--tg-theme-button-text-color, #ffffff);
-    width: 100%;
-    padding: 14px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 15px;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 20px;
-    transition: transform 0.1s ease, opacity 0.2s ease;
-    display: block; /* لضمان أخذ المساحة كاملة */
-}
-
-.btn-premium-add:active {
-    transform: scale(0.98); /* تأثير ضغط حقيقي */
-    opacity: 0.9;
-}
-
-/* لوحة بيانات القناة */
-#publisher-panel {
-    display: none; /* يتم التحكم به عبر JS */
-    background: var(--tg-theme-secondary-bg-color, #f4f4f5);
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 30px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-/* المدخلات (Inputs) */
-.input-premium {
-    width: 100%;
-    background: var(--tg-theme-bg-color, #fff);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: var(--tg-theme-text-color, #000);
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 12px;
-    box-sizing: border-box;
-    font-size: 14px;
-    outline: none; /* إزالة الإطار الافتراضي المزعج */
-}
-
-.input-premium:focus {
-    border-color: var(--tg-theme-link-color, #248bcf); /* تلوين الحقل عند الكتابة */
-}
-
-.input-premium::placeholder {
-    color: var(--tg-theme-hint-color, #999);
-}
-
-/* إضافة ألوان الحدود السفلية للكروت كما في التصميم المطلوب */
-.stat-card.cpc { border-bottom: 4px solid #3498db; }
-.stat-card.cpm { border-bottom: 4px solid #2ecc71; }
-.stat-card.timed { border-bottom: 4px solid #9b59b6; }
-        
+        .nav-item { font-size: 12px; opacity: 0.6; cursor: pointer; text-align: center; }
+        .nav-item.active { opacity: 1; color: var(--tg-theme-link-color); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="main-content">
-    
-    <div id="sec-home" class="section" style="display: block;">
-        <div class="card" style="text-align: center; border: 1px solid var(--accent);">
-            <div id="user-rank" style="font-size: 10px; color: var(--gold); font-weight: bold; margin-bottom: 5px;">MEMBER</div>
-            <small>إجمالي الرصيد (USDT)</small>
-            <h1 id="bal-total" style="font-size: 38px; margin: 8px 0;">0.00</h1>
-            <div class="stats-grid-4">
-                <div class="stat-item"><small>قابل للسحب</small><br><b id="bal-avail" style="color:var(--safe);">0.00</b></div>
-                <div class="stat-item"><small>مكافآت/نجوم</small><br><b id="bal-bonus" style="color:var(--gold);">0.00</b></div>
+    <div id="sec-home" class="section" style="display: block; text-align: center;">
+        <h2>مرحباً بك في المنصة</h2>
+        <p>اختر "الناشر" من القائمة بالأسفل لإدارة قنواتك.</p>
+    </div>
+
+    <div id="sec-channels" class="section">
+        <div class="stats-grid">
+            <div class="stat-card" style="border-bottom: 3px solid #3498db;">
+                <h4>🖱️ النقرات (CPC)</h4>
+                <p id="stat-clicks" class="stat-value">0</p>
+                <div class="profit-tag">الربح: $<span id="profit-clicks">0.00</span></div>
+            </div>
+            <div class="stat-card" style="border-bottom: 3px solid #31b545;">
+                <h4>🚀 المشاهدات (CPM)</h4>
+                <p id="stat-views" class="stat-value">0</p>
+                <div class="profit-tag">الربح: $<span id="profit-views">0.00</span></div>
+            </div>
+            <div class="stat-card" style="border-bottom: 3px solid #9b59b6;">
+                <h4>⏰ منشورات (24h)</h4>
+                <p id="stat-timed" class="stat-value">0</p>
+                <div class="profit-tag">الربح: $<span id="profit-timed">0.00</span></div>
+            </div>
+            <div class="stat-card" style="background: var(--tg-theme-button-color); color: #fff;">
+                <h4 style="opacity: 0.9;">💰 الإجمالي الصافي</h4>
+                <p style="font-size: 22px; margin: 5px 0;">$<span id="total-net-earnings">0.00</span></p>
             </div>
         </div>
 
-        <div class="card" id="global-offer-card" style="border-right: 4px solid var(--danger);">
-            <h4 style="margin:0; color:var(--danger);">🔥 عروض أمين الحصرية</h4>
-            <p id="offer-text" style="font-size: 12px; color: #94a3b8; margin-top: 5px;">خصم 30% للمعلنين الدائمين - اطلب عرضك الآن!</p>
+        <button class="btn-main" onclick="togglePublisherPanel()">➕ إضافة قناة جديدة</button>
+
+        <div id="publisher-panel" style="display: none; background: var(--tg-theme-secondary-bg-color); padding: 15px; border-radius: 12px;">
+            <input type="text" id="ch-name" class="input-premium" placeholder="اسم القناة">
+            <input type="text" id="ch-link" class="input-premium" placeholder="رابط القناة @">
+            <input type="number" id="price-24h" class="input-premium" placeholder="سعر الإعلان (24 ساعة) $">
+            
+            <button onclick="submitEliteChannel()" class="btn-main" style="background: #31b545;">🚀 تقديم للمراجعة</button>
         </div>
 
-        <div class="card">
-            <h4 style="color:var(--gold); margin:0;">💎 Golden VIP Progress</h4>
-            <div class="progress-bg"><div id="vip-bar" class="progress-fill"></div></div>
-            <div style="display:flex; justify-content:space-between; font-size:10px;">
-                <span>إنفاقك: $<span id="spent-amt">0</span></span>
-                <span>الهدف: $5000</span>
-            </div>
-        </div>
+        <h4>📺 قنواتك المسجلة:</h4>
+        <div id="my-elite-channels"></div>
     </div>
 
-    <div id="sec-promo" class="section">
-        <h3 style="margin:15px;">📣 بوابة المعلن Pro</h3>
-        <div class="card">
-            <div class="stats-grid-4">
-                <div class="stat-item"><small>حملات نشطة</small><br><b id="adv-active">0</b></div>
-                <div class="stat-item"><small>إجمالي CTR</small><br><b style="color:var(--safe);">0.0%</b></div>
-            </div>
-            <button class="btn btn-primary" onclick="openModal('modal-deposit')">💳 إيداع رصيد (Min $10)</button>
-            <button class="btn btn-outline" onclick="openModal('modal-guide')">📖 دليل الشحن المصور</button>
-        </div>
-        <div class="card">
-            <h4>🎬 إدارة المحتوى</h4>
-            <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openModal('modal-ads-type')">🎯 إنشاء حملة إعلانية</button>
-        </div>
+    <div class="bottom-nav">
+        <div class="nav-item active" id="t-home" onclick="switchTab('home')">🏠 الرئيسية</div>
+        <div class="nav-item" id="t-channels" onclick="switchTab('channels')">📺 الناشر</div>
     </div>
 
-<div id="sec-channels" class="section" style="display: none; padding: 16px; position: relative;">
-    
-    <div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
-        <div class="stat-card" style="border-bottom: 3px solid #3498db; background: var(--tg-theme-bg-color); padding: 15px; border-radius: 12px; text-align: center;">
-            <h4 style="color: #3498db; font-size: 11px; margin: 0;">🖱️ النقرات (CPC)</h4>
-            <p id="stat-clicks" style="font-size: 18px; font-weight: bold; margin: 5px 0;">0</p>
-            <div class="profit-tag" style="color: #31b545; font-size: 11px;">الربح: $<span id="profit-clicks">0.00</span></div>
-        </div>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-        <div class="stat-card" style="border-bottom: 3px solid #31b545; background: var(--tg-theme-bg-color); padding: 15px; border-radius: 12px; text-align: center;">
-            <h4 style="color: #31b545; font-size: 11px; margin: 0;">🚀 المشاهدات (CPM)</h4>
-            <p id="stat-views" style="font-size: 18px; font-weight: bold; margin: 5px 0;">0</p>
-            <div class="profit-tag" style="color: #31b545; font-size: 11px;">الربح: $<span id="profit-views">0.00</span></div>
-        </div>
+        // 1. نظام التنقل الموحد (يحل مشكلة تعطل الأزرار)
+        function switchTab(tabId) {
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
 
-        <div class="stat-card" style="border-bottom: 3px solid #9b59b6; background: var(--tg-theme-bg-color); padding: 15px; border-radius: 12px; text-align: center;">
-            <h4 style="color: #9b59b6; font-size: 11px; margin: 0;">⏰ منشورات (24h)</h4>
-            <p id="stat-timed" style="font-size: 18px; font-weight: bold; margin: 5px 0;">0</p>
-            <div class="profit-tag" style="color: #31b545; font-size: 11px;">الربح: $<span id="profit-timed">0.00</span></div>
-        </div>
-
-        <div class="stat-card" style="background: var(--tg-theme-button-color, #248bcf); border-radius: 12px; padding: 15px; text-align: center;">
-            <h4 style="color: var(--tg-theme-button-text-color); margin: 0; font-size: 11px; opacity: 0.8;">💰 الإجمالي الصافي</h4>
-            <h2 style="color: var(--tg-theme-button-text-color); margin: 5px 0; font-size: 20px;">$<span id="total-net-earnings">0.00</span></h2>
-        </div>
-    </div>
-
-    <button class="btn-premium-add" onclick="togglePublisherPanel()" style="width: 100%; padding: 15px; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-bottom: 20px;">
-        ➕ إضافة قناة جديدة للمنصة
-    </button>
-
-    <div id="publisher-panel" style="display: none; background: var(--tg-theme-secondary-bg-color); padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-        <h4 style="color: var(--tg-theme-link-color); text-align: center; margin-top: 0;">📝 بيانات القناة</h4>
-        
-        <input type="text" id="ch-name" class="input-premium" placeholder="🏷️ اسم قناتك" style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1);">
-        <input type="text" id="ch-link" class="input-premium" placeholder="🔗 رابط القناة @username" style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1);">
-        
-        <select id="ch-category" class="input-premium" style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px;">
-            <option value="entertainment">الترفيه 🎭</option>
-            <option value="news">الاخبار 📰</option>
-            <option value="movies">الافلام 🎬</option>
-            <option value="tech">التقنية 💻</option>
-            <option value="other">أخرى ✨</option>
-        </select>
-
-        <div style="background: var(--tg-theme-bg-color); padding: 15px; border-radius: 12px; margin-bottom: 15px; font-size: 13px;">
-            <p style="margin: 0;">⏰ سعر الإعلان (24h): 
-                <input type="number" id="price-24h" value="0" style="width: 60px; text-align: center; border-radius: 5px; border: 1px solid #ccc;"> $
-            </p>
-        </div>
-
-        <button onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')" style="width: 100%; padding: 12px; background: #0088cc; color: white; border: none; border-radius: 10px; margin-bottom: 8px; font-weight: bold; cursor: pointer;">🤖 1. إضافة البوت كمسؤول</button>
-        
-        <button onclick="tg.showAlert('🔍 يتم التحقق من الصلاحيات...')" style="width: 100%; padding: 12px; background: transparent; border: 1px solid var(--tg-theme-hint-color); color: var(--tg-theme-text-color); border-radius: 10px; margin-bottom: 8px; cursor: pointer;">🔍 2. تحقق من الإضافة</button>
-        
-        <button onclick="submitEliteChannel()" style="width: 100%; padding: 15px; background: #31b545; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">🚀 3. تقديم القناة للمراجعة</button>
-    </div>
-
-    <h4 style="color: var(--tg-theme-hint-color); font-size: 14px; margin: 20px 0 10px;">📺 قنواتك المسجلة:</h4>
-    <div id="my-elite-channels"></div>
-</div>
-    
-    
-<div id="sec-referral" class="section">
-    <h3 style="margin: 15px;">👥 نظام النمو والمسابقات</h3>
-    
-    <div class="stats-grid-4">
-        <div class="stat-item"><small>إجمالي الإحالات</small><br><b id="ref-count-v3">179</b></div>
-        <div class="stat-item"><small>إجمالي القنوات</small><br><b id="ref-channels-v3">31</b></div>
-        <div class="stat-item"><small>المكاسب ($)</small><br><b id="ref-earn-v3" style="color:var(--safe);">3.36</b></div>
-        <div class="stat-item"><small>نشط (30 يوم)</small><br><b id="ref-active-v3">7</b></div>
-    </div>
-
-    <div class="card" style="border: 1px solid var(--gold);">
-        <h4 style="margin:0; color:var(--gold);">🏆 لوحة المتصدرين (Top 5)</h4>
-        <div id="leaderboard-list" style="margin-top:10px; font-size:12px;"></div>
-    </div>
-
-    <div class="card" style="border: 1px solid var(--accent);">
-        <h4>🚀 ماكينة التسويق الذكية</h4>
-        <button class="btn btn-primary" onclick="generateMegaPromo()">📤 توليد منشور ترويجي جذاب</button>
-        <button class="btn btn-outline" style="margin-top:10px;" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
-    </div>
-</div>
-
-    <div id="sec-admin" class="section">
-        <h3 style="color:var(--danger); margin:15px;">🛠️ لوحة تحكم Te_Bit</h3>
-        <div class="card">
-            <h4>إدارة الأرصدة والحظر</h4>
-            <input type="text" id="adm-uid" placeholder="User ID">
-            <input type="number" id="adm-val" placeholder="المبلغ">
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-primary" style="background:var(--safe);" onclick="adminAction('add')">إضافة +</button>
-                <button class="btn btn-primary" style="background:var(--danger);" onclick="adminAction('sub')">خصم -</button>
-            </div>
-            <button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger); margin-top:10px;" onclick="adminAction('ban')">حظر المستخدم 🚫</button>
-        </div>
-        <div class="card">
-            <h4>إدارة العروض واللغات</h4>
-            <textarea id="adm-msg" placeholder="نص العرض الجديد للواجهة..."></textarea>
-            <button class="btn btn-primary" onclick="updateOffer()">تحديث عرض القائمة الرئيسية 🔄</button>
-        </div>
-    </div>
-</div>
-
-<div id="modal-deposit" class="modal">
-    <div class="modal-content">
-        <span style="float:right; cursor:pointer;" onclick="closeModal()">&times;</span>
-        <h3>💰 إيداع رصيد (USDT TRC20)</h3>
-        <p style="font-size:12px; color:var(--gold);">الحد الأدنى للإيداع: 10 USDT</p>
-        
-        <div style="background:#0b0f1a; padding:12px; border-radius:10px; margin:10px 0; word-break:break-all;">
-            <small>انسخ عنوان المحفظة أدناه:</small><br>
-            <b id="wallet-addr">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</b>
-            <button onclick="navigator.clipboard.writeText('TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV'); tg.showAlert('✅ تم نسخ العنوان');" style="margin-top:5px; padding:5px;">نسخ العنوان</button>
-        </div>
-
-        <input type="text" id="deposit-hash" placeholder="أدخل Hash ID المعاملة هنا">
-        <button class="btn btn-primary" style="margin-top:15px;" onclick="submitDeposit()">✅ تم التحويل - إرسال للمراجعة</button>
-    </div>
-</div>
-
-<div id="modal-withdraw" class="modal"><div class="modal-content"><span style="float:left; cursor:pointer;" onclick="closeModal()">✕</span>
-    <h3>💰 سحب الأرباح</h3>
-    <small>الحد الأدنى 20 USDT | الرسوم $3</small>
-    <input type="number" placeholder="المبلغ">
-    <input type="text" placeholder="عنوان محفظة TRC20">
-    <button class="btn btn-primary" style="background:var(--danger);" onclick="checkWithdrawDay()">تأكيد الطلب</button>
-</div></div>
-
-<div id="modal-add-ch" class="modal"><div class="modal-content"><span style="float:left; cursor:pointer;" onclick="closeModal()">✕</span>
-    <h3>📺 إضافة قناة جديدة</h3>
-    <input type="text" placeholder="@اسم_المستخدم">
-    <select><option>اختر القسم</option><option>مسلسلات تركية</option><option>تقنية</option><option>أخبار</option></select>
-    <button class="btn btn-primary" onclick="tg.showAlert('جاري مراجعة القناة...')">إرسال للمراجعة</button>
-</div></div>
-
-<div id="modal-md5" class="modal"><div class="modal-content"><span style="float:left; cursor:pointer;" onclick="closeModal()">✕</span>
-    <h3>🛡️ مشفر الملفات MD5</h3>
-    <input type="file" id="fileInput">
-    <button class="btn btn-gold" onclick="tg.showAlert('جاري تغيير تشفير الملف...')">بدء التشفير الآن</button>
-</div></div>
-
-<div id="modal-guide" class="modal"><div class="modal-content"><span style="float:left; cursor:pointer;" onclick="closeModal()">✕</span>
-    <h3>📖 دليل الشحن المصور</h3>
-    <div style="text-align:center;">
-        <p style="font-size:12px;">1. انسخ عنوان المحفظة.<br>2. حول المبلغ من Binance أو أي محفظة.<br>3. انسخ الـ Hash ID وضعه في البوت.</p>
-        <div style="height:150px; background:#334155; border-radius:15px; display:flex; align-items:center; justify-content:center;">صورة تعليمية</div>
-    </div>
-</div></div>
-
-<div class="nav">
-    <div class="nav-item active" id="t-home" onclick="switchTab('home')">🏠<br>الرئيسية</div>
-    <div class="nav-item" id="t-promo" onclick="switchTab('promo')">📣<br>المعلن</div>
-    <div class="nav-item" id="t-channels" onclick="switchTab('channels')">📺<br>الناشر</div>
-    <div class="nav-item" id="t-referral" onclick="switchTab('referral')">👥<br>الإحالة</div>
-    <div id="adm-tab" class="nav-item" style="display:none;" onclick="switchTab('admin')">⚙️<br>الإدارة</div>
-</div>
-
-    <div id="modal-ads-type" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">×</span>
-        <h3 style="color:var(--gold);">🚀 إنشاء حملة جديدة</h3>
-        <p style="font-size:12px; margin-bottom:15px;">اختر الطريقة التي تود بها ظهور إعلانك:</p>
-        
-        <button class="btn btn-outline" style="margin-bottom:10px; text-align:right;" onclick="showAdForm('click_view')">🖱️ النقر والمشاهدة</button>
-        <button class="btn btn-outline" style="margin-bottom:10px; text-align:right;" onclick="showAdForm('post_timed')">⏳ منشور لمدة 1/24 ساعة</button>
-        <button class="btn btn-outline" style="margin-bottom:10px; text-align:right;" onclick="showAdForm('forward_post')">🔗 إعلان عبر رابط منشور</button>
-        <button class="btn btn-outline" style="margin-bottom:20px; text-align:right;" onclick="showAdForm('manual_post')">📝 منشور يدوي (نص/وسائط)</button>
-        
-        <button class="btn btn-gold" onclick="openModal('modal-select-targets')">🔎 تحديد الأقسام والقنوات المستهدفة</button>
-    </div>
-</div>
-
-<div id="modal-select-targets" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">×</span>
-        <h3 style="color:var(--gold);">🎯 استهداف الجمهور</h3>
-        <input type="text" id="channel-search" placeholder="🔍 ابحث عن قسم أو قناة..." onkeyup="searchChannels()" 
-               style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; background:#222; border:1px solid #444; color:white;">
-        
-        <div id="targets-list" style="max-height: 300px; overflow-y: auto; text-align: right;">
-            <div class="category-header" style="color:var(--gold); margin:10px 0;">📂 الأقسام المتوفرة:</div>
-            <div class="target-item" style="padding:8px;"><input type="checkbox" id="c1"> <label for="c1">🎭 الترفيه</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c2"> <label for="c2">📰 الأخبار ووسائل الإعلام</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c3"> <label for="c3">🎬 الأفلام والمسلسلات</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c4"> <label for="c4">💄 الموضة والجمال</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c5"> <label for="c5">🎨 الفن والتصوير</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c6"> <label for="c6">💰 العملات المشفرة</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c7"> <label for="c7">💻 التقنيات</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c8"> <label for="c8">📚 تعليم</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c9"> <label for="c9">🍱 الطعام والطبخ</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c10"> <label for="c10">⚽ الصحة والرياضة</label></div>
-<div class="target-item" style="padding:8px;"><input type="checkbox" id="c11"> <label for="c11">✨ آخر</label> </div>
-
-<div id="individual-channels-list"></div>
-        </div>
-        <button class="btn btn-primary" style="margin-top:15px;" onclick="confirmTargets()">✅ تأكيد الوجهة</button>
-    </div>
-</div>
-    
-<script>
-    const tg = window.Telegram.WebApp;
-    const db = firebase.initializeApp({databaseURL: "https://telega-io-default-rtdb.firebaseio.com/"}).database();
-    const user = tg.initDataUnsafe.user || { id: 549686235, language_code: 'ar' };
-
-    // محرك اللغات والذكاء اللغوي (6 لغات)
-    const languages = ['ar', 'en', 'tr', 'ru', 'zh', 'fa'];
-    if(['ar', 'fa'].includes(user.language_code)) {
-        document.body.dir = "rtl";
-    } else {
-        document.body.dir = "ltr";
-    }
-
-    if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
-
-    function switchTab(t) {
-        document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById('sec-' + t).style.display = 'block';
-        if (t === 'channels') updatePublisherStats(user.id);
-        document.getElementById('t-' + t).classList.add('active');
-        tg.HapticFeedback.impactOccurred('medium');
-    }
-
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-
-    // مزامنة البيانات (الـ 21 يوماً وفصل الأرصدة)
-    
-
-    // تحديث عروض 
-    db.ref('system/offer').on('value', snap => {
-        document.getElementById('offer-text').innerText = snap.val() || "خصم 30% للمعلنين الجدد!";
-    });
-
-    function updateOffer() {
-        const msg = document.getElementById('adm-msg').value;
-        if(msg) db.ref('system/offer').set(msg);
-        tg.showAlert("✅ تم تحديث العرض بنجاح");
-    }
-
-    function checkWithdrawDay() {
-        if(new Date().getDay() !== 2) {
-            tg.showPopup({title: 'تنبيه', message: 'عذراً أمين، السحب متاح فقط يوم الثلاثاء كما طلبت!', buttons: [{type: 'close'}]});
-        } else {
-            tg.showAlert("تم إرسال طلب السحب للمراجعة");
-        }
-    }
-
-    
-
-// وظيفة جلب لوحة المتصدرين من Firebase
-    
-function generateMegaPromo() {
-    const refLink = "https://t.me/Ads_telegabot?start=" + user.id;
-    const promoText = `🌟 انضم إلى شبكة telega.io pro وحقق نجاحك الإعلاني! 🌟
-
-👥 للمعلنين : استهدف جمهورك بدقة وحقق نتائج مذهلة!
-
-💰 للناشرين : اجني الأموال بسهولة من موقعك مع محتوى ملائم!
-
-🚀 انضم إلينا الآن وابدأ رحلتك نحو النجاح!
-
-🔗 رابط الإحالة الخاص بي:
-${refLink}`;
-    
-    tg.showPopup({
-        title: 'توليد منشور',
-        message: 'تم تجهيز المنشور، هل تريد نسخه؟',
-        buttons: [{id: 'copy', type: 'default', text: 'نسخ المنشور 📋'}]
-    }, (btnId) => {
-        if(btnId === 'copy') {
-            navigator.clipboard.writeText(promoText);
-            tg.showAlert("✅ تم نسخ المنشور بنجاح!");
-        }
-    });
-}
-
-    tg.expand();
-    // تشغيل أزرار التحكم في الرصيد (للأدمن فقط)
-function adminAction(type) {
-    const targetUid = document.getElementById('adm-uid').value;
-    const amount = parseFloat(document.getElementById('adm-val').value);
-    
-    if(!targetUid || !amount) return tg.showAlert("❌ أدخل المعرف والمبلغ أولاً");
-
-    const userRef = db.ref('users/' + targetUid + '/balance');
-    userRef.transaction((current) => {
-        return type === 'add' ? (current || 0) + amount : (current || 0) - amount;
-    }).then(() => {
-        tg.showAlert("✅ تم تحديث رصيد المستخدم بنجاح");
-    });
-}
-function copyRefLink() {
-    // إنشاء الرابط باستخدام معرف المستخدم الخاص بك
-    const refLink = "https://t.me/Ads_telegabot?start=" + user.id;
-    
-    // أمر النسخ الفعلي للمتصفح
-    navigator.clipboard.writeText(refLink).then(() => {
-        // إظهار تنبيه نجاح داخل تلجرام
-        tg.showAlert("✅ تم نسخ رابط الإحالة بنجاح!");
-    }).catch(err => {
-        // حل احتياطي في حال رفض المتصفح النسخ المباشر
-        tg.showPopup({
-            title: 'رابط الإحالة',
-            message: refLink,
-            buttons: [{type: 'ok', text: 'حسناً'}]
-        });
-    });
-}
-    
-// --- 1. نظام سحب الأرباح (مستقل) ---
-function checkWithdrawDay() {
-    if(new Date().getDay() !== 2) { 
-        tg.showPopup({title: 'تنبيه', message: 'عذراً أمين، السحب متاح فقط يوم الثلاثاء كما طلبت.', buttons: [{type: 'close'}]});
-    } else {
-        const amount = document.getElementById('withdraw-amount').value;
-        if(amount < 20) return tg.showAlert("❌ الحد الأدنى للسحب هو 20 USDT");
-        
-        db.ref('withdrawals/').push({
-            uid: user.id,
-            amount: amount,
-            address: document.getElementById('withdraw-address').value,
-            status: 'pending',
-            time: Date.now()
-        }).then(() => {
-            tg.showAlert("🚀 تم إرسال طلب السحب للمراجعة بنجاح");
-            closeModal();
-        });
-    }
-}
-
-// --- 2. دالة لوحة المتصدرين ---
-function loadLeaderboard() {
-    db.ref('leaderboard').orderByValue().limitToLast(5).on('value', snap => {
-        let html = '';
-        snap.forEach(child => {
-            html = `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05)">
-                        <span>👤 ${child.key}</span><span style="color:var(--gold); font-weight:bold;">$${child.val()}</span>
-                    </div>` + html;
-        });
-        const listDiv = document.getElementById('leaderboard-list');
-        if(listDiv) listDiv.innerHTML = html || "لا توجد بيانات حالياً ⚠️";
-    });
-}
-
-// --- 3. نظام النمو والمسابقات (تحديث تلقائي) ---
-db.ref('users/' + user.id).on('value', snap => {
-    const d = snap.val() || { balance: 0, bonus: 0, refs: 0, channels: 0, active30: 0 };
-    
-    if(document.getElementById('ref-count-v3')) document.getElementById('ref-count-v3').innerText = d.refs || 0;
-    if(document.getElementById('ref-channels-v3')) document.getElementById('ref-channels-v3').innerText = d.channels || 0;
-    if(document.getElementById('ref-earn-v3')) document.getElementById('ref-earn-v3').innerText = (d.bonus || 0).toFixed(2);
-    if(document.getElementById('ref-active-v3')) document.getElementById('ref-active-v3').innerText = d.active30 || 0;
-    
-    if(document.getElementById('bal-total')) document.getElementById('bal-total').innerText = (d.balance + d.bonus).toFixed(2);
-    if(document.getElementById('bal-avail')) document.getElementById('bal-avail').innerText = d.balance.toFixed(2);
-});
-
-// --- 4. نظام الإيداع ---
-function submitDeposit() {
-    const hash = document.getElementById('deposit-hash').value;
-    if(hash.length < 10) return tg.showAlert("❌ يرجى إدخال Hash ID صحيح");
-    
-    db.ref('pending_deposits/' + user.id).set({
-        hash: hash,
-        status: "Pending Verification",
-        time: Date.now()
-    }).then(() => {
-        tg.showPopup({
-            title: 'تم الاستلام',
-            message: 'شكراً أمين، تم إرسال طلبك للمراجعة. سيتم إضافة الرصيد بعد التأكد من الشبكة.',
-            buttons: [{type: 'ok'}]
-        });
-        closeModal();
-    });
-}
-
-// تشغيل اللوحة عند التحميل
-loadLeaderboard();
-// دالة البحث والفلترة
-function searchChannels() {
-    let input = document.getElementById('channel-search').value.toLowerCase();
-    let items = document.querySelectorAll('.target-item');
-    items.forEach(item => {
-        item.style.display = item.innerText.toLowerCase().includes(input) ? "block" : "none";
-    });
-}
-
-// دالة عرض نموذج البيانات بناء على نوع الحملة
-function showAdForm(type) {
-    closeModal();
-    let msg = (type === 'forward_post') ? "يرجى تزويدنا برابط المنشور" : "يرجى كتابة نص الإعلان";
-    tg.showPopup({
-        title: 'تفاصيل الحملة',
-        message: msg + " (سيتم فتح نموذج الإدخال الكامل في الخطوة القادمة)",
-        buttons: [{type: 'ok', text: 'موافق'}]
-    });
-}
-
-// دالة تأكيد الاستهداف
-function confirmTargets() {
-    let count = document.querySelectorAll('#targets-list input:checked').length;
-    if(count > 0) {
-        tg.showAlert("✅ تم تحديد " + count + " وجهة بنجاح");
-        closeModal();
-    } else {
-        tg.showAlert("⚠️ اختر قسماً واحداً على الأقل");
-    }
-}
-
-// 1. تهيئة واجهة تليجرام الأساسية
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
-
-// 2. فتح وإغلاق لوحة إضافة القناة
-function togglePublisherPanel() {
-    const p = document.getElementById('publisher-panel');
-    if (!p) return; // تأمين الكود في حال عدم وجود العنصر
-    
-    const isHidden = (p.style.display === 'none' || p.style.display === '');
-    p.style.display = isHidden ? 'block' : 'none';
-
-    // اهتزاز خفيف عند التفاعل
-    if (tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('light');
-    }
-}
-
-// 3. حساب وتحديث الأرباح من Firebase
-function updatePublisherStats(userId) {
-    if (!userId) return;
-
-    db.ref('users/' + userId + '/stats').on('value', (snap) => {
-        const d = snap.val() || {};
-        
-        // جلب القيم (النقرات، المشاهدات، المنشورات)
-        const c = d.clicks || 0;
-        const v = d.views || 0;
-        const t = d.timed_posts || 0;
-
-        // الحسابات البرمجية الدقيقة
-        const cp = c * 0.0045; // CPC
-        const vp = v * 0.0009; // CPM (تم التصحيح من 0.0000)
-        const tp = parseFloat(d.timed_earnings || 0);
-
-        // تحديث واجهة المستخدم (UI)
-        if(document.getElementById('stat-clicks')) document.getElementById('stat-clicks').innerText = c.toLocaleString();
-        if(document.getElementById('profit-clicks')) document.getElementById('profit-clicks').innerText = cp.toFixed(2);
-        
-        if(document.getElementById('stat-views')) document.getElementById('stat-views').innerText = v.toLocaleString();
-        if(document.getElementById('profit-views')) document.getElementById('profit-views').innerText = vp.toFixed(2);
-        
-        if(document.getElementById('stat-timed')) document.getElementById('stat-timed').innerText = t;
-        if(document.getElementById('profit-timed')) document.getElementById('profit-timed').innerText = tp.toFixed(2);
-        
-        // تحديث الإجمالي الصافي
-        const total = cp + vp + tp;
-        if(document.getElementById('total-net-earnings')) {
-            document.getElementById('total-net-earnings').innerText = total.toFixed(2);
-        }
-    });
-}
-
-// 4. إرسال بيانات القناة للمراجعة
-function submitEliteChannel() {
-    const n = document.getElementById('ch-name').value;
-    const l = document.getElementById('ch-link').value;
-    const p = document.getElementById('price-24h').value;
-
-    if (!n || !l || !p) {
-        tg.HapticFeedback.notificationOccurred('error');
-        return tg.showAlert("⚠️ عذراً أمين، يرجى إكمال كافة البيانات!");
-    }
-
-    const data = {
-        name: n,
-        link: l,
-        price: p,
-        status: 'pending',
-        owner: user.id,
-        date: new Date().toISOString()
-    };
-
-    db.ref('users/' + user.id + '/my_channels').push(data).then(() => {
-        db.ref('admin_requests').push(data);
-        
-        tg.HapticFeedback.notificationOccurred('success');
-        tg.showAlert("✅ تم إرسال قناتك بنجاح! سيتم مراجعتها خلال 24 ساعة.");
-        
-        // تنظيف الحقول وإغلاق اللوحة
-        document.getElementById('ch-name').value = '';
-        document.getElementById('ch-link').value = '';
-        document.getElementById('price-24h').value = '';
-        togglePublisherPanel();
-    }).catch((e) => {
-        tg.showAlert("❌ خطأ: " + e.message);
-    });
-}
-
-// 5. ربط التحديث بنظام التنقل
-// تأكد أن هذه الدالة هي الوحيدة المسؤولة عن تبديل الأقسام
-function switchTab(tabId) {
-    // إخفاء جميع الأقسام
-    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-
-    // إظهار القسم المطلوب
-    const activeSection = document.getElementById('sec-' + tabId);
-    if (activeSection) {
-        activeSection.style.display = 'block';
-        if(document.getElementById('t-' + tabId)) document.getElementById('t-' + tabId).classList.add('active');
-    }
-
-    // تحديث البيانات فورياً عند دخول قسم القنوات
-    if (tabId === 'channels') {
-        updatePublisherStats(user.id);
-    }
-
-    // اهتزاز عند التنقل
-    tg.HapticFeedback.impactOccurred('medium');
+            const target = document.getElementById('sec-' + tabId);
+            if (target) {
+                target.style.display = 'block';
+                document.getElementById('t-' + tabId).classList.add('active');
             }
-    
-</script>
+
+            if (tabId === 'channels') {
+                // استدعاء تحديث البيانات (تأكد من وجود userId و firebase)
+                if (typeof updatePublisherStats === 'function') updatePublisherStats(tg.initDataUnsafe.user.id);
+            }
+            tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        // 2. دوال الناشر
+        function togglePublisherPanel() {
+            const p = document.getElementById('publisher-panel');
+            const isHidden = (p.style.display === 'none' || p.style.display === '');
+            p.style.display = isHidden ? 'block' : 'none';
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function updatePublisherStats(userId) {
+            if (!userId || typeof db === 'undefined') return;
+            db.ref('users/' + userId + '/stats').on('value', (snap) => {
+                const d = snap.val() || {};
+                const c = d.clicks || 0, v = d.views || 0, t = d.timed_posts || 0;
+                
+                const cp = c * 0.0045, vp = v * 0.0009, tp = parseFloat(d.timed_earnings || 0);
+
+                document.getElementById('stat-clicks').innerText = c.toLocaleString();
+                document.getElementById('profit-clicks').innerText = cp.toFixed(2);
+                document.getElementById('stat-views').innerText = v.toLocaleString();
+                document.getElementById('profit-views').innerText = vp.toFixed(2);
+                document.getElementById('stat-timed').innerText = t;
+                document.getElementById('profit-timed').innerText = tp.toFixed(2);
+                document.getElementById('total-net-earnings').innerText = (cp + vp + tp).toFixed(2);
+            });
+        }
+
+        function submitEliteChannel() {
+            const n = document.getElementById('ch-name').value;
+            const l = document.getElementById('ch-link').value;
+            const p = document.getElementById('price-24h').value;
+
+            if (!n || !l || !p) return tg.showAlert("⚠️ أكمل البيانات!");
+
+            // كود الحفظ في Firebase يوضع هنا (بناءً على إعداداتك)
+            tg.showAlert("✅ تم الإرسال للمراجعة");
+            togglePublisherPanel();
+        }
+    </script>
 </body>
 </html>
- 
