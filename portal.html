@@ -42,60 +42,86 @@
         .progress-bg { height: 8px; background: #1e293b; border-radius: 10px; margin: 10px 0; }
         .progress-fill { height: 100%; background: var(--gold); border-radius: 10px; width: 0%; transition: 1s ease-in-out; }
 
-/* تصميم أمين الملكي */
+/* --- تحسين المظهر ليتطابق مع تليجرام --- */
+
 .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 12px; /* تقليل المسافة لتناسب شاشات الجوال */
+    margin-bottom: 20px;
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 18px;
-    padding: 15px;
+    /* استخدام لون خلفية التليجرام الأساسي */
+    background: var(--tg-theme-bg-color, #ffffff);
+    /* إضافة لمسة شفافة بسيطة للهوية */
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px; /* زوايا تليجرام المعتادة */
+    padding: 16px;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: background 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.stat-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+/* لون النص الأساسي من سمة التليجرام */
+.stat-card h4, .stat-card p {
+    color: var(--tg-theme-text-color, #000);
+}
 
-.profit-tag { font-size: 11px; color: var(--safe); font-weight: bold; }
+.profit-tag { 
+    font-size: 11px; 
+    /* استخدام لون النجاح الأخضر أو لون الروابط من التليجرام */
+    color: #31b545; 
+    font-weight: 600; 
+}
 
 .btn-premium-add {
-    background: var(--gold-linear);
-    color: #000;
+    /* استخدام لون الزر الرسمي للتليجرام */
+    background: var(--tg-theme-button-color, #248bcf);
+    /* لون النص داخل الزر الرسمي */
+    color: var(--tg-theme-button-text-color, #ffffff);
     width: 100%;
-    padding: 15px;
-    border-radius: 50px;
-    font-weight: 800;
-    font-size: 16px;
+    padding: 14px;
+    border-radius: 10px; /* تصميم أزرار تليجرام */
+    font-weight: 600;
+    font-size: 15px;
     border: none;
-    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
     cursor: pointer;
     margin-bottom: 20px;
+    transition: opacity 0.2s ease;
+}
+
+.btn-premium-add:active {
+    opacity: 0.8; /* تأثير الضغط الرسمي */
 }
 
 #publisher-panel {
     display: none;
-    background: rgba(0,0,0,0.6);
-    border-radius: 25px;
+    /* خلفية القسم الثانوي في تليجرام */
+    background: var(--tg-theme-secondary-bg-color, #f4f4f5);
+    border-radius: 15px;
     padding: 20px;
-    border: 1.5px solid var(--gold);
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+    border: none; /* تليجرام يفضل الأقسام بدون حدود حادة */
     margin-bottom: 30px;
 }
 
 .input-premium {
     width: 100%;
-    background: #111;
-    border: 1px solid #333;
-    color: #fff;
+    /* خلفية الخانات مطابقة للخلفية الأساسية */
+    background: var(--tg-theme-bg-color, #fff);
+    /* لون الحدود خفيف جداً */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--tg-theme-text-color, #000);
     padding: 12px;
-    border-radius: 12px;
+    border-radius: 10px;
     margin-bottom: 12px;
+    box-sizing: border-box; /* لضمان عدم خروج الحواف عن الشاشة */
+    font-size: 14px;
+}
+
+/* تنسيق النصوص التوضيحية (Hints) */
+.input-premium::placeholder {
+    color: var(--tg-theme-hint-color, #999);
 }
             
     </style>
@@ -146,30 +172,30 @@
         </div>
     </div>
 
-    <div id="sec-channels" class="section" style="display: none; padding: 15px;">
+ <div id="sec-channels" class="section" style="display: none; padding: 16px;">
     
     <div class="stats-grid">
-        <div class="stat-card" style="border-bottom: 4px solid #3498db;">
-            <h4 style="color: #3498db; font-size: 12px;">🖱️ النقرات (CPC)</h4>
-            <p id="stat-clicks" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</p>
+        <div class="stat-card" style="border-bottom: 3px solid var(--tg-theme-link-color, #3498db);">
+            <h4 style="color: var(--tg-theme-link-color, #3498db); font-size: 11px; margin: 0;">🖱️ النقرات (CPC)</h4>
+            <p id="stat-clicks" class="stat-value">0</p>
             <div class="profit-tag">الربح: $<span id="profit-clicks">0.00</span></div>
         </div>
 
-        <div class="stat-card" style="border-bottom: 4px solid #2ecc71;">
-            <h4 style="color: #2ecc71; font-size: 12px;">🚀 المشاهدات (CPM)</h4>
-            <p id="stat-views" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</p>
+        <div class="stat-card" style="border-bottom: 3px solid #31b545;">
+            <h4 style="color: #31b545; font-size: 11px; margin: 0;">🚀 المشاهدات (CPM)</h4>
+            <p id="stat-views" class="stat-value">0</p>
             <div class="profit-tag">الربح: $<span id="profit-views">0.00</span></div>
         </div>
 
-        <div class="stat-card" style="border-bottom: 4px solid #9b59b6;">
-            <h4 style="color: #9b59b6; font-size: 12px;">⏰ منشورات (24h)</h4>
-            <p id="stat-timed" style="font-size: 20px; font-weight: bold; margin: 5px 0;">0</p>
+        <div class="stat-card" style="border-bottom: 3px solid #9b59b6;">
+            <h4 style="color: #9b59b6; font-size: 11px; margin: 0;">⏰ منشورات (24h)</h4>
+            <p id="stat-timed" class="stat-value">0</p>
             <div class="profit-tag">الربح: $<span id="profit-timed">0.00</span></div>
         </div>
 
-        <div class="stat-card" style="background: var(--gold-linear); color: #000; border:none;">
-            <h4 style="margin: 0; font-size: 12px;">💰 الإجمالي الصافي</h4>
-            <h2 style="margin: 5px 0;">$<span id="total-net-earnings">0.00</span></h2>
+        <div class="stat-card" style="background: var(--tg-theme-button-color, #248bcf); border: none;">
+            <h4 style="color: var(--tg-theme-button-text-color, #fff); margin: 0; font-size: 11px; opacity: 0.8;">💰 الإجمالي الصافي</h4>
+            <h2 id="total-net-earnings-container" style="color: var(--tg-theme-button-text-color, #fff); margin: 5px 0; font-size: 22px;">$<span id="total-net-earnings">0.00</span></h2>
         </div>
     </div>
 
@@ -178,12 +204,12 @@
     </button>
 
     <div id="publisher-panel">
-        <h3 style="color: var(--gold); text-align: center; margin-bottom: 20px;">📝 بيانات القناة</h3>
+        <h4 style="color: var(--tg-theme-link-color, #248bcf); text-align: center; margin-top: 0; margin-bottom: 20px;">📝 بيانات القناة</h4>
         
         <input type="text" id="ch-name" class="input-premium" placeholder="🏷️ اسم قناتك">
         <input type="text" id="ch-link" class="input-premium" placeholder="🔗 رابط القناة @username">
         
-        <label style="color:#888; font-size:12px;">📂 تصنيف المحتوى:</label>
+        <label style="color: var(--tg-theme-hint-color, #888); font-size: 12px; margin-right: 5px;">📂 تصنيف المحتوى:</label>
         <select id="ch-category" class="input-premium">
             <option value="entertainment">الترفيه 🎭</option>
             <option value="news">الاخبار ووسائل الاعلام 📰</option>
@@ -198,31 +224,33 @@
             <option value="other">اخر ✨</option>
         </select>
 
-        <label style="color:#888; font-size:12px;">🌍 المنطقة المستهدفة:</label>
+        <label style="color: var(--tg-theme-hint-color, #888); font-size: 12px; margin-right: 5px;">🌍 المنطقة المستهدفة:</label>
         <select id="ch-region" class="input-premium">
             <option value="all">جميع دول العالم 🌍</option>
             <option value="arab">الوطن العربي 🇸🇦</option>
             <option value="gulf">دول الخليج 🇰🇼</option>
         </select>
 
-        <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:15px; font-size:13px; border:1px solid #333;">
-            <p style="margin-bottom:10px;">⏰ <b>منشور (24h):</b> <input type="number" id="price-24h" placeholder="سعرك $" style="width:60px; background:none; border:1px solid var(--gold); color:white; border-radius:5px;"> <small>(عمولتنا 10%)</small></p>
-            <p style="margin-bottom:10px;">🖱️ <b>نقرات (CPC):</b> <span style="color:var(--safe);">5$ / 1000</span> <small>(ثابت + عمولة 10%)</small></p>
-            <p>🚀 <b>مشاهدات (CPM):</b> <span style="color:var(--safe);">1$ / 1000</span> <small>(ثابت + عمولة 10%)</small></p>
+        <div style="background: var(--tg-theme-bg-color, #fff); padding: 15px; border-radius: 12px; margin-bottom: 15px; font-size: 13px; border: 1px solid rgba(0,0,0,0.05);">
+            <p style="margin: 0 0 10px 0; color: var(--tg-theme-text-color);">⏰ <b>منشور (24h):</b> <input type="number" id="price-24h" placeholder="0" style="width: 50px; background: var(--tg-theme-secondary-bg-color); border: 1px solid rgba(0,0,0,0.1); color: var(--tg-theme-text-color); border-radius: 5px; text-align: center;"> $ <small style="color: var(--tg-theme-hint-color);">(عمولتنا 10%)</small></p>
+            <p style="margin: 0 0 10px 0; color: var(--tg-theme-text-color);">🖱️ <b>نقرات (CPC):</b> <span style="color: #31b545; font-weight: bold;">5$ / 1000</span></p>
+            <p style="margin: 0; color: var(--tg-theme-text-color);">🚀 <b>مشاهدات (CPM):</b> <span style="color: #31b545; font-weight: bold;">1$ / 1000</span></p>
         </div>
 
-        <div style="background: rgba(255, 193, 7, 0.1); border-right: 4px solid #ffc107; padding: 10px; font-size: 11px; margin-bottom: 20px; color:#ddd;">
+        <div style="background: rgba(255, 165, 0, 0.1); border-right: 4px solid orange; padding: 12px; font-size: 11px; margin-bottom: 20px; color: var(--tg-theme-text-color); border-radius: 4px;">
             ⚠️ يجب إضافة <b>@Ads_telegabot</b> كمسؤول. المتطلبات: +1000 مشترك وعمر القناة +1 شهر.
         </div>
 
-        <button class="btn-premium-add" style="background:#0088cc; color:white; box-shadow:none;" onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')">🤖 1. إضافة البوت كمسؤول</button>
-        <button onclick="tg.showAlert('🔍 يتم الآن التحقق من الصلاحيات...')" style="width:100%; padding:10px; background:none; border:1px solid #444; color:white; border-radius:10px; margin-bottom:10px;">🔍 2. تحقق من الإضافة</button>
-        <button onclick="submitEliteChannel()" style="width:100%; padding:15px; background:var(--safe); border:none; color:white; border-radius:12px; font-weight:bold; font-size:16px;">🚀 3. تقديم القناة للمراجعة</button>
+        <button class="btn-premium-add" style="background: #0088cc; color: white; margin-bottom: 10px;" onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')">🤖 1. إضافة البوت كمسؤول</button>
+        
+        <button onclick="tg.showAlert('🔍 يتم الآن التحقق من الصلاحيات...')" style="width: 100%; padding: 12px; background: transparent; border: 1px solid var(--tg-theme-hint-color, #444); color: var(--tg-theme-text-color); border-radius: 10px; margin-bottom: 10px; font-size: 14px; cursor: pointer;">🔍 2. تحقق من الإضافة</button>
+        
+        <button onclick="submitEliteChannel()" style="width: 100%; padding: 15px; background: #31b545; border: none; color: white; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">🚀 3. تقديم القناة للمراجعة</button>
     </div>
 
-    <h4 style="color:#666; font-size:14px; margin-bottom:15px;">📺 قنواتك المسجلة:</h4>
+    <h4 style="color: var(--tg-theme-hint-color, #666); font-size: 14px; margin: 25px 0 15px;">📺 قنواتك المسجلة:</h4>
     <div id="my-elite-channels"></div>
-    </div>
+ </div>
     
 <div id="sec-referral" class="section">
     <h3 style="margin: 15px;">👥 نظام النمو والمسابقات</h3>
@@ -572,50 +600,104 @@ function confirmTargets() {
     }
 }
 
-// فتح وإغلاق اللوحة
+    // تهيئة واجهة تليجرام (أول خطوة لضمان عمل السمة)
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand(); // توسيع الواجهة لتملأ شاشة الهاتف
+
+// فتح وإغلاق اللوحة مع اهتزاز خفيف
 function togglePublisherPanel() {
     const p = document.getElementById('publisher-panel');
-    p.style.display = (p.style.display === 'none' || p.style.display === '') ? 'block' : 'none';
+    const isHidden = (p.style.display === 'none' || p.style.display === '');
+    p.style.display = isHidden ? 'block' : 'none';
+
+    // إضافة اهتزاز "نجاح" خفيف عند الفتح
+    if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+    }
 }
 
-// حساب الأرباح الدقيق (أهم جزء لثقة الناشر)
+// حساب الأرباح وتحديثها لحظياً من Firebase
 function updatePublisherStats(userId) {
+    if (!userId) return;
+
     db.ref('users/' + userId + '/stats').on('value', (snap) => {
         const d = snap.val() || {};
-        const c = d.clicks || 0, v = d.views || 0, t = d.timed_posts || 0;
+        
+        // جلب القيم مع التأكد من وجودها (إصلاح الرموز الناقصة)
+        const c = d.clicks || 0;
+        const v = d.views || 0;
+        const t = d.timed_posts || 0;
 
-        // الحسابات (صافي الربح للناشر بعد خصم 10% لصالح أمين)
-        const cp = c * 0.0045; // 4.5$ لكل 1000 نقرة
-        const vp = v * 0.0009; // 0.9$ لكل 1000 ظهور
+        // الحسابات (صافي الربح للناشر بعد خصم عمولتك 10%)
+        // الربح الصافي للناشر: 4.5$ للنقرات و 0.9$ للمشاهدات
+        const cp = c * 0.0045; 
+        const vp = v * 0.0009; 
         const tp = parseFloat(d.timed_earnings || 0);
 
-        document.getElementById('stat-clicks').innerText = c;
+        // تحديث العناصر في الـ HTML
+        document.getElementById('stat-clicks').innerText = c.toLocaleString();
         document.getElementById('profit-clicks').innerText = cp.toFixed(2);
-        document.getElementById('stat-views').innerText = v;
+        
+        document.getElementById('stat-views').innerText = v.toLocaleString();
         document.getElementById('profit-views').innerText = vp.toFixed(2);
+        
         document.getElementById('stat-timed').innerText = t;
         document.getElementById('profit-timed').innerText = tp.toFixed(2);
-        document.getElementById('total-net-earnings').innerText = (cp + vp + tp).toFixed(2);
+        
+        // حساب الإجمالي
+        const total = cp + vp + tp;
+        document.getElementById('total-net-earnings').innerText = total.toFixed(2);
     });
 }
 
-// تقديم الطلب
+// تقديم طلب القناة للمراجعة
 function submitEliteChannel() {
     const n = document.getElementById('ch-name').value;
     const l = document.getElementById('ch-link').value;
     const p = document.getElementById('price-24h').value;
 
-    if(!n || !l || !p) return tg.showAlert("⚠️ أكمل البيانات أولاً!");
+    // التحقق من البيانات باستخدام تنبيهات تليجرام الأصلية
+    if (!n || !l || !p) {
+        tg.HapticFeedback.notificationOccurred('error'); // اهتزاز عند الخطأ
+        return tg.showAlert("⚠️ عذراً أمين، يرجى إكمال كافة البيانات!");
+    }
 
     const data = {
-        name: n, link: l, price: p, status: 'pending', owner: user.id, date: new Date().toISOString()
+        name: n,
+        link: l,
+        price: p,
+        status: 'pending',
+        owner: user.id, // تأكد من معرف المستخدم (user.id)
+        date: new Date().toISOString()
     };
 
+    // حفظ البيانات في Firebase
     db.ref('users/' + user.id + '/my_channels').push(data).then(() => {
         db.ref('admin_requests').push(data);
-        tg.showAlert("✅ تم إرسال قناتك! سيتم مراجعتها خلال 24 ساعة.");
+        
+        tg.HapticFeedback.notificationOccurred('success'); // اهتزاز عند النجاح
+        tg.showAlert("✅ تم إرسال قناتك بنجاح! سيتم مراجعتها خلال 24 ساعة.");
+        
+        // تفريغ المدخلات بعد النجاح
+        document.getElementById('ch-name').value = '';
+        document.getElementById('ch-link').value = '';
+        document.getElementById('price-24h').value = '';
+        
         togglePublisherPanel();
+    }).catch((error) => {
+        tg.showAlert("❌ حدث خطأ أثناء الإرسال: " + error.message);
     });
+}
+
+// دمج التحديثات مع نظام التنقل الخاص بك
+const oldSwitchTab = switchTab; // افترضنا أن عندك دالة لتبديل الأقسام
+switchTab = function(tabId) {
+    if (typeof oldSwitchTab === 'function') oldSwitchTab(tabId);
+    
+    if (tabId === 'channels') {
+        updatePublisherStats(user.id);
+    }
 }
     
 </script>
