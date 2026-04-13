@@ -113,6 +113,19 @@ body {
     margin-bottom: 12px;
     box-sizing: border-box;
 }
+
+.modal {
+    display: none; /* هذا السطر هو السر، يمنع الظهور التلقائي */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+}
         
     </style>
 </head>
@@ -159,7 +172,7 @@ body {
     </div>
 </div>
 
-<div id="modal-smart-campaign" class="modal">
+<div id="modal-smart-campaign" class="modal" style="display: none;">
     <div class="modal-content" style="border: 2px solid var(--gold); max-width: 500px; background: var(--bg); color: var(--text);">
         <span style="float:left; cursor:pointer; font-size:24px;" onclick="closeModal()">✕</span>
         <h3 style="color:var(--gold); text-align:center;">🎯 إعداد الحملة العالمية</h3>
@@ -504,6 +517,14 @@ function processNewCampaign() {
         });
         closeModal();
     }).catch(e => tg.showAlert("خطأ: " + e.message));
+}
+
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'flex'; // يظهر القائمة فقط عند الطلب
+}
+
+function closeModal() {
+    document.getElementById('modal-smart-campaign').style.display = 'none'; // يخفي القائمة
 }
     
 </script>
