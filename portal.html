@@ -3,193 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منصة الناشر - أمين</title>
+    <title>Telega-IO Extreme v3 - Ameen</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
-        /* --- التنسيق الأساسي والسمات --- */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            margin: 0;
-            padding-bottom: 80px; /* مساحة للقائمة السفلية */
+        /* --- التنسيقات المدمجة (القديمة + الجديدة) --- */
+        :root {
+            --bg: #0b0f1a; --card: rgba(23, 32, 51, 0.95);
+            --accent: #3b82f6; --gold: #f59e0b; --safe: #10b981; --danger: #ef4444; --text: #ffffff;
         }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+        
+        /* الأقسام والتنقل */
+        .section { display: none; padding: 16px; animation: slideUp 0.4s ease; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .card { background: var(--card); border-radius: 24px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .stats-grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0; }
+        .stat-item { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
+        
+        /* كروت الأرباح الجديدة (التي طلبتموها) */
+        .profit-card { border-bottom: 3px solid var(--accent); }
+        .profit-tag { color: var(--safe); font-size: 11px; font-weight: bold; }
 
-        .section { display: none; padding: 16px; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* الأزرار والحقول */
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; margin-top: 10px; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .input-premium { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 12px; color: white; padding: 14px; margin-top: 10px; box-sizing: border-box; }
 
-        /* --- شبكة الإحصائيات (مثل الصورة المطلوبة) --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: var(--tg-theme-secondary-bg-color, #f4f4f5);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .stat-card h4 { margin: 0; font-size: 11px; opacity: 0.8; }
-        .stat-card .stat-value { font-size: 20px; font-weight: bold; margin: 8px 0; }
-        .profit-tag { color: #31b545; font-size: 11px; font-weight: bold; }
-
-        /* --- الأزرار والحقول --- */
-        .btn-main {
-            width: 100%;
-            padding: 15px;
-            background: var(--tg-theme-button-color, #248bcf);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 15px;
-        }
-
-        .input-premium {
-            width: 100%;
-            background: var(--tg-theme-bg-color, #fff);
-            border: 1px solid rgba(0,0,0,0.1);
-            color: var(--tg-theme-text-color);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-
-        /* --- القائمة السفلية --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: var(--tg-theme-secondary-bg-color);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .nav-item { font-size: 12px; opacity: 0.6; cursor: pointer; text-align: center; }
-        .nav-item.active { opacity: 1; color: var(--tg-theme-link-color); font-weight: bold; }
+        /* القائمة السفلية */
+        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(11, 15, 26, 0.98); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 2000; }
+        .nav-item { color: #64748b; font-size: 10px; cursor: pointer; text-align: center; }
+        .nav-item.active { color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="sec-home" class="section" style="display: block; text-align: center;">
-        <h2>مرحباً بك في المنصة</h2>
-        <p>اختر "الناشر" من القائمة بالأسفل لإدارة قنواتك.</p>
+<div class="main-content">
+    <div id="sec-home" class="section" style="display: block;">
+        <div class="card" style="text-align: center; border: 1px solid var(--accent);">
+            <div id="user-rank" style="font-size: 10px; color: var(--gold); font-weight: bold;">MEMBER</div>
+            <small>إجمالي الرصيد (USDT)</small>
+            <h1 id="bal-total" style="font-size: 38px; margin: 8px 0;">0.00</h1>
+            <div class="stats-grid-4">
+                <div class="stat-item"><small>قابل للسحب</small><br><b id="bal-avail" style="color:var(--safe);">0.00</b></div>
+                <div class="stat-item"><small>مكافآت</small><br><b id="bal-bonus" style="color:var(--gold);">0.00</b></div>
+            </div>
+        </div>
+        <div class="card" id="global-offer-card" style="border-right: 4px solid var(--danger);">
+            <h4 style="margin:0; color:var(--danger);">🔥 عروض أمين الحصرية</h4>
+            <p id="offer-text" style="font-size: 12px; color: #94a3b8; margin-top: 5px;">خصم 30% للمعلنين الدائمين!</p>
+        </div>
+    </div>
+
+    <div id="sec-promo" class="section">
+        <h3 style="margin:15px;">📣 بوابة المعلن Pro</h3>
+        <div class="card">
+            <button class="btn btn-primary" onclick="openModal('modal-deposit')">💳 إيداع رصيد (Min $10)</button>
+            <button class="btn btn-outline" onclick="openModal('modal-ads-type')">🎯 إنشاء حملة إعلانية</button>
+        </div>
     </div>
 
     <div id="sec-channels" class="section">
-        <div class="stats-grid">
-            <div class="stat-card" style="border-bottom: 3px solid #3498db;">
-                <h4>🖱️ النقرات (CPC)</h4>
-                <p id="stat-clicks" class="stat-value">0</p>
-                <div class="profit-tag">الربح: $<span id="profit-clicks">0.00</span></div>
+        <h3 style="margin:15px;">📺 بوابة الناشر Elite</h3>
+        <div class="stats-grid-4">
+            <div class="stat-item profit-card">
+                <small>🖱️ نقرات (CPC)</small><br><b id="stat-clicks">0</b>
+                <div class="profit-tag">$<span id="profit-clicks">0.00</span></div>
             </div>
-            <div class="stat-card" style="border-bottom: 3px solid #31b545;">
-                <h4>🚀 المشاهدات (CPM)</h4>
-                <p id="stat-views" class="stat-value">0</p>
-                <div class="profit-tag">الربح: $<span id="profit-views">0.00</span></div>
+            <div class="stat-item profit-card" style="border-bottom-color: var(--safe);">
+                <small>🚀 مشاهدات (CPM)</small><br><b id="stat-views">0</b>
+                <div class="profit-tag">$<span id="profit-views">0.00</span></div>
             </div>
-            <div class="stat-card" style="border-bottom: 3px solid #9b59b6;">
-                <h4>⏰ منشورات (24h)</h4>
-                <p id="stat-timed" class="stat-value">0</p>
-                <div class="profit-tag">الربح: $<span id="profit-timed">0.00</span></div>
+            <div class="stat-item profit-card" style="border-bottom-color: #9b59b6;">
+                <small>⏰ منشورات (24h)</small><br><b id="stat-timed">0</b>
+                <div class="profit-tag">$<span id="profit-timed">0.00</span></div>
             </div>
-            <div class="stat-card" style="background: var(--tg-theme-button-color); color: #fff;">
-                <h4 style="opacity: 0.9;">💰 الإجمالي الصافي</h4>
-                <p style="font-size: 22px; margin: 5px 0;">$<span id="total-net-earnings">0.00</span></p>
+            <div class="stat-item" style="background: var(--accent);">
+                <small>💰 الإجمالي الصافي</small><br><b id="total-net-earnings">0.00</b>
             </div>
         </div>
+        
+        <button class="btn btn-primary" onclick="togglePublisherPanel()">➕ إضافة قناة جديدة</button>
 
-        <button class="btn-main" onclick="togglePublisherPanel()">➕ إضافة قناة جديدة</button>
-
-        <div id="publisher-panel" style="display: none; background: var(--tg-theme-secondary-bg-color); padding: 15px; border-radius: 12px;">
+        <div id="publisher-panel" style="display: none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-top: 10px;">
             <input type="text" id="ch-name" class="input-premium" placeholder="اسم القناة">
             <input type="text" id="ch-link" class="input-premium" placeholder="رابط القناة @">
             <input type="number" id="price-24h" class="input-premium" placeholder="سعر الإعلان (24 ساعة) $">
-            
-            <button onclick="submitEliteChannel()" class="btn-main" style="background: #31b545;">🚀 تقديم للمراجعة</button>
+            <button onclick="submitEliteChannel()" class="btn btn-primary" style="background: var(--safe);">🚀 تقديم للمراجعة</button>
         </div>
-
-        <h4>📺 قنواتك المسجلة:</h4>
-        <div id="my-elite-channels"></div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" id="t-home" onclick="switchTab('home')">🏠 الرئيسية</div>
-        <div class="nav-item" id="t-channels" onclick="switchTab('channels')">📺 الناشر</div>
+    <div id="sec-referral" class="section">
+        <h3 style="margin: 15px;">👥 نظام النمو</h3>
+        <div class="stats-grid-4">
+            <div class="stat-item"><small>الإحالات</small><br><b id="ref-count-v3">0</b></div>
+            <div class="stat-item"><small>المكاسب ($)</small><br><b id="ref-earn-v3" style="color:var(--safe);">0.00</b></div>
+        </div>
+        <button class="btn btn-primary" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
     </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+    <div id="sec-admin" class="section">
+        <h3 style="color:var(--danger); margin:15px;">🛠️ لوحة الإدارة</h3>
+        <div class="card">
+            <input type="text" id="adm-uid" class="input-premium" placeholder="User ID">
+            <input type="number" id="adm-val" class="input-premium" placeholder="المبلغ">
+            <button class="btn btn-primary" onclick="adminAction('add')">إضافة رصيد +</button>
+        </div>
+    </div>
+</div>
 
-        // 1. نظام التنقل الموحد (يحل مشكلة تعطل الأزرار)
-        function switchTab(tabId) {
-            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+<div class="nav">
+    <div class="nav-item active" id="t-home" onclick="switchTab('home')">🏠<br>الرئيسية</div>
+    <div class="nav-item" id="t-promo" onclick="switchTab('promo')">📣<br>المعلن</div>
+    <div class="nav-item" id="t-channels" onclick="switchTab('channels')">📺<br>الناشر</div>
+    <div class="nav-item" id="t-referral" onclick="switchTab('referral')">👥<br>الإحالة</div>
+    <div id="adm-tab" class="nav-item" style="display:none;" onclick="switchTab('admin')">⚙️<br>الإدارة</div>
+</div>
 
-            const target = document.getElementById('sec-' + tabId);
-            if (target) {
-                target.style.display = 'block';
-                document.getElementById('t-' + tabId).classList.add('active');
-            }
+<script>
+    // --- إعدادات Firebase من ملفك القديم ---
+    const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-            if (tabId === 'channels') {
-                // استدعاء تحديث البيانات (تأكد من وجود userId و firebase)
-                if (typeof updatePublisherStats === 'function') updatePublisherStats(tg.initDataUnsafe.user.id);
-            }
-            tg.HapticFeedback.impactOccurred('medium');
-        }
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe.user || { id: 549686235 }; // معرف أمين الافتراضي
 
-        // 2. دوال الناشر
-        function togglePublisherPanel() {
-            const p = document.getElementById('publisher-panel');
-            const isHidden = (p.style.display === 'none' || p.style.display === '');
-            p.style.display = isHidden ? 'block' : 'none';
-            tg.HapticFeedback.impactOccurred('light');
-        }
+    // إظهار لوحة الإدارة لأمين فقط
+    if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
-        function updatePublisherStats(userId) {
-            if (!userId || typeof db === 'undefined') return;
-            db.ref('users/' + userId + '/stats').on('value', (snap) => {
-                const d = snap.val() || {};
-                const c = d.clicks || 0, v = d.views || 0, t = d.timed_posts || 0;
-                
-                const cp = c * 0.0045, vp = v * 0.0009, tp = parseFloat(d.timed_earnings || 0);
+    // دالة التنقل الموحدة
+    function switchTab(t) {
+        document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.getElementById('sec-' + t).style.display = 'block';
+        document.getElementById('t-' + t).classList.add('active');
+        
+        if(t === 'channels') updatePublisherStats(user.id);
+        tg.HapticFeedback.impactOccurred('medium');
+    }
 
-                document.getElementById('stat-clicks').innerText = c.toLocaleString();
-                document.getElementById('profit-clicks').innerText = cp.toFixed(2);
-                document.getElementById('stat-views').innerText = v.toLocaleString();
-                document.getElementById('profit-views').innerText = vp.toFixed(2);
-                document.getElementById('stat-timed').innerText = t;
-                document.getElementById('profit-timed').innerText = tp.toFixed(2);
-                document.getElementById('total-net-earnings').innerText = (cp + vp + tp).toFixed(2);
-            });
-        }
+    // نظام الأرباح المطور (الناشر)
+    function updatePublisherStats(userId) {
+        db.ref('users/' + userId + '/stats').on('value', snap => {
+            const d = snap.val() || {};
+            const c = d.clicks || 0, v = d.views || 0, t = d.timed_posts || 0;
+            const cp = c * 0.0045, vp = v * 0.0009, tp = parseFloat(d.timed_earnings || 0);
 
-        function submitEliteChannel() {
-            const n = document.getElementById('ch-name').value;
-            const l = document.getElementById('ch-link').value;
-            const p = document.getElementById('price-24h').value;
+            document.getElementById('stat-clicks').innerText = c;
+            document.getElementById('profit-clicks').innerText = cp.toFixed(2);
+            document.getElementById('stat-views').innerText = v;
+            document.getElementById('profit-views').innerText = vp.toFixed(2);
+            document.getElementById('stat-timed').innerText = t;
+            document.getElementById('profit-timed').innerText = tp.toFixed(2);
+            document.getElementById('total-net-earnings').innerText = (cp + vp + tp).toFixed(2);
+        });
+    }
 
-            if (!n || !l || !p) return tg.showAlert("⚠️ أكمل البيانات!");
+    function togglePublisherPanel() {
+        const p = document.getElementById('publisher-panel');
+        p.style.display = (p.style.display === 'none') ? 'block' : 'none';
+        tg.HapticFeedback.impactOccurred('light');
+    }
 
-            // كود الحفظ في Firebase يوضع هنا (بناءً على إعداداتك)
-            tg.showAlert("✅ تم الإرسال للمراجعة");
-            togglePublisherPanel();
-        }
-    </script>
+    function submitEliteChannel() {
+        const n = document.getElementById('ch-name').value;
+        const l = document.getElementById('ch-link').value;
+        if(!n || !l) return tg.showAlert("⚠️ أكمل البيانات");
+        
+        db.ref('admin_requests').push({ name: n, link: l, owner: user.id, status: 'pending' });
+        tg.showAlert("✅ تم إرسال قناتك للمراجعة");
+        togglePublisherPanel();
+    }
+
+    // نظام الإحالة (من ملفك القديم)
+    function copyRefLink() {
+        const link = "https://t.me/Ads_telegabot?start=" + user.id;
+        navigator.clipboard.writeText(link);
+        tg.showAlert("✅ تم نسخ رابط الإحالة");
+    }
+
+    // لوحة الإدارة (من ملفك القديم)
+    function adminAction(type) {
+        const uid = document.getElementById('adm-uid').value;
+        const val = parseFloat(document.getElementById('adm-val').value);
+        if(!uid || !val) return;
+        db.ref('users/' + uid + '/balance').transaction(c => (c || 0) + val);
+        tg.showAlert("✅ تم تحديث الرصيد");
+    }
+
+    tg.ready();
+    tg.expand();
+</script>
 </body>
 </html>
