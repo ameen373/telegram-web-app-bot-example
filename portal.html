@@ -114,17 +114,39 @@ body {
     box-sizing: border-box;
 }
 
+/* نظام المودال الاحترافي - يمنع التداخل */
 .modal {
-    display: none; /* هذا السطر هو السر، يمنع الظهور التلقائي */
+    display: none; /* مخفي افتراضياً لمنع التداخل في الأقسام الأخرى */
     position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.8);
+    z-index: 10000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    backdrop-filter: blur(5px);
     justify-content: center;
     align-items: center;
+}
+
+.target-goal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.goal-item {
+    border: 1px solid rgba(128,128,128,0.3);
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: var(--card);
+}
+
+.goal-item.active {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
 }
         
     </style>
@@ -148,80 +170,70 @@ body {
         </div>
     </div>
 
-<div id="sec-promo" class="section">
-    <div class="card" style="background: var(--gold-linear); color: black; border: none; padding: 20px; border-radius: 20px;">
+<div id="sec-promo" class="section" style="display: none;">
+    <div class="card" style="background: var(--gold-linear); color: #000; border: none;">
         <h3 style="margin:0;">🎖️ Advertiser Elite Panel</h3>
-        <p style="margin:5px 0 0; font-size:12px; opacity:0.8;">تحكم في حملاتك بأدوات الذكاء الاصطناعي والجدولة الزمنية</p>
-    </div>
-    
-    <div class="stats-grid-4">
-        <div class="stat-item"><small>الظهور (Imp)</small><br><b id="adv-views">0</b></div>
-        <div class="stat-item"><small>النقرات (Clicks)</small><br><b id="adv-clicks">0</b></div>
-        <div class="stat-item"><small>متوسط CTR</small><br><b style="color:var(--safe);" id="adv-ctr">0%</b></div>
-        <div class="stat-item"><small>الرصيد المتبقي</small><br><b style="color:var(--danger);">$<span id="adv-rem-bal">0.00</span></b></div>
+        <p style="margin:5px 0 0; font-size:11px;">نظام المزايدة التلقائي والذكاء الاصطناعي نشط ✅</p>
     </div>
 
-    <button class="btn btn-primary" style="background:var(--accent); margin-bottom:10px; width: 100%; border-radius: 50px; padding: 15px; font-weight: bold;" onclick="openModal('modal-smart-campaign')">🚀 إنشاء حملة ذكية (Smart Campaign)</button>
-    <button class="btn btn-outline" style="width: 100%; border-radius: 50px;" onclick="openModal('modal-deposit')">💳 تعبئة الرصيد الإعلاني</button>
-    
-    <div class="card" style="margin-top:20px; background: var(--card); border: 1px solid rgba(128,128,128,0.1);">
-        <h4 style="color: var(--text);">📈 إدارة الحملات الحالية</h4>
-        <div id="active-campaigns-dashboard" style="font-size:12px; color: var(--text); opacity: 0.6; text-align:center; padding:20px;">
-            لا توجد حملات نشطة حالياً.. ابدأ أول حملة الآن!
+    <div class="stats-grid-4">
+        <div class="stat-item"><small>الظهور</small><br><b id="adv-views">0</b></div>
+        <div class="stat-item"><small>النقرات</small><br><b id="adv-clicks">0</b></div>
+        <div class="stat-item"><small>CTR</small><br><b style="color:var(--safe);" id="adv-ctr">0%</b></div>
+        <div class="stat-item"><small>الميزانية</small><br><b style="color:var(--danger);">$<span id="adv-rem-bal">0.00</span></b></div>
+    </div>
+
+    <button class="btn-premium-add" onclick="openModal('modal-smart-campaign')">🔥 إنشاء حملة ذكية (Smart Campaign)</button>
+    <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="downloadAdReport()">📂 تحميل تقارير الأداء (CSV)</button>
+
+    <div class="card" style="margin-top:20px;">
+        <h4 style="margin-bottom:10px;">📊 إدارة الحملات والجدولة</h4>
+        <div id="active-campaigns-dashboard" style="font-size:12px; text-align:center; padding:15px; opacity:0.6;">
+            بانتظار إطلاق حملتك الأولى..
         </div>
     </div>
 </div>
 
-<div id="modal-smart-campaign" class="modal" style="display: none;">
-    <div class="modal-content" style="border: 2px solid var(--gold); max-width: 500px; background: var(--bg); color: var(--text);">
+<div id="modal-smart-campaign" class="modal">
+    <div class="modal-content" style="border: 2px solid var(--gold); max-width: 480px; background: var(--bg);">
         <span style="float:left; cursor:pointer; font-size:24px;" onclick="closeModal()">✕</span>
-        <h3 style="color:var(--gold); text-align:center;">🎯 إعداد الحملة العالمية</h3>
+        <h3 style="color:var(--gold); text-align:center; margin-bottom:15px;">🎯 إعداد الحملة المتجاوبة</h3>
         
-        <label class="label-small">🏷️ هدف الحملة:</label>
-        <select id="adv-type-smart" class="input-premium" style="background: var(--card); color: var(--text);">
-            <option value="leads">📍 جلب عملاء محتملين (Leads)</option>
-            <option value="brand">📣 الوعي بالعلامة التجارية (Brand Awareness)</option>
-            <option value="sales">💰 زيادة المبيعات المباشرة</option>
-        </select>
+        <label class="label-small">🏷️ اختر هدف الحملة (Smart Objectives):</label>
+        <div class="target-goal-grid">
+            <div class="goal-item active" onclick="setGoal(this, 'leads')">📍 جلب عملاء</div>
+            <div class="goal-item" onclick="setGoal(this, 'brand')">📣 وعي بالعلامة</div>
+        </div>
 
-        <label class="label-small">🔗 رابط المنشور أو الموقع:</label>
-        <input type="text" id="adv-link-smart" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="https://t.me/..." oninput="updateAdPreview()">
+        <label class="label-small">🔗 الرابط المستهدف:</label>
+        <input type="text" id="adv-link-smart" class="input-premium" placeholder="https://t.me/..." oninput="updateAdPreview()">
 
-        <label class="label-small">🖼️ رابط الميديا (صورة أو فيديو):</label>
-        <input type="text" id="adv-media-url" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="رابط مباشر للصورة/الفيديو" oninput="updateAdPreview()">
+        <label class="label-small">🖼️ رابط الميديا (تحديد تلقائي):</label>
+        <input type="text" id="adv-media-url" class="input-premium" placeholder="رابط صورة أو فيديو" oninput="updateAdPreview()">
 
-        <div id="live-preview-box" style="display:none; background: var(--card); padding:15px; border-radius:15px; border-left:4px solid var(--gold); margin:15px 0; border: 1px solid rgba(128,128,128,0.2);">
-            <small style="color:var(--gold);">📱 معاينة الإعلان الاحترافية:</small>
-            <div style="background: var(--bg); padding:10px; border-radius:10px; margin-top:5px; border: 1px solid rgba(128,128,128,0.1);">
+        <div id="live-preview-box" style="display:none; background: var(--card); padding:12px; border-radius:15px; border:1px solid var(--gold); margin:15px 0;">
+            <small style="color:var(--gold);">📱 معاينة الإعلان المتجاوب:</small>
+            <div style="margin-top:8px;">
                 <img id="preview-img" style="width:100%; border-radius:8px; display:none; margin-bottom:10px;">
                 <video id="preview-video" style="width:100%; border-radius:8px; display:none; margin-bottom:10px;" controls></video>
                 <p id="preview-text-smart" style="font-size:12px; color: var(--text);"></p>
-                <div style="background:var(--accent); color:white; text-align:center; padding:5px; border-radius:5px; font-size:10px; font-weight:bold;">إعلان ممول (Sponsored)</div>
+                <div style="background:var(--accent); color:white; text-align:center; padding:4px; border-radius:4px; font-size:9px;">Sponsored إعلان ممول</div>
             </div>
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div>
                 <label class="label-small">💰 الميزانية ($):</label>
-                <input type="number" id="adv-total-budget" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="مثلاً: 50">
+                <input type="number" id="adv-total-budget" class="input-premium" placeholder="50">
             </div>
             <div>
-                <label class="label-small">🌍 الاستهداف:</label>
-                <select id="adv-geo" class="input-premium" style="background: var(--card); color: var(--text);">
-                    <option value="global">عالمي 🌍</option>
-                    <option value="arab">الوطن العربي 🇸🇦</option>
-                    <option value="asia">آسيا 🌏</option>
-                </select>
+                <label class="label-small">📅 الجدولة الزمنية:</label>
+                <input type="datetime-local" id="adv-start-date" class="input-premium">
             </div>
         </div>
 
-        <label class="label-small">📅 جدولة الانطلاق (اختياري):</label>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <input type="datetime-local" id="adv-start-date" class="input-premium" style="background: var(--card); color: var(--text);">
-            <input type="datetime-local" id="adv-end-date" class="input-premium" style="background: var(--card); color: var(--text);">
-        </div>
-
-        <button class="btn btn-primary" style="background:var(--safe); margin-top:20px; width: 100%; border-radius: 50px; padding: 15px;" onclick="processNewCampaign()">🚀 إطلاق الحملة الآن</button>
+        <button class="btn-premium-add" style="margin-top:20px;" onclick="processNewCampaign()">🚀 إطلاق الحملة الآن</button>
+        <p style="font-size:9px; text-align:center; margin-top:10px; opacity:0.5;">* يتم استخدام نظام المزايدة التلقائي لتحقيق أفضل CTR</p>
     </div>
 </div>
     
@@ -456,75 +468,73 @@ function checkBotStatus() {
     // هنا يمكنك إضافة كود API مستقبلاً للتحقق الفعلي
 }
 
-// 1. نظام المعاينة الذكي والمتوافق
+let selectedGoal = 'leads';
+
+function setGoal(el, goal) {
+    document.querySelectorAll('.goal-item').forEach(item => item.classList.remove('active'));
+    el.classList.add('active');
+    selectedGoal = goal;
+}
+
+// المعاينة الحية مع اكتشاف نوع الملف تلقائياً
 function updateAdPreview() {
-    const mediaUrl = document.getElementById('adv-media-url').value;
+    const media = document.getElementById('adv-media-url').value;
     const link = document.getElementById('adv-link-smart').value;
-    const previewBox = document.getElementById('live-preview-box');
-    const previewImg = document.getElementById('preview-img');
-    const previewVid = document.getElementById('preview-video');
-    const previewText = document.getElementById('preview-text-smart');
+    const box = document.getElementById('live-preview-box');
+    const img = document.getElementById('preview-img');
+    const vid = document.getElementById('preview-video');
+    const txt = document.getElementById('preview-text-smart');
 
-    if (mediaUrl || link) {
-        previewBox.style.display = 'block';
-        previewText.innerText = link ? "الرابط المستهدف: " + link : "نص الإعلان سيظهر هنا...";
+    if (media || link) {
+        box.style.display = 'block';
+        txt.innerText = link || "رابط الحملة الذكية";
+        
+        // اكتشاف تلقائي للميديا
+        const isImg = media.match(/\.(jpeg|jpg|gif|png|webp)$/i);
+        const isVid = media.match(/\.(mp4|webm|mov)$/i);
 
-        const isImage = mediaUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i);
-        const isVideo = mediaUrl.match(/\.(mp4|webm|ogg|mov)$/i);
-
-        if (isImage) {
-            previewImg.src = mediaUrl;
-            previewImg.style.display = 'block';
-            previewVid.style.display = 'none';
-        } else if (isVideo) {
-            previewVid.src = mediaUrl;
-            previewVid.style.display = 'block';
-            previewImg.style.display = 'none';
-        } else {
-            previewImg.style.display = 'none';
-            previewVid.style.display = 'none';
-        }
+        img.style.display = isImg ? 'block' : 'none';
+        if(isImg) img.src = media;
+        
+        vid.style.display = isVid ? 'block' : 'none';
+        if(isVid) vid.src = media;
     } else {
-        previewBox.style.display = 'none';
+        box.style.display = 'none';
     }
 }
 
-// 2. معالجة الحملة وإرسال التنبيهات
+// نظام الإطلاق مع التنبيهات والجدولة
 function processNewCampaign() {
     const data = {
-        goal: document.getElementById('adv-type-smart').value,
+        goal: selectedGoal,
         link: document.getElementById('adv-link-smart').value,
         media: document.getElementById('adv-media-url').value,
         budget: document.getElementById('adv-total-budget').value,
-        geo: document.getElementById('adv-geo').value,
-        start_time: document.getElementById('adv-start-date').value || 'Immediate',
-        end_time: document.getElementById('adv-end-date').value || 'Until Complete',
+        start: document.getElementById('adv-start-date').value || 'Immediate',
         owner: user.id,
         status: 'pending_review',
-        created_at: Date.now()
+        timestamp: Date.now()
     };
 
-    if(!data.link && !data.media) return tg.showAlert("❌ يرجى إضافة رابط أو ميديا للإعلان!");
-    if(!data.budget) return tg.showAlert("⚠️ حدد ميزانية الحملة أولاً!");
+    if(!data.link) return tg.showAlert("⚠️ يرجى تحديد الرابط المستهدف أولاً!");
 
-    const newRef = db.ref('campaigns').push();
-    newRef.set(data).then(() => {
+    db.ref('campaigns').push(data).then(() => {
         tg.HapticFeedback.notificationOccurred('success');
         tg.showPopup({
-            title: '🎉 تهانينا يا أمين',
-            message: 'تم استلام حملتك بنجاح. سيتم مراجعتها وجدولتها فوراً.',
+            title: '✅ تم الجدولة بنجاح',
+            message: 'حملتك الذكية قيد المراجعة الآن. ستتلقى تنبيهاً فور الموافقة عليها.',
             buttons: [{type: 'ok'}]
         });
         closeModal();
-    }).catch(e => tg.showAlert("خطأ: " + e.message));
+    });
 }
 
-function openModal(modalId) {
-    document.getElementById(modalId).style.display = 'flex'; // يظهر القائمة فقط عند الطلب
+// فتح وإغلاق المودال بمرونة
+function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
 }
-
 function closeModal() {
-    document.getElementById('modal-smart-campaign').style.display = 'none'; // يخفي القائمة
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
 }
     
 </script>
