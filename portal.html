@@ -136,12 +136,69 @@ body {
     </div>
 
     <div id="sec-promo" class="section">
-        <h3 style="margin:15px;">📣 بوابة المعلن Pro</h3>
-        <div class="card">
-            <button class="btn btn-primary" onclick="openModal('modal-deposit')">💳 إيداع رصيد (Min $10)</button>
-            <button class="btn btn-outline" onclick="openModal('modal-ads-type')">🎯 إنشاء حملة إعلانية</button>
+    <h3 style="margin:15px; color: var(--accent);">📊 لوحة تحكم المعلن Pro</h3>
+    
+    <div class="stats-grid">
+        <div class="stat-card" style="border-bottom: 3px solid var(--accent);">
+            <small style="color:#888;">حملات نشطة</small>
+            <p id="adv-active-count" style="font-size:20px; font-weight:bold; margin:5px 0;">0</p>
+        </div>
+        <div class="stat-card" style="border-bottom: 3px solid var(--safe);">
+            <small style="color:#888;">إجمالي الإنفاق</small>
+            <p id="adv-total-spent" style="font-size:20px; font-weight:bold; margin:5px 0;">$0.00</p>
         </div>
     </div>
+
+    <div class="card" style="border: 1px dashed var(--accent);">
+        <button class="btn-premium-add" onclick="openModal('modal-ads-type')">🚀 إنشاء حملة ترويجية جديدة</button>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="openModal('modal-deposit')">💳 تعبئة الرصيد الإعلاني</button>
+    </div>
+
+    <h4 style="color:#666; margin:20px 15px 10px;">📋 حملاتك الجارية:</h4>
+    <div id="my-campaigns-list" style="padding: 0 10px;"></div>
+</div>
+
+<div id="modal-ads-type" class="modal">
+    <div class="modal-content">
+        <span style="float:left; cursor:pointer; font-size:24px;" onclick="closeModal()">✕</span>
+        <h3 style="color:var(--gold); text-align:center;">🛠️ إعداد الحملة الذكية</h3>
+        
+        <label class="label-small">🎯 نوع الترويج:</label>
+        <select id="adv-type" class="input-premium">
+            <option value="cpc">🖱️ نظام النقرات (CPC) - $0.005/نقرة</option>
+            <option value="cpm">🚀 نظام المشاهدات (CPM) - $0.001/مشاهدة</option>
+            <option value="timed">⏰ منشور مثبت (24h)</option>
+        </select>
+
+        <label class="label-small">🔗 رابط الإعلان (Telegram Link):</label>
+        <input type="text" id="adv-link" class="input-premium" placeholder="https://t.me/your_post/123" oninput="updateAdPreview()">
+
+        <div id="ad-preview-box" style="display:none; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:15px; border:1px solid #333;">
+            <small style="color:var(--safe);">👀 معاينة الرابط:</small>
+            <div id="preview-content" style="font-size:11px; color:#aaa; word-break:break-all;"></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+                <label class="label-small">💰 الميزانية اليومية:</label>
+                <input type="number" id="adv-budget" class="input-premium" placeholder="مثلاً: 5$">
+            </div>
+            <div>
+                <label class="label-small">🌍 القارة المستهدفة:</label>
+                <select id="adv-target-region" class="input-premium">
+                    <option value="all">الكل</option>
+                    <option value="asia">آسيا</option>
+                    <option value="arab">الوطن العربي</option>
+                </select>
+            </div>
+        </div>
+
+        <label class="label-small">📝 ملاحظات خاصة للمراجع (اختياري):</label>
+        <textarea id="adv-notes" class="input-premium" style="height:50px;" placeholder="مثلاً: لا تنشر في قنوات الأخبار..."></textarea>
+
+        <button class="btn-premium-add" style="background:var(--safe); color:white;" onclick="processNewCampaign()">✅ تأكيد وإطلاق الحملة</button>
+    </div>
+</div>
 
     <div id="sec-channels" class="section" style="display: none; padding: 15px;">
     
@@ -372,6 +429,56 @@ function submitEliteChannel() {
 function checkBotStatus() {
     tg.showAlert('🔍 يتم الآن التحقق من الصلاحيات ووجود البوت كمسؤول... يرجى الانتظار');
     // هنا يمكنك إضافة كود API مستقبلاً للتحقق الفعلي
+}
+
+// تحديث المعاينة الحية
+function updateAdPreview() {
+    const link = document.getElementById('adv-link').value;
+    const box = document.getElementById('ad-preview-box');
+    const content = document.getElementById('preview-content');
+    
+    if(link.includes('t.me/')) {
+        box.style.display = 'block';
+        content.innerText = link;
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+// معالجة الحملة الجديدة وحفظها
+function processNewCampaign() {
+    const data = {
+        type: document.getElementById('adv-type').value,
+        link: document.getElementById('adv-link').value,
+        budget: document.getElementById('adv-budget').value || 'Open',
+        region: document.getElementById('adv-target-region').value,
+        notes: document.getElementById('adv-notes').value,
+        owner: user.id,
+        status: 'pending',
+        created_at: Date.now()
+    };
+
+    if(!data.link) return tg.showAlert("❌ يرجى إضافة رابط الإعلان!");
+
+    // حفظ في مسار الحملات العام ومسار المستخدم الخاص
+    const newRef = db.ref('campaigns').push();
+    newRef.set(data).then(() => {
+        db.ref('users/' + user.id + '/my_ads/' + newRef.key).set(true);
+        tg.HapticFeedback.notificationOccurred('success');
+        tg.showAlert("🚀 تم إرسال حملتك للمراجعة! ستظهر في القنوات فور الموافقة.");
+        closeModal();
+    });
+}
+
+// وظيفة إعادة التشغيل (Re-run) للحملات القديمة
+function rerunCampaign(campaignId) {
+    db.ref('campaigns/' + campaignId).once('value', snap => {
+        const d = snap.val();
+        document.getElementById('adv-link').value = d.link;
+        document.getElementById('adv-type').value = d.type;
+        openModal('modal-ads-type');
+        tg.showAlert("♻️ تم نسخ بيانات الحملة السابقة.");
+    });
 }
     
 </script>
