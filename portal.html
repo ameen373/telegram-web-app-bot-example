@@ -136,70 +136,82 @@ body {
     </div>
 
     <div id="sec-promo" class="section">
-    <h3 style="margin:15px; color: var(--accent);">📊 لوحة تحكم المعلن Pro</h3>
+    <div class="card" style="background: var(--gold-linear); color: black; border: none;">
+        <h3 style="margin:0;">🎖️ Advertiser Elite Panel</h3>
+        <small>تحكم في حملاتك بأدوات الذكاء الاصطناعي</small>
+    </div>
     
-    <div class="stats-grid">
-        <div class="stat-card" style="border-bottom: 3px solid var(--accent);">
-            <small style="color:#888;">حملات نشطة</small>
-            <p id="adv-active-count" style="font-size:20px; font-weight:bold; margin:5px 0;">0</p>
-        </div>
-        <div class="stat-card" style="border-bottom: 3px solid var(--safe);">
-            <small style="color:#888;">إجمالي الإنفاق</small>
-            <p id="adv-total-spent" style="font-size:20px; font-weight:bold; margin:5px 0;">$0.00</p>
-        </div>
+    <div class="stats-grid-4">
+        <div class="stat-item"><small>الظهور (Imp)</small><br><b id="adv-views">0</b></div>
+        <div class="stat-item"><small>النقرات (Clicks)</small><br><b id="adv-clicks">0</b></div>
+        <div class="stat-item"><small>متوسط CTR</small><br><b style="color:var(--safe);" id="adv-ctr">0%</b></div>
+        <div class="stat-item"><small>الميزانية المتبقية</small><br><b style="color:var(--danger);">$<span id="adv-rem-bal">0.00</span></b></div>
     </div>
 
-    <div class="card" style="border: 1px dashed var(--accent);">
-        <button class="btn-premium-add" onclick="openModal('modal-ads-type')">🚀 إنشاء حملة ترويجية جديدة</button>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="openModal('modal-deposit')">💳 تعبئة الرصيد الإعلاني</button>
+    <button class="btn-premium-add" onclick="openModal('modal-smart-campaign')">🔥 إنشاء حملة ذكية (Smart Campaign)</button>
+    
+    <div class="card">
+        <h4>📈 أداء الحملات الحالية</h4>
+        <div id="active-campaigns-dashboard">
+            </div>
     </div>
-
-    <h4 style="color:#666; margin:20px 15px 10px;">📋 حملاتك الجارية:</h4>
-    <div id="my-campaigns-list" style="padding: 0 10px;"></div>
 </div>
 
-<div id="modal-ads-type" class="modal">
-    <div class="modal-content">
-        <span style="float:left; cursor:pointer; font-size:24px;" onclick="closeModal()">✕</span>
-        <h3 style="color:var(--gold); text-align:center;">🛠️ إعداد الحملة الذكية</h3>
-        
-        <label class="label-small">🎯 نوع الترويج:</label>
-        <select id="adv-type" class="input-premium">
-            <option value="cpc">🖱️ نظام النقرات (CPC) - $0.005/نقرة</option>
-            <option value="cpm">🚀 نظام المشاهدات (CPM) - $0.001/مشاهدة</option>
-            <option value="timed">⏰ منشور مثبت (24h)</option>
-        </select>
+<label class="label-small">🖼️ رابط الصورة أو الفيديو (Media URL):</label>
+<div style="display: flex; gap: 5px;">
+    <input type="text" id="adv-media-url" class="input-premium" placeholder="ضع رابط الصورة/الفيديو هنا" oninput="showLivePreview()">
+    <button class="btn" style="width: 50px; margin-top: 10px;" onclick="tg.showAlert('قريباً: رفع الملفات مباشرة من جهازك!')">📁</button>
+</div>
 
-        <label class="label-small">🔗 رابط الإعلان (Telegram Link):</label>
-        <input type="text" id="adv-link" class="input-premium" placeholder="https://t.me/your_post/123" oninput="updateAdPreview()">
-
-        <div id="ad-preview-box" style="display:none; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:15px; border:1px solid #333;">
-            <small style="color:var(--safe);">👀 معاينة الرابط:</small>
-            <div id="preview-content" style="font-size:11px; color:#aaa; word-break:break-all;"></div>
+<div id="live-preview-box" style="display:none; background:#000; padding:15px; border-radius:15px; border-left:4px solid var(--gold); margin:10px 0;">
+    <small style="color:var(--gold);">📱 معاينة الإعلان الاحترافي:</small>
+    <div style="background:#1a2235; padding:10px; border-radius:10px; margin-top:5px;">
+        <img id="preview-img" src="" style="width:100%; border-radius:8px; display:none; margin-bottom:10px;">
+        <video id="preview-video" src="" style="width:100%; border-radius:8px; display:none; margin-bottom:10px;" controls></video>
+        <p id="preview-text-smart" style="font-size:12px; color:white;"></p>
+        <div style="background:var(--accent); color:white; text-align:center; padding:5px; border-radius:5px; font-size:10px; font-weight:bold;">إعلان ممول (Sponsored)</div>
+    </div>
+</div>
+    
+        <div class="target-goal-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+            <div class="goal-item" onclick="selectGoal('leads')" id="goal-leads" style="border:1px solid #444; padding:10px; border-radius:15px; text-align:center; cursor:pointer;">
+                📍 جلب عملاء
+            </div>
+            <div class="goal-item" onclick="selectGoal('brand')" id="goal-brand" style="border:1px solid #444; padding:10px; border-radius:15px; text-align:center; cursor:pointer;">
+                📣 وعي بالعلامة
+            </div>
         </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <label class="label-small">🔗 رابط المنشور أو القناة:</label>
+        <input type="text" id="adv-link-smart" class="input-premium" placeholder="https://t.me/..." oninput="showLivePreview()">
+
+        <div id="live-preview-box" style="display:none; background:#000; padding:15px; border-radius:15px; border-left:4px solid var(--gold); margin:10px 0;">
+            <small style="color:var(--gold);">📱 معاينة الإعلان على هاتف المستخدم:</small>
+            <div style="background:#1a2235; padding:10px; border-radius:10px; margin-top:5px;">
+                <p id="preview-text-smart" style="font-size:12px; color:white;"></p>
+                <div style="background:var(--accent); color:white; text-align:center; padding:5px; border-radius:5px; font-size:10px;">إعلان ممول (Sponsored)</div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div>
-                <label class="label-small">💰 الميزانية اليومية:</label>
-                <input type="number" id="adv-budget" class="input-premium" placeholder="مثلاً: 5$">
+                <label class="label-small">💰 ميزانية الحملة ($):</label>
+                <input type="number" id="adv-total-budget" class="input-premium" placeholder="مثلاً: 50">
             </div>
             <div>
-                <label class="label-small">🌍 القارة المستهدفة:</label>
-                <select id="adv-target-region" class="input-premium">
-                    <option value="all">الكل</option>
-                    <option value="asia">آسيا</option>
-                    <option value="arab">الوطن العربي</option>
+                <label class="label-small">🌍 استهداف القارات:</label>
+                <select id="adv-geo" class="input-premium">
+                    <option value="global">عالمي 🌍</option>
+                    <option value="asia">آسيا 🌏</option>
+                    <option value="africa">إفريقيا 🌍</option>
                 </select>
             </div>
         </div>
 
-        <label class="label-small">📝 ملاحظات خاصة للمراجع (اختياري):</label>
-        <textarea id="adv-notes" class="input-premium" style="height:50px;" placeholder="مثلاً: لا تنشر في قنوات الأخبار..."></textarea>
-
-        <button class="btn-premium-add" style="background:var(--safe); color:white;" onclick="processNewCampaign()">✅ تأكيد وإطلاق الحملة</button>
+        <button class="btn-premium-add" style="background:var(--safe); color:white; margin-top:20px;" onclick="deploySmartCampaign()">🚀 إطلاق الحملة الآن</button>
     </div>
 </div>
-
+    
     <div id="sec-channels" class="section" style="display: none; padding: 15px;">
     
     <div class="stats-grid">
@@ -431,17 +443,37 @@ function checkBotStatus() {
     // هنا يمكنك إضافة كود API مستقبلاً للتحقق الفعلي
 }
 
-// تحديث المعاينة الحية
+// تحديث المعاينة الحية الذكي (يدعم الصور والفيديوهات)
 function updateAdPreview() {
-    const link = document.getElementById('adv-link').value;
-    const box = document.getElementById('ad-preview-box');
-    const content = document.getElementById('preview-content');
-    
-    if(link.includes('t.me/')) {
-        box.style.display = 'block';
-        content.innerText = link;
+    const mediaUrl = document.getElementById('adv-media-url').value; // حقل الرابط الجديد
+    const link = document.getElementById('adv-link-smart').value;   // الرابط المستهدف
+    const previewBox = document.getElementById('live-preview-box');
+    const previewImg = document.getElementById('preview-img');
+    const previewVid = document.getElementById('preview-video');
+    const previewText = document.getElementById('preview-text-smart');
+
+    if (mediaUrl || link) {
+        previewBox.style.display = 'block';
+        previewText.innerText = link ? "الرابط المستهدف: " + link : "نص الإعلان سيظهر هنا...";
+
+        // نظام التعرف الذكي على نوع الملف
+        const isImage = mediaUrl.match(/\.(jpeg|jpg|gif|png)$/i);
+        const isVideo = mediaUrl.match(/\.(mp4|webm|ogg)$/i);
+
+        if (isImage) {
+            previewImg.src = mediaUrl;
+            previewImg.style.display = 'block';
+            previewVid.style.display = 'none';
+        } else if (isVideo) {
+            previewVid.src = mediaUrl;
+            previewVid.style.display = 'block';
+            previewImg.style.display = 'none';
+        } else {
+            previewImg.style.display = 'none';
+            previewVid.style.display = 'none';
+        }
     } else {
-        box.style.display = 'none';
+        previewBox.style.display = 'none';
     }
 }
 
