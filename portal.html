@@ -14,7 +14,14 @@
             --bg: #0b0f1a; --card: rgba(23, 32, 51, 0.95);
             --accent: #3b82f6; --gold: #f59e0b; --safe: #10b981; --danger: #ef4444; --text: #ffffff;
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+body { 
+    font-family: 'Segoe UI', system-ui, sans-serif; 
+    background: var(--bg); 
+    color: var(--text); 
+    margin: 0; 
+    padding-bottom: 90px; 
+    transition: background 0.3s ease, color 0.3s ease; 
+}
         
         /* الأقسام والتنقل */
         .section { display: none; padding: 16px; animation: slideUp 0.4s ease; }
@@ -40,6 +47,11 @@
         .nav-item.active { color: var(--accent); font-weight: bold; }
         
         :root {
+    --bg: var(--tg-theme-bg-color, #0b0f1a); 
+    --card: var(--tg-theme-secondary-bg-color, rgba(23, 32, 51, 0.95));
+    --text: var(--tg-theme-text-color, #ffffff);
+    --accent: var(--tg-theme-button-color, #3b82f6);
+    --button-text: var(--tg-theme-button-text-color, #ffffff);
     --gold-linear: linear-gradient(45deg, #d4af37, #f9e29c, #b8860b);
     --gold: #d4af37;
     --safe: #10b981;
@@ -84,19 +96,18 @@
 
 #publisher-panel {
     display: none;
-    background: rgba(0,0,0,0.6);
+    background: var(--card); /* يتغير تلقائياً مع ثيم تليجرام */
     border-radius: 25px;
     padding: 20px;
     border: 1.5px solid var(--gold);
     box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
     margin-bottom: 30px;
 }
-
 .input-premium {
     width: 100%;
-    background: #111;
-    border: 1px solid #333;
-    color: #fff;
+    background: var(--bg); /* يتغير تلقائياً مع ثيم تليجرام */
+    border: 1px solid rgba(128, 128, 128, 0.2); /* حدود ناعمة تناسب الوضعين */
+    color: var(--text); /* يتغير لون النص تلقائياً */
     padding: 12px;
     border-radius: 12px;
     margin-bottom: 12px;
