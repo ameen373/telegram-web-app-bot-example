@@ -135,7 +135,7 @@ body {
         </div>
     </div>
 
-    <div id="sec-promo" class="section">
+<div id="sec-promo" class="section">
     <div class="card" style="background: var(--gold-linear); color: black; border: none; padding: 20px; border-radius: 20px;">
         <h3 style="margin:0;">🎖️ Advertiser Elite Panel</h3>
         <p style="margin:5px 0 0; font-size:12px; opacity:0.8;">تحكم في حملاتك بأدوات الذكاء الاصطناعي والجدولة الزمنية</p>
@@ -148,41 +148,41 @@ body {
         <div class="stat-item"><small>الرصيد المتبقي</small><br><b style="color:var(--danger);">$<span id="adv-rem-bal">0.00</span></b></div>
     </div>
 
-    <button class="btn btn-primary" style="background:var(--accent); margin-bottom:10px;" onclick="openModal('modal-smart-campaign')">🚀 إنشاء حملة ذكية (Smart Campaign)</button>
-    <button class="btn btn-outline" onclick="openModal('modal-deposit')">💳 تعبئة الرصيد الإعلاني</button>
+    <button class="btn btn-primary" style="background:var(--accent); margin-bottom:10px; width: 100%; border-radius: 50px; padding: 15px; font-weight: bold;" onclick="openModal('modal-smart-campaign')">🚀 إنشاء حملة ذكية (Smart Campaign)</button>
+    <button class="btn btn-outline" style="width: 100%; border-radius: 50px;" onclick="openModal('modal-deposit')">💳 تعبئة الرصيد الإعلاني</button>
     
-    <div class="card" style="margin-top:20px;">
-        <h4>📈 إدارة الحملات الحالية</h4>
-        <div id="active-campaigns-dashboard" style="font-size:12px; color:#888; text-align:center; padding:20px;">
+    <div class="card" style="margin-top:20px; background: var(--card); border: 1px solid rgba(128,128,128,0.1);">
+        <h4 style="color: var(--text);">📈 إدارة الحملات الحالية</h4>
+        <div id="active-campaigns-dashboard" style="font-size:12px; color: var(--text); opacity: 0.6; text-align:center; padding:20px;">
             لا توجد حملات نشطة حالياً.. ابدأ أول حملة الآن!
         </div>
     </div>
 </div>
 
 <div id="modal-smart-campaign" class="modal">
-    <div class="modal-content" style="border: 2px solid var(--gold); max-width: 500px;">
+    <div class="modal-content" style="border: 2px solid var(--gold); max-width: 500px; background: var(--bg); color: var(--text);">
         <span style="float:left; cursor:pointer; font-size:24px;" onclick="closeModal()">✕</span>
         <h3 style="color:var(--gold); text-align:center;">🎯 إعداد الحملة العالمية</h3>
         
         <label class="label-small">🏷️ هدف الحملة:</label>
-        <select id="adv-type-smart" class="input-premium">
+        <select id="adv-type-smart" class="input-premium" style="background: var(--card); color: var(--text);">
             <option value="leads">📍 جلب عملاء محتملين (Leads)</option>
             <option value="brand">📣 الوعي بالعلامة التجارية (Brand Awareness)</option>
             <option value="sales">💰 زيادة المبيعات المباشرة</option>
         </select>
 
         <label class="label-small">🔗 رابط المنشور أو الموقع:</label>
-        <input type="text" id="adv-link-smart" class="input-premium" placeholder="https://t.me/..." oninput="updateAdPreview()">
+        <input type="text" id="adv-link-smart" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="https://t.me/..." oninput="updateAdPreview()">
 
         <label class="label-small">🖼️ رابط الميديا (صورة أو فيديو):</label>
-        <input type="text" id="adv-media-url" class="input-premium" placeholder="ضع رابط الميديا المباشر هنا" oninput="updateAdPreview()">
+        <input type="text" id="adv-media-url" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="رابط مباشر للصورة/الفيديو" oninput="updateAdPreview()">
 
-        <div id="live-preview-box" style="display:none; background:#000; padding:15px; border-radius:15px; border-left:4px solid var(--gold); margin:15px 0;">
-            <small style="color:var(--gold);">📱 معاينة الإعلان على الهاتف:</small>
-            <div style="background:#1a2235; padding:10px; border-radius:10px; margin-top:5px;">
+        <div id="live-preview-box" style="display:none; background: var(--card); padding:15px; border-radius:15px; border-left:4px solid var(--gold); margin:15px 0; border: 1px solid rgba(128,128,128,0.2);">
+            <small style="color:var(--gold);">📱 معاينة الإعلان الاحترافية:</small>
+            <div style="background: var(--bg); padding:10px; border-radius:10px; margin-top:5px; border: 1px solid rgba(128,128,128,0.1);">
                 <img id="preview-img" style="width:100%; border-radius:8px; display:none; margin-bottom:10px;">
                 <video id="preview-video" style="width:100%; border-radius:8px; display:none; margin-bottom:10px;" controls></video>
-                <p id="preview-text-smart" style="font-size:12px; color:white;"></p>
+                <p id="preview-text-smart" style="font-size:12px; color: var(--text);"></p>
                 <div style="background:var(--accent); color:white; text-align:center; padding:5px; border-radius:5px; font-size:10px; font-weight:bold;">إعلان ممول (Sponsored)</div>
             </div>
         </div>
@@ -190,11 +190,11 @@ body {
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div>
                 <label class="label-small">💰 الميزانية ($):</label>
-                <input type="number" id="adv-total-budget" class="input-premium" placeholder="مثلاً: 50">
+                <input type="number" id="adv-total-budget" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="مثلاً: 50">
             </div>
             <div>
                 <label class="label-small">🌍 الاستهداف:</label>
-                <select id="adv-geo" class="input-premium">
+                <select id="adv-geo" class="input-premium" style="background: var(--card); color: var(--text);">
                     <option value="global">عالمي 🌍</option>
                     <option value="arab">الوطن العربي 🇸🇦</option>
                     <option value="asia">آسيا 🌏</option>
@@ -204,11 +204,11 @@ body {
 
         <label class="label-small">📅 جدولة الانطلاق (اختياري):</label>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <input type="datetime-local" id="adv-start-date" class="input-premium">
-            <input type="datetime-local" id="adv-end-date" class="input-premium">
+            <input type="datetime-local" id="adv-start-date" class="input-premium" style="background: var(--card); color: var(--text);">
+            <input type="datetime-local" id="adv-end-date" class="input-premium" style="background: var(--card); color: var(--text);">
         </div>
 
-        <button class="btn btn-primary" style="background:var(--safe); margin-top:20px;" onclick="processNewCampaign()">🚀 إطلاق الحملة الآن</button>
+        <button class="btn btn-primary" style="background:var(--safe); margin-top:20px; width: 100%; border-radius: 50px; padding: 15px;" onclick="processNewCampaign()">🚀 إطلاق الحملة الآن</button>
     </div>
 </div>
     
@@ -443,7 +443,7 @@ function checkBotStatus() {
     // هنا يمكنك إضافة كود API مستقبلاً للتحقق الفعلي
 }
 
-// 1. نظام المعاينة الذكي (الميديا والرابط)
+// 1. نظام المعاينة الذكي والمتوافق
 function updateAdPreview() {
     const mediaUrl = document.getElementById('adv-media-url').value;
     const link = document.getElementById('adv-link-smart').value;
@@ -454,10 +454,10 @@ function updateAdPreview() {
 
     if (mediaUrl || link) {
         previewBox.style.display = 'block';
-        previewText.innerText = link ? "الرابط: " + link : "نص الإعلان سيظهر هنا...";
+        previewText.innerText = link ? "الرابط المستهدف: " + link : "نص الإعلان سيظهر هنا...";
 
-        const isImage = mediaUrl.match(/\.(jpeg|jpg|gif|png)$/i);
-        const isVideo = mediaUrl.match(/\.(mp4|webm|ogg)$/i);
+        const isImage = mediaUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i);
+        const isVideo = mediaUrl.match(/\.(mp4|webm|ogg|mov)$/i);
 
         if (isImage) {
             previewImg.src = mediaUrl;
@@ -476,7 +476,7 @@ function updateAdPreview() {
     }
 }
 
-// 2. نظام إطلاق الحملة المتكامل (الجدولة والميزانية)
+// 2. معالجة الحملة وإرسال التنبيهات
 function processNewCampaign() {
     const data = {
         goal: document.getElementById('adv-type-smart').value,
@@ -485,40 +485,25 @@ function processNewCampaign() {
         budget: document.getElementById('adv-total-budget').value,
         geo: document.getElementById('adv-geo').value,
         start_time: document.getElementById('adv-start-date').value || 'Immediate',
-        end_time: document.getElementById('adv-end-date').value || 'Open',
+        end_time: document.getElementById('adv-end-date').value || 'Until Complete',
         owner: user.id,
         status: 'pending_review',
         created_at: Date.now()
     };
 
     if(!data.link && !data.media) return tg.showAlert("❌ يرجى إضافة رابط أو ميديا للإعلان!");
-    if(!data.budget) return tg.showAlert("⚠️ يرجى تحديد ميزانية الحملة!");
+    if(!data.budget) return tg.showAlert("⚠️ حدد ميزانية الحملة أولاً!");
 
     const newRef = db.ref('campaigns').push();
     newRef.set(data).then(() => {
         tg.HapticFeedback.notificationOccurred('success');
         tg.showPopup({
-            title: '🚀 انطلاق عالمي',
-            message: 'شكراً أمين، حملتك قيد المراجعة وستنطلق حسب الجدولة المحددة.',
+            title: '🎉 تهانينا يا أمين',
+            message: 'تم استلام حملتك بنجاح. سيتم مراجعتها وجدولتها فوراً.',
             buttons: [{type: 'ok'}]
         });
         closeModal();
-    });
-}
-
-// 3. نظام تصدير التقارير (Export) للمعلنين
-function downloadAdReport(campaignId) {
-    db.ref('campaigns/' + campaignId).once('value', snap => {
-        const d = snap.val();
-        const report = `--- تقرير أداء الحملة ---\nالهدف: ${d.goal}\nالرابط: ${d.link}\nالميزانية: ${d.budget}$\nتاريخ البدء: ${d.start_time}\nالحالة: ${d.status}`;
-        
-        const blob = new Blob([report], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `Campaign_${campaignId}.txt`;
-        a.click();
-        tg.showAlert("✅ تم تحميل التقرير بنجاح");
-    });
+    }).catch(e => tg.showAlert("خطأ: " + e.message));
 }
     
 </script>
