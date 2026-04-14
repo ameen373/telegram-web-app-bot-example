@@ -418,26 +418,41 @@ body {
     // إظهار لوحة الإدارة لأمين فقط
     if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
-    function switchTab(t) {
-    // إخفاء كافة الأقسام التي تحمل كلاس section
-    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    // استبدال من سطر 409 إلى سطر 418
+function switchTab(tabId) {
+    // 1. إخفاء كافة الأقسام التي تحمل كلاس section لضمان عدم التداخل
+    document.querySelectorAll('.section').forEach(section => {
+        section.style.display = 'none';
+    });
 
-    // إظهار القسم المطلوب بناءً على المعرف المرسل
-    const target = document.getElementById(t);
+    // 2. إظهار القسم المطلوب مباشرة باستخدام الـ ID الخاص به
+    // ملاحظة: تأكد أن الأقسام في الـ HTML تبدأ بـ id="home", id="channels", id="promo"
+    const target = document.getElementById(tabId);
     if (target) {
         target.style.display = 'block';
     }
 
-    // تحديث حالة الزر النشط (Active)
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    const activeBtn = document.getElementById('t-' + t);
-    if (activeBtn) activeBtn.classList.add('active');
-
-    // جلب إحصائيات الناشر إذا تم الضغط على قسم القنوات
-    if(t === 'channels') updatePublisherStats(user.id);
-
-    tg.HapticFeedback.impactOccurred('medium');
+    // 3. تحديث حالة الزر النشط في القائمة العائمة
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // البحث عن الزر الذي يحمل الـ ID المخصص t-اسم_القسم
+    const activeBtn = document.getElementById('t-' + tabId);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
     }
+
+    // 4. تحديث إحصائيات الناشر فوراً عند دخول قسم القنوات
+    if (tabId === 'channels' || tabId === 'sec-channels') {
+        updatePublisherStats(user.id);
+    }
+
+    // اهتزاز تأكيدي من التليجرام
+    if (window.Telegram?.WebApp) {
+        Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+    }
+}
     
         
         if(t === 'channels') updatePublisherStats(user.id);
@@ -577,35 +592,6 @@ function updateAdPreview() {
         vid.style.display = isVid ? 'block' : 'none';
         if(isVid) vid.src = media;
     } else { box.style.display = 'none'; }
-}
-
-// 2. نظام الإطلاق، الميزانية اليومية، وإعادة الاستهداف
-function processNewCampaign() {
-    const data = {
-        text: document.getElementById('adv-text-manual').value,
-        media: document.getElementById('adv-media-url').value,
-        link: document.getElementById('adv-link-smart').value,
-        daily_budget: document.getElementById('adv-daily-budget').value,
-        quality: document.getElementById('adv-quality').value,
-        notes: document.getElementById('adv-notes').value,
-        start: document.getElementById('adv-start-date').value || 'Immediate',
-        owner: user.id,
-        status: 'pending',
-        created_at: Date.now(),
-        metrics: { views: 0, clicks: 0 } // تقارير متقدمة
-    };
-
-    if(!data.text && !data.media) return tg.showAlert("⚠️ المحتوى فارغ! اكتب نصاً أو ارفع ميديا.");
-
-    db.ref('campaigns').push(data).then(() => {
-        tg.HapticFeedback.notificationOccurred('success');
-        tg.showPopup({
-            title: '🚀 انطلاق إمبراطوري',
-            message: 'تمت جدولة حملتك بنجاح. سيقوم المراجعون بالرد خلال دقائق.',
-            buttons: [{type: 'ok'}]
-        });
-        closeModal();
-    });
 }
 
 function showTab(tabId, element) {
