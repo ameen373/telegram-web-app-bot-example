@@ -41,7 +41,11 @@ body {
         .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
         .input-premium { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 12px; color: white; padding: 14px; margin-top: 10px; box-sizing: border-box; }
 
-    
+        /* القائمة السفلية */
+        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(11, 15, 26, 0.98); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 2000; }
+        .nav-item { color: #64748b; font-size: 10px; cursor: pointer; text-align: center; }
+        .nav-item.active { color: var(--accent); font-weight: bold; }
+        
         :root {
     --bg: var(--tg-theme-bg-color, #0b0f1a); 
     --card: var(--tg-theme-secondary-bg-color, rgba(23, 32, 51, 0.95));
@@ -144,64 +148,72 @@ body {
     border-color: var(--gold);
     background: rgba(212, 175, 55, 0.1);
 }
-        /* تصميم القائمة العائمة الجديد */
-.floating-nav {
-    position: fixed;
-    bottom: 25px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 400px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 50px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    z-index: 9999;
+
+        .top-bar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+  font-weight: bold;
+  z-index: 9999;
 }
 
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: #555;
-    transition: 0.3s;
-    flex: 1;
+.main-content {
+  margin-top: 60px;
 }
 
-.nav-item i {
-    font-size: 20px;
-    margin-bottom: 4px;
+/* تبويبات مثل تيليجرام */
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  background: var(--card);
+  border-radius: 20px;
+  margin: 10px;
+  padding: 10px;
 }
 
-.nav-item span {
-    font-size: 10px;
-    font-weight: bold;
+.tab {
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+  cursor: pointer;
 }
 
-/* حالة القسم النشط */
-.nav-item.active {
-    color: #0088cc; /* لون التليجرام الأزرق */
-    background: rgba(0, 136, 204, 0.1);
-    border-radius: 30px;
-    padding: 8px 0;
+/* حركة ناعمة */
+.section {
+  animation: fadeIn 0.3s ease;
 }
 
-/* تعديل المسافة السفلية للصفحة لكي لا يختفي المحتوى خلف القائمة */
-body {
-    padding-bottom: 100px !important;
-}
-        
+@keyframes fadeIn {
+  from {opacity:0; transform: translateX(10px);}
+  to {opacity:1; transform: translateX(0);}
+    }
+        .tab.active {
+  color: var(--accent);
+  font-weight: bold;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 5px;
+        }
         
     </style>
 </head>
 <body>
 
+<div class="top-bar">
+    <div>☰</div>
+    <div class="title">Telega-IO</div>
+<div>🔎</div>
+</div>
+
 <div class="main-content">
+    <div class="tab active" onclick="openTab('home', this)">الرئيسية</div>
+<div class="tab" onclick="openTab('promo', this)">المعلن</div>
+<div class="tab" onclick="openTab('channels', this)">الناشر</div>
+<div class="tab" id="adminTabBtn" onclick="openTab('admin', this)">الإدارة</div>
     <div id="sec-home" class="section" style="display: block;">
         <div class="card" style="text-align: center; border: 1px solid var(--accent);">
             <div id="user-rank" style="font-size: 10px; color: var(--gold); font-weight: bold;">MEMBER</div>
@@ -299,7 +311,7 @@ body {
     </div>
 </div>
     
-    <div id="channels" class="section" style="display: none; padding: 15px;">
+    <div id="sec-channels" class="section" style="display: none; padding: 15px;">
     
     <div class="stats-grid">
         <div class="stat-card" style="border-bottom: 4px solid #3498db;">
@@ -390,22 +402,6 @@ body {
     </div>
 </div>
 
-<div class="floating-nav">
-    <a href="javascript:void(0)" class="nav-item active" onclick="showTab('sec-home', this)">
-        <i class="fas fa-home"></i><span>الرئيسية</span>
-    </a>
-    <a href="javascript:void(0)" class="nav-item" onclick="showTab('sec-publisher', this)">
-        <i class="fas fa-bullhorn"></i><span>الناشر</span>
-    </a>
-    <a href="javascript:void(0)" class="nav-item" onclick="showTab('sec-promo', this)">
-        <i class="fas fa-ad"></i><span>المعلن</span>
-    </a>
-    <a href="javascript:void(0)" class="nav-item" onclick="showTab('sec-admin', this)">
-        <i class="fas fa-user-shield"></i><span>الإدارة</span>
-    </a>
-</div>
-    
-
 <script>
     // --- إعدادات Firebase من ملفك القديم ---
     const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
@@ -418,47 +414,6 @@ body {
     // إظهار لوحة الإدارة لأمين فقط
     if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
-    // استبدال من سطر 409 إلى سطر 418
-function switchTab(tabId) {
-    // 1. إخفاء كافة الأقسام التي تحمل كلاس section لضمان عدم التداخل
-    document.querySelectorAll('.section').forEach(section => {
-        section.style.display = 'none';
-    });
-
-    // 2. إظهار القسم المطلوب مباشرة باستخدام الـ ID الخاص به
-    // ملاحظة: تأكد أن الأقسام في الـ HTML تبدأ بـ id="home", id="channels", id="promo"
-    const target = document.getElementById(tabId);
-    if (target) {
-        target.style.display = 'block';
-    }
-
-    // 3. تحديث حالة الزر النشط في القائمة العائمة
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
-    // البحث عن الزر الذي يحمل الـ ID المخصص t-اسم_القسم
-    const activeBtn = document.getElementById('t-' + tabId);
-    if (activeBtn) {
-        activeBtn.classList.add('active');
-    }
-
-    // 4. تحديث إحصائيات الناشر فوراً عند دخول قسم القنوات
-    if (tabId === 'channels' || tabId === 'sec-channels') {
-        updatePublisherStats(user.id);
-    }
-
-    // اهتزاز تأكيدي من التليجرام
-    if (window.Telegram?.WebApp) {
-        Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-    }
-}
-    
-        
-        if(t === 'channels') updatePublisherStats(user.id);
-        tg.HapticFeedback.impactOccurred('medium');
-    }
-
     // نظام الأرباح المطور (الناشر)
     function updatePublisherStats(userId) {
         db.ref('users/' + userId + '/stats').on('value', snap => {
@@ -466,7 +421,7 @@ function switchTab(tabId) {
             const c = d.clicks || 0, v = d.views || 0, t = d.timed_posts || 0;
             const cp = c * 0.0045, vp = v * 0.0009, tp = parseFloat(d.timed_earnings || 0);
 
-document.getElementById('stat-clicks').innerText = c;
+            document.getElementById('stat-clicks').innerText = c;
             document.getElementById('profit-clicks').innerText = cp.toFixed(2);
             document.getElementById('stat-views').innerText = v;
             document.getElementById('profit-views').innerText = vp.toFixed(2);
@@ -476,38 +431,15 @@ document.getElementById('stat-clicks').innerText = c;
         });
     }
 
+// 1. فتح وإغلاق لوحة الإضافة مع تأثير اهتزاز خفيف
+function togglePublisherPanel() {
+    const p = document.getElementById('publisher-panel');
+    const isHidden = (p.style.display === 'none' || p.style.display === '');
+    p.style.display = isHidden ? 'block' : 'none';
 
-// 2. تحديث الإحصائيات مع إصلاح أخطاء الرموز (Logic Fixed)
-function updatePublisherStats(userId) {
-    if (!userId) return;
-
-    db.ref('users/' + userId + '/stats').on('value', (snap) => {
-        const d = snap.val() || {};
-        
-        // جلب القيم مع وضع "0" كقيمة افتراضية لضمان عدم تعطل الحسابات
-        const c = d.clicks || 0; 
-        const v = d.views || 0; 
-        const t = d.timed_posts || 0;
-
-        // الحسابات (صافي الربح للناشر بعد خصم 10% عمولة للمنصة)
-        const cp = c * 0.0045; // 4.5$ لكل 1000 نقرة
-        const vp = v * 0.0009; // 0.9$ لكل 1000 ظهور
-        const tp = parseFloat(d.timed_earnings || 0);
-
-        // تحديث العناصر في الواجهة الذهبية
-        document.getElementById('stat-clicks').innerText = c.toLocaleString();
-        document.getElementById('profit-clicks').innerText = cp.toFixed(2);
-        
-        document.getElementById('stat-views').innerText = v.toLocaleString();
-        document.getElementById('profit-views').innerText = vp.toFixed(2);
-        
-        document.getElementById('stat-timed').innerText = t;
-        document.getElementById('profit-timed').innerText = tp.toFixed(2);
-        
-        // حساب الإجمالي النهائي
-        const total = cp + vp + tp;
-        document.getElementById('total-net-earnings').innerText = total.toFixed(2);
-    });
+    if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+    }
 }
 
 // 3. تقديم القناة للمراجعة مع حفظ القارة والتصنيف
@@ -594,26 +526,62 @@ function updateAdPreview() {
     } else { box.style.display = 'none'; }
 }
 
-function showTab(tabId, element) {
-    // إخفاء كافة الأقسام النشطة
-    document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
-    
-    // إظهار القسم المختار فقط
-    const target = document.getElementById(tabId);
-    if(target) target.style.display = 'block';
+// 2. نظام الإطلاق، الميزانية اليومية، وإعادة الاستهداف
+function processNewCampaign() {
+    const data = {
+        text: document.getElementById('adv-text-manual').value,
+        media: document.getElementById('adv-media-url').value,
+        link: document.getElementById('adv-link-smart').value,
+        daily_budget: document.getElementById('adv-daily-budget').value,
+        quality: document.getElementById('adv-quality').value,
+        notes: document.getElementById('adv-notes').value,
+        start: document.getElementById('adv-start-date').value || 'Immediate',
+        owner: user.id,
+        status: 'pending',
+        created_at: Date.now(),
+        metrics: { views: 0, clicks: 0 } // تقارير متقدمة
+    };
 
-    // تحديث شكل الأزرار في القائمة العائمة
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-    element.classList.add('active');
+    if(!data.text && !data.media) return tg.showAlert("⚠️ المحتوى فارغ! اكتب نصاً أو ارفع ميديا.");
 
-    // تأثير اهتزاز التليجرام
-    if (window.Telegram?.WebApp) Telegram.WebApp.HapticFeedback.impactOccurred('light');
-    }
+    db.ref('campaigns').push(data).then(() => {
+        tg.HapticFeedback.notificationOccurred('success');
+        tg.showPopup({
+            title: '🚀 انطلاق إمبراطوري',
+            message: 'تمت جدولة حملتك بنجاح. سيقوم المراجعون بالرد خلال دقائق.',
+            buttons: [{type: 'ok'}]
+        });
+        closeModal();
+    });
+}
+
+// 3. ميزة إعادة الاستهداف (Re-run) - وظيفة استدعاء البيانات
+function rerunCampaign(pastData) {
+    document.getElementById('adv-text-manual').value = pastData.text;
+    document.getElementById('adv-media-url').value = pastData.media;
+    document.getElementById('adv-daily-budget').value = pastData.daily_budget;
+    document.getElementById('adv-notes').value = "إعادة تشغيل لحملة ناجحة";
+    updateAdPreview();
+    openModal('modal-smart-campaign');
+    tg.showAlert("🔄 تم استعادة بيانات الحملة القديمة بنجاح!");
+}
 
 // وظائف التحكم في الظهور (منع التداخل)
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-    
+
+    function openTab(tab, el) {
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+    document.getElementById('sec-' + tab).style.display = 'block';
+
+    el.classList.add('active');
+
+    if(tab === 'channels') updatePublisherStats(user.id);
+
+    tg.HapticFeedback.impactOccurred('light');
+    }
     
 </script>
 </body>
