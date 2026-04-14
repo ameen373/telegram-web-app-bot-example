@@ -431,29 +431,36 @@ body {
     // إظهار لوحة الإدارة لأمين فقط
     if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
-// الدالة الجديدة المضمونة (تبدأ من سطر 409)
-function showTab(tabId, element) {
-    // 1. إخفاء جميع الأقسام فوراً لمنع التداخل
-    document.querySelectorAll('.section').forEach(sec => {
-        sec.style.display = 'none';
-    });
-
-    // 2. إظهار القسم المطلوب بناءً على المعرف (ID)
-    const target = document.getElementById(tabId);
-    if (target) {
-        target.style.display = 'block';
+function switchTab(t) {
+    // 1. إخفاء كل الأقسام فوراً
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    
+    // 2. إظهار القسم المطلوب (سواء أرسلت t أو sec-t)
+    let targetId = t.includes('sec-') ? t : 'sec-' + t;
+    let targetElement = document.getElementById(targetId);
+    
+    if (targetElement) {
+        targetElement.style.display = 'block';
     }
 
     // 3. تحديث حالة الزر النشط في القائمة العائمة
-    document.querySelectorAll('.nav-item').forEach(nav => {
-        nav.classList.remove('active');
-    });
-    element.classList.add('active');
-
-    // 4. إضافة اهتزاز تفاعلي خفيف (Haptic Feedback)
-    if (window.Telegram && Telegram.WebApp) {
-        Telegram.WebApp.HapticFeedback.impactOccurred('light');
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    
+    // البحث عن الزر النشط (تأكد أن ID الزر هو t-home, t-channels)
+    let activeBtn = document.getElementById('t-' + t.replace('sec-', ''));
+    if (activeBtn) {
+        activeBtn.classList.add('active');
     }
+
+    // 4. تحديث إحصائيات الناشر عند الدخول لقسم القنوات
+    if(t.includes('channels')) {
+        updatePublisherStats(user.id);
+    }
+    
+    // اهتزاز التليجرام
+    tg.HapticFeedback.impactOccurred('medium');
+}
+    
     
     // 5. تحديث إحصائيات الناشر تلقائياً عند دخول القسم
     if (tabId === 'sec-channels') {
