@@ -303,7 +303,7 @@ body {
     </div>
 </div>
     
-    <div id="channels" class="section" style="display: none; padding: 15px;">
+    <div id="sec-channels" class="section" style="display: none; padding: 15px;">
     
     <div class="stats-grid">
         <div class="stat-card" style="border-bottom: 4px solid #3498db;">
@@ -417,7 +417,6 @@ body {
 <div id="sec-publisher" class="section" style="display:none;"> </div>
 <div id="sec-promo" class="section" style="display:none;"> </div>
 <div id="sec-admin" class="section" style="display:none;"> </div>
-    
 
 <script>
     // --- إعدادات Firebase من ملفك القديم ---
@@ -431,42 +430,29 @@ body {
     // إظهار لوحة الإدارة لأمين فقط
     if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
-function switchTab(t) {
-    // 1. إخفاء كل الأقسام فوراً
-    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-    
-    // 2. إظهار القسم المطلوب (سواء أرسلت t أو sec-t)
-    let targetId = t.includes('sec-') ? t : 'sec-' + t;
-    let targetElement = document.getElementById(targetId);
-    
-    if (targetElement) {
-        targetElement.style.display = 'block';
-    }
+function showTab(tabId, element) {
+    // إخفاء جميع الأقسام
+    document.querySelectorAll('.section').forEach(sec => {
+        sec.style.display = 'none';
+    });
 
-    // 3. تحديث حالة الزر النشط في القائمة العائمة
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    
-    // البحث عن الزر النشط (تأكد أن ID الزر هو t-home, t-channels)
-    let activeBtn = document.getElementById('t-' + t.replace('sec-', ''));
-    if (activeBtn) {
-        activeBtn.classList.add('active');
-    }
+    // إظهار القسم المطلوب
+    document.getElementById(tabId).style.display = 'block';
 
-    // 4. تحديث إحصائيات الناشر عند الدخول لقسم القنوات
-    if(t.includes('channels')) {
-        updatePublisherStats(user.id);
-    }
-    
-    // اهتزاز التليجرام
-    tg.HapticFeedback.impactOccurred('medium');
-}
-    
-    
-    // 5. تحديث إحصائيات الناشر تلقائياً عند دخول القسم
-    if (tabId === 'sec-channels') {
-        updatePublisherStats(user.id);
+    // إزالة حالة النشاط من جميع الأزرار
+    document.querySelectorAll('.nav-item').forEach(nav => {
+        nav.classList.remove('active');
+    });
+
+    // إضافة حالة النشاط للزر الذي تم الضغط عليه
+    element.classList.add('active');
+
+    // اهتزاز خفيف للهاتف عند التنقل (اختياري)
+    if (window.Telegram && Telegram.WebApp) {
+        Telegram.WebApp.HapticFeedback.impactOccurred('light');
     }
     }
+    
 
     // نظام الأرباح المطور (الناشر)
     function updatePublisherStats(userId) {
