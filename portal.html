@@ -280,6 +280,35 @@ body {
     </div>
 
 <div id="sec-promo" class="section" style="display: none;">
+
+<label>🎯 نوع الإعلان:</label>
+<select id="ad-type" onchange="updateTargetOptions()" class="input-premium">
+  <option value="cpm">🚀 مشاهدات (CPM)</option>
+  <option value="cpc">🖱️ نقرات (CPC)</option>
+  <option value="time">⏰ مؤقت</option>
+</select>
+
+<label>🎯 الهدف:</label>
+<div id="cpm-box">
+  <input type="number" id="cpm-views">
+</div>
+
+<div id="cpc-box" style="display:none;">
+  <input type="number" id="cpc-clicks">
+</div>
+
+<div id="time-box" style="display:none;">
+  <label>⏰ مدة الإعلان:</label>
+  
+  <select id="time-duration" class="input-premium" onchange="updateTotalPrice()">
+    <option value="24">24 ساعة</option>
+    <option value="48">48 ساعة</option>
+    <option value="72">72 ساعة</option>
+  </select>
+
+  <p>💵 السعر: <span id="total-price">0$</span></p>
+</div>
+
     <div class="card" style="background: var(--gold-linear); color: black; border: none; padding: 20px; border-radius: 20px;">
         <h3 style="margin:0;">🎖️ Advertiser Elite Panel</h3>
         <p style="margin:5px 0 0; font-size:11px; opacity:0.8;">نظام المزايدة الذكي والتحليلات المتقدمة نشط ✅</p>
@@ -578,6 +607,15 @@ function updateAdPreview() {
 // 2. نظام الإطلاق، الميزانية اليومية، وإعادة الاستهداف
 function processNewCampaign() {
     const data = {
+        const adType = document.getElementById('ad-type').value;
+const adTarget = document.getElementById('ad-target').value;
+        document.getElementById('campaign-type').addEventListener('change', function () {
+    const type = this.value;
+
+    document.getElementById('cpm-box').style.display = (type === 'cpm') ? 'block' : 'none';
+    document.getElementById('cpc-box').style.display = (type === 'cpc') ? 'block' : 'none';
+    document.getElementById('time-box').style.display = (type === 'time') ? 'block' : 'none';
+});
         text: document.getElementById('adv-text-manual').value,
         media: document.getElementById('adv-media-url').value,
         link: document.getElementById('adv-link-smart').value,
@@ -631,7 +669,46 @@ function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style
 
     tg.HapticFeedback.impactOccurred('light');
     }
-    
+
+  // ✅ تحديث الواجهة حسب نوع الإعلان
+function updateTargetOptions() {
+  const type = document.getElementById('ad-type').value;
+
+  // إخفاء الكل أولاً
+  document.getElementById('cpm-box').style.display = 'none';
+  document.getElementById('cpc-box').style.display = 'none';
+  document.getElementById('time-box').style.display = 'none';
+
+  // إظهار المناسب
+  if (type === 'cpm') {
+    document.getElementById('cpm-box').style.display = 'block';
+  }
+
+  if (type === 'cpc') {
+    document.getElementById('cpc-box').style.display = 'block';
+  }
+
+  if (type === 'time') {
+    document.getElementById('time-box').style.display = 'block';
+    updateTotalPrice(); // 🔥 احسب السعر مباشرة
+  }
+}
+
+function updateTotalPrice() {
+  const duration = parseInt(document.getElementById('time-duration').value) || 0;
+
+  const channelPrice = 10; // سعر 24 ساعة (يجي من الناشر لاحقاً)
+
+  const total = (duration / 24) * channelPrice;
+
+  document.getElementById('total-price').innerText = total.toFixed(2) + " $";
+    }
+// ✅ تشغيل عند فتح الصفحة
+window.onload = function () {
+  updateTargetOptions();
+  updateTotalPrice();
+};
+
 </script>
 </body>
 </html>
