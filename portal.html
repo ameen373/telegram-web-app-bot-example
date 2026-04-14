@@ -171,11 +171,11 @@ body {
     </div>
 
 <div id="sec-promo" class="section" style="display: none;">
-    <div class="card" style="background: var(--gold-linear); color: #000; border: none;">
+    <div class="card" style="background: var(--gold-linear); color: black; border: none; padding: 20px; border-radius: 20px;">
         <h3 style="margin:0;">🎖️ Advertiser Elite Panel</h3>
-        <p style="margin:5px 0 0; font-size:11px;">نظام المزايدة التلقائي والذكاء الاصطناعي نشط ✅</p>
+        <p style="margin:5px 0 0; font-size:11px; opacity:0.8;">نظام المزايدة الذكي والتحليلات المتقدمة نشط ✅</p>
     </div>
-
+    
     <div class="stats-grid-4">
         <div class="stat-item"><small>الظهور</small><br><b id="adv-views">0</b></div>
         <div class="stat-item"><small>النقرات</small><br><b id="adv-clicks">0</b></div>
@@ -183,57 +183,71 @@ body {
         <div class="stat-item"><small>الميزانية</small><br><b style="color:var(--danger);">$<span id="adv-rem-bal">0.00</span></b></div>
     </div>
 
-    <button class="btn-premium-add" onclick="openModal('modal-smart-campaign')">🔥 إنشاء حملة ذكية (Smart Campaign)</button>
-    <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="downloadAdReport()">📂 تحميل تقارير الأداء (CSV)</button>
+    <button class="btn-premium-add" style="background:var(--accent); width:100%; border-radius:50px;" onclick="openModal('modal-smart-campaign')">🚀 إنشاء حملة عالمية جديدة</button>
+    <button class="btn-outline" style="width:100%; margin-top:10px; border-radius:50px;" onclick="showAdvancedAnalytics()">📊 تقارير الأداء المتقدمة</button>
 
-    <div class="card" style="margin-top:20px;">
-        <h4 style="margin-bottom:10px;">📊 إدارة الحملات والجدولة</h4>
-        <div id="active-campaigns-dashboard" style="font-size:12px; text-align:center; padding:15px; opacity:0.6;">
-            بانتظار إطلاق حملتك الأولى..
+    <div class="card" style="margin-top:20px; background: var(--card);">
+        <h4 style="color: var(--text);">📋 إدارة الجدولة وإعادة الاستهداف</h4>
+        <div id="active-campaigns-dashboard" style="text-align:center; padding:15px; opacity:0.5; font-size:11px; color: var(--text);">
+            لا توجد حملات جارية.. ابدأ الآن لتتصدر النتائج!
         </div>
     </div>
 </div>
 
-<div id="modal-smart-campaign" class="modal">
-    <div class="modal-content" style="border: 2px solid var(--gold); max-width: 480px; background: var(--bg);">
+<div id="modal-smart-campaign" class="modal" style="display: none;">
+    <div class="modal-content" style="border: 2px solid var(--gold); max-width: 500px; background: var(--bg); color: var(--text);">
         <span style="float:left; cursor:pointer; font-size:24px;" onclick="closeModal()">✕</span>
-        <h3 style="color:var(--gold); text-align:center; margin-bottom:15px;">🎯 إعداد الحملة المتجاوبة</h3>
+        <h3 style="color:var(--gold); text-align:center; margin-bottom:10px;">🎯 تخصيص حملة Ads Pro</h3>
         
-        <label class="label-small">🏷️ اختر هدف الحملة (Smart Objectives):</label>
-        <div class="target-goal-grid">
-            <div class="goal-item active" onclick="setGoal(this, 'leads')">📍 جلب عملاء</div>
-            <div class="goal-item" onclick="setGoal(this, 'brand')">📣 وعي بالعلامة</div>
+        <label class="label-small">📝 محتوى الإعلان (نص يدوياً):</label>
+        <textarea id="adv-text-manual" class="input-premium" style="height: 60px; background: var(--card); color: var(--text);" placeholder="اكتب وصف إعلانك الجذاب هنا..." oninput="updateAdPreview()"></textarea>
+
+        <label class="label-small">🖼️ الوسائط (رابط أو معرض الصور):</label>
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px;">
+            <input type="text" id="adv-media-url" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="ضع الرابط أو اضغط 📁" oninput="updateAdPreview()">
+            <input type="file" id="adv-file-upload" style="display: none;" accept="image/*,video/*" onchange="handleFileUpload(this)">
+            <button class="btn" style="width: 45px; background: var(--accent); color: white;" onclick="document.getElementById('adv-file-upload').click()">📁</button>
         </div>
 
-        <label class="label-small">🔗 الرابط المستهدف:</label>
-        <input type="text" id="adv-link-smart" class="input-premium" placeholder="https://t.me/..." oninput="updateAdPreview()">
-
-        <label class="label-small">🖼️ رابط الميديا (تحديد تلقائي):</label>
-        <input type="text" id="adv-media-url" class="input-premium" placeholder="رابط صورة أو فيديو" oninput="updateAdPreview()">
-
-        <div id="live-preview-box" style="display:none; background: var(--card); padding:12px; border-radius:15px; border:1px solid var(--gold); margin:15px 0;">
-            <small style="color:var(--gold);">📱 معاينة الإعلان المتجاوب:</small>
-            <div style="margin-top:8px;">
-                <img id="preview-img" style="width:100%; border-radius:8px; display:none; margin-bottom:10px;">
-                <video id="preview-video" style="width:100%; border-radius:8px; display:none; margin-bottom:10px;" controls></video>
-                <p id="preview-text-smart" style="font-size:12px; color: var(--text);"></p>
+        <div id="live-preview-box" style="display:none; background: var(--card); padding:12px; border-radius:12px; border:1px solid var(--gold); margin:10px 0;">
+            <small style="color:var(--gold);">📱 معاينة الإعلان اللحظية:</small>
+            <div style="background: var(--bg); padding:10px; border-radius:10px; margin-top:5px; border: 1px solid rgba(128,128,128,0.1);">
+                <img id="preview-img" style="width:100%; border-radius:8px; display:none; margin-bottom:8px;">
+                <video id="preview-video" style="width:100%; border-radius:8px; display:none; margin-bottom:8px;" controls></video>
+                <p id="preview-text-smart" style="font-size:11px; color: var(--text); font-weight: bold;"></p>
                 <div style="background:var(--accent); color:white; text-align:center; padding:4px; border-radius:4px; font-size:9px;">Sponsored إعلان ممول</div>
             </div>
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div>
-                <label class="label-small">💰 الميزانية ($):</label>
-                <input type="number" id="adv-total-budget" class="input-premium" placeholder="50">
+                <label class="label-small">💰 الميزانية اليومية ($):</label>
+                <input type="number" id="adv-daily-budget" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="5$">
             </div>
             <div>
-                <label class="label-small">📅 الجدولة الزمنية:</label>
-                <input type="datetime-local" id="adv-start-date" class="input-premium">
+                <label class="label-small">📉 فلترة القنوات:</label>
+                <select id="adv-quality" class="input-premium" style="background: var(--card); color: var(--text);">
+                    <option value="high">جودة عالية (Premium) ⭐</option>
+                    <option value="economy">اقتصادية (Economy) ✅</option>
+                </select>
             </div>
         </div>
 
-        <button class="btn-premium-add" style="margin-top:20px;" onclick="processNewCampaign()">🚀 إطلاق الحملة الآن</button>
-        <p style="font-size:9px; text-align:center; margin-top:10px; opacity:0.5;">* يتم استخدام نظام المزايدة التلقائي لتحقيق أفضل CTR</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div>
+                <label class="label-small">📅 جدولة الانطلاق:</label>
+                <input type="datetime-local" id="adv-start-date" class="input-premium" style="background: var(--card); color: var(--text);">
+            </div>
+            <div>
+                <label class="label-small">🔗 رابط الزر:</label>
+                <input type="text" id="adv-link-smart" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="https://t.me/.." oninput="updateAdPreview()">
+            </div>
+        </div>
+
+        <label class="label-small">💬 ملاحظات للمراجع (اختياري):</label>
+        <input type="text" id="adv-notes" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="مثال: يرجى النشر في وقت المساء...">
+
+        <button class="btn btn-primary" style="background:var(--safe); margin-top:15px; width:100%; border-radius:50px; padding: 12px; font-weight: bold;" onclick="processNewCampaign()">🚀 إطلاق الحملة الآن</button>
     </div>
 </div>
     
@@ -468,16 +482,21 @@ function checkBotStatus() {
     // هنا يمكنك إضافة كود API مستقبلاً للتحقق الفعلي
 }
 
-let selectedGoal = 'leads';
-
-function setGoal(el, goal) {
-    document.querySelectorAll('.goal-item').forEach(item => item.classList.remove('active'));
-    el.classList.add('active');
-    selectedGoal = goal;
+// 1. نظام الرفع من المعرض والمعاينة
+function handleFileUpload(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('adv-media-url').value = e.target.result;
+            updateAdPreview();
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
-// المعاينة الحية مع اكتشاف نوع الملف تلقائياً
 function updateAdPreview() {
+    const txtManual = document.getElementById('adv-text-manual').value;
     const media = document.getElementById('adv-media-url').value;
     const link = document.getElementById('adv-link-smart').value;
     const box = document.getElementById('live-preview-box');
@@ -485,57 +504,64 @@ function updateAdPreview() {
     const vid = document.getElementById('preview-video');
     const txt = document.getElementById('preview-text-smart');
 
-    if (media || link) {
+    if (txtManual || media || link) {
         box.style.display = 'block';
-        txt.innerText = link || "رابط الحملة الذكية";
+        txt.innerText = txtManual || (link ? "الرابط: " + link : "محتوى الإعلان...");
         
-        // اكتشاف تلقائي للميديا
-        const isImg = media.match(/\.(jpeg|jpg|gif|png|webp)$/i);
-        const isVid = media.match(/\.(mp4|webm|mov)$/i);
+        const isImg = media.startsWith('data:image') || media.match(/\.(jpeg|jpg|gif|png|webp)$/i);
+        const isVid = media.startsWith('data:video') || media.match(/\.(mp4|webm|mov)$/i);
 
         img.style.display = isImg ? 'block' : 'none';
         if(isImg) img.src = media;
-        
         vid.style.display = isVid ? 'block' : 'none';
         if(isVid) vid.src = media;
-    } else {
-        box.style.display = 'none';
-    }
+    } else { box.style.display = 'none'; }
 }
 
-// نظام الإطلاق مع التنبيهات والجدولة
+// 2. نظام الإطلاق، الميزانية اليومية، وإعادة الاستهداف
 function processNewCampaign() {
     const data = {
-        goal: selectedGoal,
-        link: document.getElementById('adv-link-smart').value,
+        text: document.getElementById('adv-text-manual').value,
         media: document.getElementById('adv-media-url').value,
-        budget: document.getElementById('adv-total-budget').value,
+        link: document.getElementById('adv-link-smart').value,
+        daily_budget: document.getElementById('adv-daily-budget').value,
+        quality: document.getElementById('adv-quality').value,
+        notes: document.getElementById('adv-notes').value,
         start: document.getElementById('adv-start-date').value || 'Immediate',
         owner: user.id,
-        status: 'pending_review',
-        timestamp: Date.now()
+        status: 'pending',
+        created_at: Date.now(),
+        metrics: { views: 0, clicks: 0 } // تقارير متقدمة
     };
 
-    if(!data.link) return tg.showAlert("⚠️ يرجى تحديد الرابط المستهدف أولاً!");
+    if(!data.text && !data.media) return tg.showAlert("⚠️ المحتوى فارغ! اكتب نصاً أو ارفع ميديا.");
 
     db.ref('campaigns').push(data).then(() => {
         tg.HapticFeedback.notificationOccurred('success');
         tg.showPopup({
-            title: '✅ تم الجدولة بنجاح',
-            message: 'حملتك الذكية قيد المراجعة الآن. ستتلقى تنبيهاً فور الموافقة عليها.',
+            title: '🚀 انطلاق إمبراطوري',
+            message: 'تمت جدولة حملتك بنجاح. سيقوم المراجعون بالرد خلال دقائق.',
             buttons: [{type: 'ok'}]
         });
         closeModal();
     });
 }
 
-// فتح وإغلاق المودال بمرونة
-function openModal(id) {
-    document.getElementById(id).style.display = 'flex';
+// 3. ميزة إعادة الاستهداف (Re-run) - وظيفة استدعاء البيانات
+function rerunCampaign(pastData) {
+    document.getElementById('adv-text-manual').value = pastData.text;
+    document.getElementById('adv-media-url').value = pastData.media;
+    document.getElementById('adv-daily-budget').value = pastData.daily_budget;
+    document.getElementById('adv-notes').value = "إعادة تشغيل لحملة ناجحة";
+    updateAdPreview();
+    openModal('modal-smart-campaign');
+    tg.showAlert("🔄 تم استعادة بيانات الحملة القديمة بنجاح!");
 }
-function closeModal() {
-    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-}
+
+// وظائف التحكم في الظهور (منع التداخل)
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+    
     
 </script>
 </body>
