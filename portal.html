@@ -9,18 +9,51 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
-        :root {
-            --bg: #0b0f1a; --card: rgba(23, 32, 51, 0.95);
-            --accent: #3b82f6; --gold: #f59e0b; --safe: #10b981; --danger: #ef4444; --text: #ffffff;
-            --gold-linear: linear-gradient(45deg, #d4af37, #f9e29c, #b8860b);
-        }
 
-        body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background: var(--bg); color: var(--text); margin: 0; 
-            padding-bottom: 100px; /* مسافة للقائمة العائمة */
-        }
+/* الألوان الديناميكية التي تدعم الوضعين النهاري والليلي */
+:root {
+    /* الخلفية تتغير حسب ثيم تليجرام، وإذا لم تتوفر تستخدم اللون الداكن الافتراضي */
+    --bg: var(--tg-theme-bg-color, #0b0f1a); 
+    --card: var(--tg-theme-secondary-bg-color, rgba(23, 32, 51, 0.95));
+    --text: var(--tg-theme-text-color, #ffffff);
+    --accent: var(--tg-theme-button-color, #3b82f6);
+    --button-text: var(--tg-theme-button-text-color, #ffffff);
+    
+    /* الألوان الثابتة للنجاح والتحذير */
+    --gold: #f59e0b; 
+    --safe: #10b981; 
+    --danger: #ef4444;
+    --gold-linear: linear-gradient(45deg, #d4af37, #f9e29c, #b8860b);
+}
 
+body { 
+    font-family: 'Segoe UI', system-ui, sans-serif; 
+    background: var(--bg); 
+    color: var(--text); 
+    margin: 0; 
+    padding-bottom: 90px; 
+    transition: background 0.3s ease, color 0.3s ease; 
+}
+
+/* تحديث ألوان الحقول لتناسب الوضعين */
+input, select, textarea, .input-premium {
+    background: var(--tg-theme-bg-color, #0f172a);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    color: var(--text);
+}
+
+/* تحديث ألوان الأزرار لتستخدم لون زر التليجرام الرسمي */
+.btn-primary {
+    background: var(--accent);
+    color: var(--button-text);
+}
+
+.nav {
+    background: var(--bg);
+    border-top: 1px solid rgba(128, 128, 128, 0.1);
+}
+        
+        
         /* التصميم الجديد للقائمة العائمة (الكبسولية) */
         .floating-nav {
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
