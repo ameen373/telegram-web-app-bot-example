@@ -9,23 +9,11 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
-
-/* الألوان الديناميكية التي تدعم الوضعين النهاري والليلي */
-:root {
-    /* الخلفية تتغير حسب ثيم تليجرام، وإذا لم تتوفر تستخدم اللون الداكن الافتراضي */
-    --bg: var(--tg-theme-bg-color, #0b0f1a); 
-    --card: var(--tg-theme-secondary-bg-color, rgba(23, 32, 51, 0.95));
-    --text: var(--tg-theme-text-color, #ffffff);
-    --accent: var(--tg-theme-button-color, #3b82f6);
-    --button-text: var(--tg-theme-button-text-color, #ffffff);
-    
-    /* الألوان الثابتة للنجاح والتحذير */
-    --gold: #f59e0b; 
-    --safe: #10b981; 
-    --danger: #ef4444;
-    --gold-linear: linear-gradient(45deg, #d4af37, #f9e29c, #b8860b);
-}
-
+        /* --- التنسيقات المدمجة (القديمة + الجديدة) --- */
+        :root {
+            --bg: #0b0f1a; --card: rgba(23, 32, 51, 0.95);
+            --accent: #3b82f6; --gold: #f59e0b; --safe: #10b981; --danger: #ef4444; --text: #ffffff;
+        }
 body { 
     font-family: 'Segoe UI', system-ui, sans-serif; 
     background: var(--bg); 
@@ -34,57 +22,32 @@ body {
     padding-bottom: 90px; 
     transition: background 0.3s ease, color 0.3s ease; 
 }
-
-/* تحديث ألوان الحقول لتناسب الوضعين */
-input, select, textarea, .input-premium {
-    background: var(--tg-theme-bg-color, #0f172a);
-    border: 1px solid rgba(128, 128, 128, 0.2);
-    color: var(--text);
-}
-
-/* تحديث ألوان الأزرار لتستخدم لون زر التليجرام الرسمي */
-.btn-primary {
-    background: var(--accent);
-    color: var(--button-text);
-}
-
-.nav {
-    background: var(--bg);
-    border-top: 1px solid rgba(128, 128, 128, 0.1);
-}
         
-        
-        /* التصميم الجديد للقائمة العائمة (الكبسولية) */
-        .floating-nav {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px; background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px); border-radius: 50px;
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 10px 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 9999;
-        }
-
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            text-decoration: none; color: #555; transition: 0.3s; flex: 1; cursor: pointer;
-        }
-
-        .nav-item i { font-size: 18px; margin-bottom: 2px; }
-        .nav-item span { font-size: 10px; font-weight: bold; }
-        .nav-item.active { color: var(--accent); background: rgba(59, 130, 246, 0.1); border-radius: 30px; padding: 5px 0; }
-
-        /* تنسيقات الأقسام والكروت المستوردة من ملفك */
+        /* الأقسام والتنقل */
         .section { display: none; padding: 16px; animation: slideUp 0.4s ease; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .card { background: var(--card); border-radius: 24px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .stat-card { background: rgba(255, 255, 255, 0.03); border-radius: 18px; padding: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        .btn-premium-add { background: var(--gold-linear); color: #000; width: 100%; padding: 15px; border-radius: 50px; font-weight: 800; border: none; cursor: pointer; }
-        .input-premium { width: 100%; background: var(--bg); border: 1px solid rgba(128,128,128,0.2); color: var(--text); padding: 12px; border-radius: 12px; margin-bottom: 12px; box-sizing: border-box; }
         
-        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; }
-        .modal-content { background: var(--bg); padding: 20px; border-radius: 25px; width: 90%; max-width: 400px; border: 2px solid var(--gold); }
+        .card { background: var(--card); border-radius: 24px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .stats-grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0; }
+        .stat-item { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
+        
+        /* كروت الأرباح الجديدة (التي طلبتموها) */
+        .profit-card { border-bottom: 3px solid var(--accent); }
+        .profit-tag { color: var(--safe); font-size: 11px; font-weight: bold; }
 
-:root {
+        /* الأزرار والحقول */
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; margin-top: 10px; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .input-premium { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 12px; color: white; padding: 14px; margin-top: 10px; box-sizing: border-box; }
+
+    
+        :root {
+    --bg: var(--tg-theme-bg-color, #0b0f1a); 
+    --card: var(--tg-theme-secondary-bg-color, rgba(23, 32, 51, 0.95));
+    --text: var(--tg-theme-text-color, #ffffff);
+    --accent: var(--tg-theme-button-color, #3b82f6);
+    --button-text: var(--tg-theme-button-text-color, #ffffff);
     --gold-linear: linear-gradient(45deg, #d4af37, #f9e29c, #b8860b);
     --gold: #d4af37;
     --safe: #10b981;
@@ -129,124 +92,133 @@ input, select, textarea, .input-premium {
 
 #publisher-panel {
     display: none;
-    background: rgba(0,0,0,0.6);
+    background: var(--card); /* يتغير تلقائياً مع ثيم تليجرام */
     border-radius: 25px;
     padding: 20px;
     border: 1.5px solid var(--gold);
     box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
     margin-bottom: 30px;
 }
-
 .input-premium {
     width: 100%;
-    background: #111;
-    border: 1px solid #333;
-    color: #fff;
+    background: var(--bg); /* يتغير تلقائياً مع ثيم تليجرام */
+    border: 1px solid rgba(128, 128, 128, 0.2); /* حدود ناعمة تناسب الوضعين */
+    color: var(--text); /* يتغير لون النص تلقائياً */
     padding: 12px;
     border-radius: 12px;
     margin-bottom: 12px;
     box-sizing: border-box;
 }
+
+/* نظام المودال الاحترافي - يمنع التداخل */
+.modal {
+    display: none; /* مخفي افتراضياً لمنع التداخل في الأقسام الأخرى */
+    position: fixed;
+    z-index: 10000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+.target-goal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.goal-item {
+    border: 1px solid rgba(128,128,128,0.3);
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: var(--card);
+}
+
+.goal-item.active {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
+}
+        /* تصميم القائمة العائمة الجديد */
+.floating-nav {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 9999;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #555;
+    transition: 0.3s;
+    flex: 1;
+}
+
+.nav-item i {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.nav-item span {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* حالة القسم النشط */
+.nav-item.active {
+    color: #0088cc; /* لون التليجرام الأزرق */
+    background: rgba(0, 136, 204, 0.1);
+    border-radius: 30px;
+    padding: 8px 0;
+}
+
+/* تعديل المسافة السفلية للصفحة لكي لا يختفي المحتوى خلف القائمة */
+body {
+    padding-bottom: 100px !important;
+}
         
         
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
 <div class="main-content">
     <div id="sec-home" class="section" style="display: block;">
         <div class="card" style="text-align: center; border: 1px solid var(--accent);">
-            <div style="font-size: 10px; color: var(--gold); font-weight: bold;">PREMIUM MEMBER</div>
+            <div id="user-rank" style="font-size: 10px; color: var(--gold); font-weight: bold;">MEMBER</div>
             <small>إجمالي الرصيد (USDT)</small>
             <h1 id="bal-total" style="font-size: 38px; margin: 8px 0;">0.00</h1>
-            <div class="stats-grid">
-                <div class="stat-card"><small>قابل للسحب</small><br><b id="bal-avail" style="color:var(--safe);">0.00</b></div>
-                <div class="stat-card"><small>مكافآت</small><br><b id="bal-bonus" style="color:var(--gold);">0.00</b></div>
+            <div class="stats-grid-4">
+                <div class="stat-item"><small>قابل للسحب</small><br><b id="bal-avail" style="color:var(--safe);">0.00</b></div>
+                <div class="stat-item"><small>مكافآت</small><br><b id="bal-bonus" style="color:var(--gold);">0.00</b></div>
             </div>
         </div>
-    </div>
-
-    <div id="sec-channels" class="section" style="display: none; padding: 15px;">
-    
-    <div class="stats-grid">
-        <div class="stat-card" style="border-bottom: 4px solid #3498db;">
-            <h4 style="color: #3498db; font-size: 12px; margin: 0;">🖱️ النقرات (CPC)</h4>
-            <p id="stat-clicks" style="font-size: 20px; font-weight: bold; margin: 8px 0;">0</p>
-            <div class="profit-tag">الربح: $<span id="profit-clicks">0.00</span></div>
-        </div>
-
-        <div class="stat-card" style="border-bottom: 4px solid #2ecc71;">
-            <h4 style="color: #2ecc71; font-size: 12px; margin: 0;">🚀 المشاهدات (CPM)</h4>
-            <p id="stat-views" style="font-size: 20px; font-weight: bold; margin: 8px 0;">0</p>
-            <div class="profit-tag">الربح: $<span id="profit-views">0.00</span></div>
-        </div>
-
-        <div class="stat-card" style="border-bottom: 4px solid #9b59b6;">
-            <h4 style="color: #9b59b6; font-size: 12px; margin: 0;">⏰ منشورات (24h)</h4>
-            <p id="stat-timed" style="font-size: 20px; font-weight: bold; margin: 8px 0;">0</p>
-            <div class="profit-tag">الربح: $<span id="profit-timed">0.00</span></div>
-        </div>
-
-        <div class="stat-card" style="background: var(--gold-linear); color: #000; border:none; display: flex; flex-direction: column; justify-content: center;">
-            <h4 style="margin: 0; font-size: 12px; font-weight: 800;">💰 الإجمالي الصافي</h4>
-            <h2 style="margin: 5px 0; font-size: 24px;">$<span id="total-net-earnings">0.00</span></h2>
+        <div class="card" id="global-offer-card" style="border-right: 4px solid var(--danger);">
+            <h4 style="margin:0; color:var(--danger);">🔥 عروض أمين الحصرية</h4>
+            <p id="offer-text" style="font-size: 12px; color: #94a3b8; margin-top: 5px;">خصم 30% للمعلنين الدائمين!</p>
         </div>
     </div>
 
-    <button class="btn-premium-add" onclick="togglePublisherPanel()">
-        ➕ إضافة قناة جديدة للمنصة
-    </button>
-
-    <div id="publisher-panel">
-        <h3 style="color: var(--gold); text-align: center; margin-bottom: 20px; font-weight: 800;">📝 بيانات القناة</h3>
-        
-        <input type="text" id="ch-name" class="input-premium" placeholder="🏷️ اسم قناتك">
-        <input type="text" id="ch-link" class="input-premium" placeholder="🔗 رابط القناة @username">
-        
-        <label style="color:#888; font-size:12px; display: block; margin-bottom: 5px;">📂 تصنيف المحتوى:</label>
-        <select id="ch-category" class="input-premium">
-            <option value="entertainment">الترفيه 🎭</option>
-            <option value="news">الاخبار ووسائل الاعلام 📰</option>
-            <option value="movies">الافلام والمسلسلات 🎬</option>
-            <option value="crypto">العملات المشفره 💰</option>
-            <option value="tech">التقنيات 💻</option>
-            <option value="other">اخر ✨</option>
-        </select>
-
-        <label style="color:#888; font-size:12px; display: block; margin-bottom: 5px;">🌍 المنطقة المستهدفة:</label>
-        <select id="ch-region" class="input-premium">
-            <option value="all">جميع دول العالم 🌍</option>
-            <option value="arab">الوطن العربي 🇸🇦</option>
-            <option value="gulf">دول الخليج 🇰🇼</option>
-        </select>
-
-        <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:15px; font-size:13px; border:1px solid #333;">
-            <p style="margin-bottom:10px; color: #fff;">⏰ <b>منشور (24h):</b> 
-                <input type="number" id="price-24h" placeholder="0" style="width:60px; background:none; border:1px solid var(--gold); color:white; border-radius:5px; text-align: center;"> $ 
-                <small style="color: #888;">(عمولتنا 10%)</small>
-            </p>
-            <p style="margin-bottom:10px; color: #fff;">🖱️ <b>نقرات (CPC):</b> <span style="color:var(--safe); font-weight: bold;">5$ / 1000</span></p>
-            <p style="margin: 0; color: #fff;">🚀 <b>مشاهدات (CPM):</b> <span style="color:var(--safe); font-weight: bold;">1$ / 1000</span></p>
-        </div>
-
-        <div style="background: rgba(255, 193, 7, 0.1); border-right: 4px solid #ffc107; padding: 12px; font-size: 11px; margin-bottom: 20px; color:#ddd; border-radius: 4px;">
-            ⚠️ يجب إضافة <b>@Ads_telegabot</b> كمسؤول. المتطلبات: +1000 مشترك وعمر القناة +1 شهر.
-        </div>
-
-        <button class="btn-premium-add" style="background:#0088cc; color:white; box-shadow:none; border-radius: 12px;" onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')">🤖 1. إضافة البوت كمسؤول</button>
-        
-        <button onclick="tg.showAlert('🔍 يتم الآن التحقق من الصلاحيات...')" style="width:100%; padding:12px; background:none; border:1px solid #444; color:white; border-radius:12px; margin-bottom:10px; cursor: pointer;">🔍 2. تحقق من الإضافة</button>
-        
-        <button onclick="submitEliteChannel()" style="width:100%; padding:15px; background:var(--safe); border:none; color:white; border-radius:12px; font-weight:bold; font-size:16px; cursor: pointer;">🚀 3. تقديم القناة للمراجعة</button>
-    </div>
-
-    <h4 style="color:#666; font-size:14px; margin-top: 25px; margin-bottom:15px;">📺 قنواتك المسجلة:</h4>
-    <div id="my-elite-channels"></div>
-    </div>
-    
-
-    <div id="sec-promo" class="section" style="display: none;">
+<div id="sec-promo" class="section" style="display: none;">
     <div class="card" style="background: var(--gold-linear); color: black; border: none; padding: 20px; border-radius: 20px;">
         <h3 style="margin:0;">🎖️ Advertiser Elite Panel</h3>
         <p style="margin:5px 0 0; font-size:11px; opacity:0.8;">نظام المزايدة الذكي والتحليلات المتقدمة نشط ✅</p>
@@ -327,72 +299,153 @@ input, select, textarea, .input-premium {
     </div>
 </div>
     
+    <div id="sec-channels" class="section" style="display: none; padding: 15px;">
+    
+    <div class="stats-grid">
+        <div class="stat-card" style="border-bottom: 4px solid #3498db;">
+            <h4 style="color: #3498db; font-size: 12px; margin: 0;">🖱️ النقرات (CPC)</h4>
+            <p id="stat-clicks" style="font-size: 20px; font-weight: bold; margin: 8px 0;">0</p>
+            <div class="profit-tag">الربح: $<span id="profit-clicks">0.00</span></div>
+        </div>
+
+        <div class="stat-card" style="border-bottom: 4px solid #2ecc71;">
+            <h4 style="color: #2ecc71; font-size: 12px; margin: 0;">🚀 المشاهدات (CPM)</h4>
+            <p id="stat-views" style="font-size: 20px; font-weight: bold; margin: 8px 0;">0</p>
+            <div class="profit-tag">الربح: $<span id="profit-views">0.00</span></div>
+        </div>
+
+        <div class="stat-card" style="border-bottom: 4px solid #9b59b6;">
+            <h4 style="color: #9b59b6; font-size: 12px; margin: 0;">⏰ منشورات (24h)</h4>
+            <p id="stat-timed" style="font-size: 20px; font-weight: bold; margin: 8px 0;">0</p>
+            <div class="profit-tag">الربح: $<span id="profit-timed">0.00</span></div>
+        </div>
+
+        <div class="stat-card" style="background: var(--gold-linear); color: #000; border:none; display: flex; flex-direction: column; justify-content: center;">
+            <h4 style="margin: 0; font-size: 12px; font-weight: 800;">💰 الإجمالي الصافي</h4>
+            <h2 style="margin: 5px 0; font-size: 24px;">$<span id="total-net-earnings">0.00</span></h2>
+        </div>
+    </div>
+
+    <button class="btn-premium-add" onclick="togglePublisherPanel()">
+        ➕ إضافة قناة جديدة للمنصة
+    </button>
+
+    <div id="publisher-panel">
+        <h3 style="color: var(--gold); text-align: center; margin-bottom: 20px; font-weight: 800;">📝 بيانات القناة</h3>
+        
+        <input type="text" id="ch-name" class="input-premium" placeholder="🏷️ اسم قناتك">
+        <input type="text" id="ch-link" class="input-premium" placeholder="🔗 رابط القناة @username">
+        
+        <label style="color:#888; font-size:12px; display: block; margin-bottom: 5px;">🌍 المنطقة (القارة):</label>
+<select id="ch-region" class="input-premium">
+    <option value="asia">آسيا 🌏</option>
+    <option value="africa">إفريقيا 🌍</option>
+    <option value="europe">أوروبا 🇪🇺</option>
+    <option value="north-america">أمريكا الشمالية 🌎</option>
+    <option value="south-america">أمريكا الجنوبية 🏔️</option>
+    <option value="australia">أستراليا 🇦🇺</option>
+    <option value="global">عالمي (كل القارات) ✨</option>
+</select>
+
+        <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:15px; font-size:13px; border:1px solid #333;">
+            <p style="margin-bottom:10px; color: #fff;">⏰ <b>منشور (24h):</b> 
+                <input type="number" id="price-24h" placeholder="0" style="width:60px; background:none; border:1px solid var(--gold); color:white; border-radius:5px; text-align: center;"> $ 
+                <small style="color: #888;">(عمولتنا 10%)</small>
+            </p>
+            <p style="margin-bottom:10px; color: #fff;">🖱️ <b>نقرات (CPC):</b> <span style="color:var(--safe); font-weight: bold;">5$ / 1000</span></p>
+            <p style="margin: 0; color: #fff;">🚀 <b>مشاهدات (CPM):</b> <span style="color:var(--safe); font-weight: bold;">1$ / 1000</span></p>
+        </div>
+
+        <div style="background: rgba(255, 193, 7, 0.1); border-right: 4px solid #ffc107; padding: 12px; font-size: 11px; margin-bottom: 20px; color:#ddd; border-radius: 4px;">
+            ⚠️ يجب إضافة <b>@Ads_telegabot</b> كمسؤول. المتطلبات: +1000 مشترك وعمر القناة +1 شهر.
+        </div>
+
+        <button class="btn-premium-add" style="background:#0088cc; color:white; box-shadow:none; border-radius: 12px;" onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')">🤖 1. إضافة البوت كمسؤول</button>
+        
+        <button onclick="tg.showAlert('🔍 يتم الآن التحقق من الصلاحيات...')" style="width:100%; padding:12px; background:none; border:1px solid #444; color:white; border-radius:12px; margin-bottom:10px; cursor: pointer;">🔍 2. تحقق من الإضافة</button>
+        
+        <button onclick="submitEliteChannel()" style="width:100%; padding:15px; background:var(--safe); border:none; color:white; border-radius:12px; font-weight:bold; font-size:16px; cursor: pointer;">🚀 3. تقديم القناة للمراجعة</button>
+    </div>
+
+    <h4 style="color:#666; font-size:14px; margin-top: 25px; margin-bottom:15px;">📺 قنواتك المسجلة:</h4>
+    <div id="my-elite-channels"></div>
+    </div>
+
+    <div id="sec-referral" class="section">
+        <h3 style="margin: 15px;">👥 نظام النمو</h3>
+        <div class="stats-grid-4">
+            <div class="stat-item"><small>الإحالات</small><br><b id="ref-count-v3">0</b></div>
+            <div class="stat-item"><small>المكاسب ($)</small><br><b id="ref-earn-v3" style="color:var(--safe);">0.00</b></div>
+        </div>
+        <button class="btn btn-primary" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
+    </div>
 
     <div id="sec-admin" class="section">
-        <h3 style="color:var(--danger);">🛠️ لوحة الإدارة</h3>
+        <h3 style="color:var(--danger); margin:15px;">🛠️ لوحة الإدارة</h3>
         <div class="card">
             <input type="text" id="adm-uid" class="input-premium" placeholder="User ID">
             <input type="number" id="adm-val" class="input-premium" placeholder="المبلغ">
-            <button class="btn-premium-add" style="background:var(--danger); color:white;" onclick="adminAction('add')">تعديل الرصيد</button>
+            <button class="btn btn-primary" onclick="adminAction('add')">إضافة رصيد +</button>
         </div>
     </div>
 </div>
 
 <div class="floating-nav">
-    <div class="nav-item active" onclick="showTab('sec-home', this)">
+    <a href="javascript:void(0)" class="nav-item active" onclick="showTab('sec-home', this)">
         <i class="fas fa-home"></i><span>الرئيسية</span>
-    </div>
-    <div class="nav-item" onclick="showTab('sec-publisher', this)">
+    </a>
+    <a href="javascript:void(0)" class="nav-item" onclick="showTab('sec-publisher', this)">
         <i class="fas fa-bullhorn"></i><span>الناشر</span>
-    </div>
-    <div class="nav-item" onclick="showTab('sec-promo', this)">
+    </a>
+    <a href="javascript:void(0)" class="nav-item" onclick="showTab('sec-promo', this)">
         <i class="fas fa-ad"></i><span>المعلن</span>
-    </div>
-    <div id="adm-nav-item" class="nav-item" style="display:none;" onclick="showTab('sec-admin', this)">
+    </a>
+    <a href="javascript:void(0)" class="nav-item" onclick="showTab('sec-admin', this)">
         <i class="fas fa-user-shield"></i><span>الإدارة</span>
-    </div>
+    </a>
 </div>
-
-<div id="modal-smart-campaign" class="modal">
-    <div class="modal-content">
-        <span style="float:left; cursor:pointer;" onclick="closeModal()">✕</span>
-        <h4>🎯 إعداد الحملة</h4>
-        <textarea id="adv-text-manual" class="input-premium" placeholder="نص الإعلان"></textarea>
-        <input type="text" id="adv-link-smart" class="input-premium" placeholder="رابط الزر">
-        <button class="btn-premium-add" onclick="processNewCampaign()">إطلاق 🚀</button>
-    </div>
-</div>
+    
 
 <script>
-    // إعدادات Firebase (تم الحفاظ عليها)
+    // --- إعدادات Firebase من ملفك القديم ---
     const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+
     const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe.user || { id: 549686235 };
+    const user = tg.initDataUnsafe.user || { id: 549686235 }; // معرف أمين الافتراضي
 
-    // تفعيل لوحة الإدارة لأمين فقط
-    if(user.id.toString() === "549686235") document.getElementById('adm-nav-item').style.display = 'flex';
+    // إظهار لوحة الإدارة لأمين فقط
+    if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
-    // دالة التنقل الجديدة (تمنع التداخل)
-    function showTab(tabId, element) {
+    // دالة التنقل الموحدة
+    function switchTab(t) {
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-        document.getElementById(tabId).style.display = 'block';
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        element.classList.add('active');
-        tg.HapticFeedback.impactOccurred('light');
+        document.getElementById('sec-' + t).style.display = 'block';
+        document.getElementById('t-' + t).classList.add('active');
+        
+        if(t === 'channels') updatePublisherStats(user.id);
+        tg.HapticFeedback.impactOccurred('medium');
     }
 
-    // 1. فتح وإغلاق لوحة الإضافة مع تأثير اهتزاز خفيف
-function togglePublisherPanel() {
-    const p = document.getElementById('publisher-panel');
-    const isHidden = (p.style.display === 'none' || p.style.display === '');
-    p.style.display = isHidden ? 'block' : 'none';
+    // نظام الأرباح المطور (الناشر)
+    function updatePublisherStats(userId) {
+        db.ref('users/' + userId + '/stats').on('value', snap => {
+            const d = snap.val() || {};
+            const c = d.clicks || 0, v = d.views || 0, t = d.timed_posts || 0;
+            const cp = c * 0.0045, vp = v * 0.0009, tp = parseFloat(d.timed_earnings || 0);
 
-    if (tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('light');
+document.getElementById('stat-clicks').innerText = c;
+            document.getElementById('profit-clicks').innerText = cp.toFixed(2);
+            document.getElementById('stat-views').innerText = v;
+            document.getElementById('profit-views').innerText = vp.toFixed(2);
+            document.getElementById('stat-timed').innerText = t;
+            document.getElementById('profit-timed').innerText = tp.toFixed(2);
+            document.getElementById('total-net-earnings').innerText = (cp + vp + tp).toFixed(2);
+        });
     }
-}
+
 
 // 2. تحديث الإحصائيات مع إصلاح أخطاء الرموز (Logic Fixed)
 function updatePublisherStats(userId) {
@@ -474,9 +527,8 @@ function checkBotStatus() {
     tg.showAlert('🔍 يتم الآن التحقق من الصلاحيات ووجود البوت كمسؤول... يرجى الانتظار');
     // هنا يمكنك إضافة كود API مستقبلاً للتحقق الفعلي
 }
-    
 
-// نظام الرفع من المعرض والمعاينة الفائقة
+// 1. نظام الرفع من المعرض والمعاينة
 function handleFileUpload(input) {
     const file = input.files[0];
     if (file) {
@@ -509,12 +561,10 @@ function updateAdPreview() {
         if(isImg) img.src = media;
         vid.style.display = isVid ? 'block' : 'none';
         if(isVid) vid.src = media;
-    } else { 
-        box.style.display = 'none'; 
-    }
+    } else { box.style.display = 'none'; }
 }
 
-// نظام الإطلاق المطور (الميزانية اليومية + ملاحظات)
+// 2. نظام الإطلاق، الميزانية اليومية، وإعادة الاستهداف
 function processNewCampaign() {
     const data = {
         text: document.getElementById('adv-text-manual').value,
@@ -527,29 +577,41 @@ function processNewCampaign() {
         owner: user.id,
         status: 'pending',
         created_at: Date.now(),
-        metrics: { views: 0, clicks: 0 }
+        metrics: { views: 0, clicks: 0 } // تقارير متقدمة
     };
 
-    if(!data.text && !data.media) return tg.showAlert("⚠️ المحتوى فارغ!");
+    if(!data.text && !data.media) return tg.showAlert("⚠️ المحتوى فارغ! اكتب نصاً أو ارفع ميديا.");
 
     db.ref('campaigns').push(data).then(() => {
         tg.HapticFeedback.notificationOccurred('success');
         tg.showPopup({
-            title: '🚀 تم الإطلاق بنجاح',
-            message: 'حملتك الإحترافية قيد المراجعة الآن.',
+            title: '🚀 انطلاق إمبراطوري',
+            message: 'تمت جدولة حملتك بنجاح. سيقوم المراجعون بالرد خلال دقائق.',
             buttons: [{type: 'ok'}]
         });
         closeModal();
     });
 }
 
-// التحكم في المودالات (منع التداخل)
-function openModal(id) { 
-    document.getElementById(id).style.display = 'flex'; 
-}
-function closeModal() { 
-    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); 
-}
+function showTab(tabId, element) {
+    // إخفاء كافة الأقسام النشطة
+    document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+    
+    // إظهار القسم المختار فقط
+    const target = document.getElementById(tabId);
+    if(target) target.style.display = 'block';
+
+    // تحديث شكل الأزرار في القائمة العائمة
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    element.classList.add('active');
+
+    // تأثير اهتزاز التليجرام
+    if (window.Telegram?.WebApp) Telegram.WebApp.HapticFeedback.impactOccurred('light');
+    }
+
+// وظائف التحكم في الظهور (منع التداخل)
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
     
     
 </script>
