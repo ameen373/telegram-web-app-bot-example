@@ -621,43 +621,37 @@ function rerunCampaign(pastData) {
     tg.showAlert("🔄 تم استعادة بيانات الحملة القديمة بنجاح!");
 }
 
-    // --- 1. دالة التنقل بين الأقسام (الرئيسية، الناشر، المعلن) ---
+    // --- 1. دالة التنقل بين الأقسام (الرئيسية، الناشر، المعلن، الإدارة) ---
 function openTab(tab, el) {
-    // إخفاء كل الأقسام لضمان عدم التداخل
     document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-    
-    // إزالة اللون النشط من الأزرار السفلية
     document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
 
-    // إظهار القسم الذي ضغطت عليه (تأكد أن ID القسم يبدأ بـ sec-)
     const target = document.getElementById('sec-' + tab);
     if (target) {
         target.style.display = 'block';
     }
 
-    // إضافة اللون النشط للزر الحالي
     if (el) el.classList.add('active');
 
-    // تحديث إحصائيات الناشر إذا دخل قسم القنوات
     if (tab === 'channels' && typeof updatePublisherStats === 'function') {
         updatePublisherStats(user.id);
     }
 
-    if (window.tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    if (window.tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+    }
 }
 
-// --- 2. دالة فتح النوافذ المنبثقة (Modals) ---
+// --- 2. دالة فتح النوافذ المنبثقة (Modals) الشاملة ---
 function openModal(id) {
     const modal = document.getElementById(id);
-    if (modal) {
-        modal.style.display = 'flex';
-        
-        // تشغيل نظام القارات والدول للمعلن فوراً
-        if (id === 'modal-smart-campaign' || id === 'modal-promo') {
-            if (typeof setupGeoDropdowns === 'function') {
-                setupGeoDropdowns('adv-continent', 'adv-country');
-            }
-        }
+    if (!modal) return;
+    
+    modal.style.display = 'flex';
+    
+    // تشغيل نظام القارات والدول للمعلن فوراً
+    if (id === 'modal-smart-campaign' || id === 'modal-promo') {
+        setupGeoDropdowns('adv-continent', 'adv-country');
     }
 }
 
@@ -665,14 +659,30 @@ function openModal(id) {
 function closeModal() { 
     document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); 
 }
-    
 
-// 1. الدالة الأم لتجهيز القوائم (محمية من الأخطاء)
+// --- 4. دالة لوحة الناشر (إضافة قناة) ---
+function togglePublisherPanel() {
+    const p = document.getElementById('publisher-panel');
+    if (!p) return;
+    
+    const isHidden = (p.style.display === 'none' || p.style.display === '');
+    p.style.display = isHidden ? 'block' : 'none';
+
+    if (isHidden) {
+        setupGeoDropdowns('ch-continent', 'ch-country');
+    }
+
+    if (window.tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+    }
+}
+
+// --- 5. الدالة الأم لتجهيز القوائم الجغرافية ---
 function setupGeoDropdowns(continentId, countryId) {
     const continentSelect = document.getElementById(continentId);
     const countrySelect = document.getElementById(countryId);
 
-    if (!continentSelect || !countrySelect) return; // حماية: إذا لم يجد العنصر لا يكمل
+    if (!continentSelect || !countrySelect) return;
 
     const geoDB = {
         "الوطن العربي 🚩": ["اليمن", "السعودية", "الإمارات", "الكويت", "قطر", "عمان", "البحرين", "العراق", "الأردن", "فلسطين", "لبنان", "سوريا", "مصر", "الجزائر", "المغرب", "تونس", "ليبيا", "السودان", "موريتانيا", "الصومال", "جيبوتي", "جزر القمر"],
@@ -701,43 +711,10 @@ function setupGeoDropdowns(continentId, countryId) {
                 countrySelect.appendChild(opt);
             });
         }
-    };
-}
-
-// 2. تعديل دالة لوحة الناشر لفك التداخل
-function togglePublisherPanel() {
-    const p = document.getElementById('publisher-panel');
-    if (!p) return;
-    
-    const isHidden = (p.style.display === 'none' || p.style.display === '');
-    p.style.display = isHidden ? 'block' : 'none';
-
-    // استدعاء آمن: فقط إذا فُتحت اللوحة
-    if (isHidden) {
-        setupGeoDropdowns('ch-continent', 'ch-country');
-    }
-
-    if (window.tg && tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('light');
-    }
-}
-
-// 3. تعديل دالة المودال لفك التداخل
-function openModal(id) {
-    const m = document.getElementById(id);
-    if (!m) return;
-    
-    m.style.display = 'flex';
-    
-    // استدعاء آمن للمعلن
-    if (id === 'modal-smart-campaign' || id === 'modal-promo') {
-        setupGeoDropdowns('adv-continent', 'adv-country');
-    }
-}
-    
-        // تفاعل بالاهتزاز عند تغيير المنطقة (لتحسين تجربة المستخدم في تليجرام)
-        if(window.Telegram && Telegram.WebApp) {
-            Telegram.WebApp.HapticFeedback.selectionChanged();
+        
+        // اهتزاز عند تغيير المنطقة
+        if (window.tg && tg.HapticFeedback) {
+            tg.HapticFeedback.selectionChanged();
         }
     };
 }
