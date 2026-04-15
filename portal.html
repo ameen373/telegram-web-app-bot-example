@@ -328,13 +328,6 @@ body {
             </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <div>
-                <label class="label-small">💰 الميزانية اليومية ($):</label>
-                <input type="number" id="adv-daily-budget" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="5$">
-            </div>
-            <div>
-
 <label>🌍 استهداف الدول</label>
 
 <input 
@@ -364,7 +357,13 @@ body {
   flex-wrap:wrap;
   gap:6px;
 "></div>
-                
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div>
+                <label class="label-small">💰 الميزانية اليومية ($):</label>
+                <input type="number" id="adv-daily-budget" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="5$">
+            </div>
+            <div>
                 <label class="label-small">📉 فلترة القنوات:</label>
                 <select id="adv-quality" class="input-premium" style="background: var(--card); color: var(--text);">
                     <option value="high">جودة عالية (Premium) ⭐</option>
@@ -642,11 +641,11 @@ function submitEliteChannel() {
     const p = document.getElementById('price-24h').value;
     const cat = document.getElementById('ch-category').value;
     const reg = document.getElementById('ch-region').value;
-    const countries = Array.from(document.getElementById("adv-countries").selectedOptions)
-  .map(opt => opt.value);
 
-const countries = selectedCountries.map(c => c.code);
-console.log(countries);
+    if (!n || !l || !p) {
+        tg.HapticFeedback.notificationOccurred('error');
+        return tg.showAlert("⚠️ عذراً، يرجى إكمال كافة البيانات أولاً!");
+    }
 
     const data = {
         name: n,
@@ -731,6 +730,25 @@ function processNewCampaign() {
         start: document.getElementById('adv-start-date').value || 'Immediate',
         owner: user.id,
         status: 'pending',
+
+const data = {
+  text: document.getElementById('adv-text-manual').value,
+  media: document.getElementById('adv-media-url').value,
+  link: document.getElementById('adv-link-smart').value,
+  daily_budget: document.getElementById('adv-daily-budget').value,
+  quality: document.getElementById('adv-quality').value,
+  notes: document.getElementById('adv-notes').value,
+  start: document.getElementById('adv-start-date').value || 'Immediate',
+
+  // ✅ أضف هذا هنا 👇
+  countries: selectedCountries.map(c => c.code),
+
+  owner: user.id,
+  status: 'pending',
+  created_at: Date.now(),
+  metrics: { views: 0, clicks: 0 }
+};
+        
         created_at: Date.now(),
         metrics: { views: 0, clicks: 0 } // تقارير متقدمة
     };
@@ -748,15 +766,6 @@ function processNewCampaign() {
     });
 }
 
-function updateSelectedCountries() {
-  const selected = Array.from(document.querySelectorAll("#countries-list input:checked"))
-    .map(cb => cb.parentElement.innerText.trim());
-
-  document.getElementById("selected-countries").innerText =
-    selected.length ? "✔️ المختار: " + selected.join(" - ") : "";
-}
-
-    
 // 3. ميزة إعادة الاستهداف (Re-run) - وظيفة استدعاء البيانات
 function rerunCampaign(pastData) {
     document.getElementById('adv-text-manual').value = pastData.text;
