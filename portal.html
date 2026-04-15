@@ -656,40 +656,47 @@ function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style
 
     // --- أضف هذا الكود هنا لضمان عدم التداخل مع دوال التنقل ---
 
-async function fetchGeoData() {
+function fetchGeoData() {
     const continentSelect = document.getElementById('adv-continent');
     const countrySelect = document.getElementById('adv-country');
-    
-    // 1. قائمة القارات الثابتة لضمان ظهورها فوراً
-    const continents = ["Africa", "Asia", "Europe", "Americas", "Oceania", "Antarctic"];
-    
-    // تنظيف القائمة وإضافة القارات
-    continentSelect.innerHTML = '<option value="">🌍 اختر القارة...</option>';
-    continents.forEach(cont => {
-        let opt = document.createElement('option');
-        opt.value = cont;
-        opt.textContent = cont;
-        continentSelect.appendChild(opt);
-    });
 
-    // 2. جلب الدول عند اختيار القارة
-    continentSelect.onchange = async function() {
+    if (!continentSelect || !countrySelect) return;
+
+    // قاعدة بيانات داخلية (مستوى الشركات) لضمان السرعة وعدم الانقطاع
+    const geoDB = {
+        "آسيا": ["اليمن", "السعودية", "الإمارات", "الكويت", "قطر", "عمان", "البحرين", "العراق", "الأردن", "فلسطين", "لبنان", "سوريا", "تركيا"],
+        "أفريقيا": ["مصر", "الجزائر", "المغرب", "تونس", "ليبيا", "السودان", "موريتانيا", "الصومال", "جيبوتي"],
+        "أوروبا": ["ألمانيا", "فرنسا", "بريطانيا", "إسبانيا", "إيطاليا", "السويد", "النرويج", "هولندا"],
+        "أمريكا": ["الولايات المتحدة", "كندا", "البرازيل", "الأرجنتين", "المكسيك"],
+        "عالمي": ["كل دول العالم"]
+    };
+
+    // 1. ملء قائمة القارات
+    continentSelect.innerHTML = '<option value="">🌍 اختر المنطقة...</option>';
+    for (let continent in geoDB) {
+        let opt = document.createElement('option');
+        opt.value = continent;
+        opt.textContent = continent;
+        continentSelect.appendChild(opt);
+    }
+
+    // 2. تحديث الدول فوراً عند الاختيار (بدون انتظار API)
+    continentSelect.onchange = function() {
         const selected = this.value;
-        countrySelect.innerHTML = '<option value="all">⏳ جاري تحميل الدول...</option>';
-        
-        try {
-            const response = await fetch(`https://restcountries.com/v3.1/continent/${selected}?fields=name`);
-            const countries = await response.json();
-            
-            countrySelect.innerHTML = '<option value="all">📍 كل دول القارة</option>';
-            countries.sort((a, b) => a.name.common.localeCompare(b.name.common)).forEach(c => {
+        countrySelect.innerHTML = '<option value="all">📍 كل الدول في هذه المنطقة</option>';
+
+        if (geoDB[selected]) {
+            geoDB[selected].forEach(country => {
                 let opt = document.createElement('option');
-                opt.value = c.name.common;
-                opt.textContent = c.name.common;
+                opt.value = country;
+                opt.textContent = country;
                 countrySelect.appendChild(opt);
             });
-        } catch (e) {
-            countrySelect.innerHTML = '<option value="all">📍 كل العالم (خطأ في الاتصال)</option>';
+        }
+        
+        // تأثير اهتزاز خفيف عند الاختيار
+        if(window.Telegram && Telegram.WebApp) {
+            Telegram.WebApp.HapticFeedback.impactOccurred('light');
         }
     };
 }
