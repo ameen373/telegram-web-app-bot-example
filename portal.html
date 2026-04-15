@@ -667,16 +667,17 @@ function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style
     
 
     // --- أضف هذا الكود هنا لضمان عدم التداخل مع دوال التنقل ---
+// 1. الدالة الأم لتجهيز القوائم (محمية من الأخطاء)
 function setupGeoDropdowns(continentId, countryId) {
     const continentSelect = document.getElementById(continentId);
     const countrySelect = document.getElementById(countryId);
 
-    if (!continentSelect || !countrySelect) return;
+    if (!continentSelect || !countrySelect) return; // حماية: إذا لم يجد العنصر لا يكمل
 
     const geoDB = {
         "الوطن العربي 🚩": ["اليمن", "السعودية", "الإمارات", "الكويت", "قطر", "عمان", "البحرين", "العراق", "الأردن", "فلسطين", "لبنان", "سوريا", "مصر", "الجزائر", "المغرب", "تونس", "ليبيا", "السودان", "موريتانيا", "الصومال", "جيبوتي", "جزر القمر"],
         "آسيا 🌏": ["تركيا", "إيران", "باكستان", "الهند", "الصين", "اليابان", "ماليزيا"],
-        "أوروبا 🇪🇺": ["ألمانيا", "فرنسا", "بريطانيا", "إسبانيا", "إيطاليا", "روسيا", "هولندا"],
+        "أوروبا 🇪🇺": ["ألمانيا", "فرنسا", "بريطانيا", "إسبانيا", "إيطاليا", "روسيا"],
         "أمريكا 🌎": ["الولايات المتحدة", "كندا", "البرازيل", "المكسيك"],
         "أوقيانوسيا 🇦🇺": ["أستراليا", "نيوزيلندا"]
     };
@@ -703,17 +704,36 @@ function setupGeoDropdowns(continentId, countryId) {
     };
 }
 
-// الآن نقوم بتشغيلها للاثنين معاً
-function initAllGeo() {
-    // للمعلن
-    setupGeoDropdowns('adv-continent', 'adv-country');
-    // للناشر
-    setupGeoDropdowns('ch-continent', 'ch-country');
+// 2. تعديل دالة لوحة الناشر لفك التداخل
+function togglePublisherPanel() {
+    const p = document.getElementById('publisher-panel');
+    if (!p) return;
+    
+    const isHidden = (p.style.display === 'none' || p.style.display === '');
+    p.style.display = isHidden ? 'block' : 'none';
+
+    // استدعاء آمن: فقط إذا فُتحت اللوحة
+    if (isHidden) {
+        setupGeoDropdowns('ch-continent', 'ch-country');
     }
-                   document.addEventListener('DOMContentLoaded', function() {
-    setupGeoDropdowns('adv-continent', 'adv-country');
-    setupGeoDropdowns('ch-continent', 'ch-country');
-});
+
+    if (window.tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+    }
+}
+
+// 3. تعديل دالة المودال لفك التداخل
+function openModal(id) {
+    const m = document.getElementById(id);
+    if (!m) return;
+    
+    m.style.display = 'flex';
+    
+    // استدعاء آمن للمعلن
+    if (id === 'modal-smart-campaign' || id === 'modal-promo') {
+        setupGeoDropdowns('adv-continent', 'adv-country');
+    }
+}
     
         // تفاعل بالاهتزاز عند تغيير المنطقة (لتحسين تجربة المستخدم في تليجرام)
         if(window.Telegram && Telegram.WebApp) {
