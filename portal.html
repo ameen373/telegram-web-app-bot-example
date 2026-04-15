@@ -628,7 +628,15 @@ function rerunCampaign(pastData) {
 }
 
 // وظائف التحكم في الظهور (منع التداخل)
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+    
+    // إذا فتح نافذة الإعلانات، قم بتحميل بيانات القارات فوراً
+    if (id === 'modal-smart-campaign') {
+        fetchGeoData();
+    }
+}
+    
 function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
     function openTab(tab, el) {
@@ -643,14 +651,7 @@ function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style
 
     tg.HapticFeedback.impactOccurred('light');
     }
-    function openModal(id) {
-    document.getElementById(id).style.display = 'flex';
     
-    // إذا فتح نافذة الإعلانات، قم بتحميل بيانات القارات فوراً
-    if (id === 'modal-smart-campaign') {
-        fetchGeoData();
-    }
-    }
     
 
     // --- أضف هذا الكود هنا لضمان عدم التداخل مع دوال التنقل ---
