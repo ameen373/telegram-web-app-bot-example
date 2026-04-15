@@ -336,104 +336,48 @@ body {
             <div>
 
 <label>🌍 استهداف الدول</label>
-<select id="adv-countries" class="input-premium" multiple style="height:150px;">
 
-<option value="AF">أفغانستان</option>
-<option value="AL">ألبانيا</option>
-<option value="DZ">الجزائر</option>
-<option value="AD">أندورا</option>
-<option value="AO">أنغولا</option>
-<option value="AR">الأرجنتين</option>
-<option value="AM">أرمينيا</option>
-<option value="AU">أستراليا</option>
-<option value="AT">النمسا</option>
-<option value="AZ">أذربيجان</option>
-<option value="BH">البحرين</option>
-<option value="BD">بنغلاديش</option>
-<option value="BY">بيلاروسيا</option>
-<option value="BE">بلجيكا</option>
-<option value="BA">البوسنة والهرسك</option>
-<option value="BR">البرازيل</option>
-<option value="BN">بروناي</option>
-<option value="BG">بلغاريا</option>
-<option value="KH">كمبوديا</option>
-<option value="CM">الكاميرون</option>
-<option value="CA">كندا</option>
-<option value="TD">تشاد</option>
-<option value="CL">تشيلي</option>
-<option value="CN">الصين</option>
-<option value="CO">كولومبيا</option>
-<option value="CR">كوستاريكا</option>
-<option value="HR">كرواتيا</option>
-<option value="CY">قبرص</option>
-<option value="CZ">التشيك</option>
-<option value="DK">الدنمارك</option>
-<option value="DO">الدومينيكان</option>
-<option value="EC">الإكوادور</option>
-<option value="EG">مصر</option>
-<option value="EE">إستونيا</option>
-<option value="ET">إثيوبيا</option>
-<option value="FI">فنلندا</option>
-<option value="FR">فرنسا</option>
-<option value="GE">جورجيا</option>
-<option value="DE">ألمانيا</option>
-<option value="GH">غانا</option>
-<option value="GR">اليونان</option>
-<option value="HT">هايتي</option>
-<option value="NL">هولندا</option>
-<option value="HU">المجر</option>
-<option value="IS">آيسلندا</option>
-<option value="IN">الهند</option>
-<option value="ID">إندونيسيا</option>
-<option value="IR">إيران</option>
-<option value="IQ">العراق</option>
-<option value="IE">إيرلندا</option>
-<option value="IT">إيطاليا</option>
-<option value="JP">اليابان</option>
-<option value="JO">الأردن</option>
-<option value="KZ">كازاخستان</option>
-<option value="KE">كينيا</option>
-<option value="KW">الكويت</option>
-<option value="LB">لبنان</option>
-<option value="LY">ليبيا</option>
-<option value="MY">ماليزيا</option>
-<option value="MX">المكسيك</option>
-<option value="MA">المغرب</option>
-<option value="NG">نيجيريا</option>
-<option value="NO">النرويج</option>
-<option value="OM">عمان</option>
-<option value="PK">باكستان</option>
-<option value="PH">الفلبين</option>
-<option value="PL">بولندا</option>
-<option value="PT">البرتغال</option>
-<option value="QA">قطر</option>
-<option value="RO">رومانيا</option>
-<option value="RU">روسيا</option>
-<option value="SA">السعودية</option>
-<option value="SN">السنغال</option>
-<option value="RS">صربيا</option>
-<option value="SG">سنغافورة</option>
-<option value="SK">سلوفاكيا</option>
-<option value="SI">سلوفينيا</option>
-<option value="SO">الصومال</option>
-<option value="ZA">جنوب أفريقيا</option>
-<option value="ES">إسبانيا</option>
-<option value="LK">سريلانكا</option>
-<option value="SD">السودان</option>
-<option value="SE">السويد</option>
-<option value="CH">سويسرا</option>
-<option value="SY">سوريا</option>
-<option value="TZ">تنزانيا</option>
-<option value="TH">تايلاند</option>
-<option value="TN">تونس</option>
-<option value="TR">تركيا</option>
-<option value="UA">أوكرانيا</option>
-<option value="AE">الإمارات</option>
-<option value="GB">المملكة المتحدة</option>
-<option value="US">الولايات المتحدة</option>
-<option value="YE">اليمن</option>
+<input 
+  type="text" 
+  id="country-search" 
+  class="input-premium" 
+  placeholder="🔍 ابحث عن دولة..."
+  onkeyup="filterCountries()"
+  style="margin-bottom:8px;"
+>
 
-</select>
+<div id="countries-list" style="
+  max-height:150px;
+  overflow-y:auto;
+  background:var(--card);
+  padding:10px;
+  border-radius:10px;
+">
+
+<label><input type="checkbox" value="SA"> السعودية</label><br>
+<label><input type="checkbox" value="AE"> الإمارات</label><br>
+<label><input type="checkbox" value="EG"> مصر</label><br>
+<label><input type="checkbox" value="IQ"> العراق</label><br>
+<label><input type="checkbox" value="JO"> الأردن</label><br>
+<label><input type="checkbox" value="US"> الولايات المتحدة</label><br>
+<label><input type="checkbox" value="GB"> المملكة المتحدة</label><br>
+<label><input type="checkbox" value="FR"> فرنسا</label><br>
+<label><input type="checkbox" value="DE"> ألمانيا</label><br>
+<label><input type="checkbox" value="TR"> تركيا</label><br>
+<label><input type="checkbox" value="IN"> الهند</label><br>
+<label><input type="checkbox" value="CN"> الصين</label><br>
+<label><input type="checkbox" value="RU"> روسيا</label><br>
+<label><input type="checkbox" value="BR"> البرازيل</label><br>
+<label><input type="checkbox" value="CA"> كندا</label><br>
+
+</div>
+
+<!-- عرض المختار -->
+<div id="selected-countries" style="
+  margin-top:10px;
+  font-size:12px;
+  color:var(--gold);
+"></div>
                 
                 <label class="label-small">📉 فلترة القنوات:</label>
                 <select id="adv-quality" class="input-premium" style="background: var(--card); color: var(--text);">
@@ -602,12 +546,11 @@ function submitEliteChannel() {
     const countries = Array.from(document.getElementById("adv-countries").selectedOptions)
   .map(opt => opt.value);
 
-console.log(countries);
+const countries = Array.from(
+  document.querySelectorAll("#countries-list input:checked")
+).map(cb => cb.value);
 
-    if (!n || !l || !p) {
-        tg.HapticFeedback.notificationOccurred('error');
-        return tg.showAlert("⚠️ عذراً، يرجى إكمال كافة البيانات أولاً!");
-    }
+console.log(countries);
 
     const data = {
         name: n,
@@ -709,6 +652,31 @@ function processNewCampaign() {
     });
 }
 
+function filterCountries() {
+  const input = document.getElementById("country-search").value.toLowerCase();
+  const labels = document.querySelectorAll("#countries-list label");
+
+  labels.forEach(label => {
+    const text = label.innerText.toLowerCase();
+    label.style.display = text.includes(input) ? "block" : "none";
+  });
+}
+
+
+// عرض الدول المختارة
+document.querySelectorAll("#countries-list input").forEach(cb => {
+  cb.addEventListener("change", updateSelectedCountries);
+});
+
+function updateSelectedCountries() {
+  const selected = Array.from(document.querySelectorAll("#countries-list input:checked"))
+    .map(cb => cb.parentElement.innerText.trim());
+
+  document.getElementById("selected-countries").innerText =
+    selected.length ? "✔️ المختار: " + selected.join(" - ") : "";
+}
+
+    
 // 3. ميزة إعادة الاستهداف (Re-run) - وظيفة استدعاء البيانات
 function rerunCampaign(pastData) {
     document.getElementById('adv-text-manual').value = pastData.text;
