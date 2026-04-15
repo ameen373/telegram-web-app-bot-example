@@ -412,17 +412,14 @@ body {
         <input type="text" id="ch-name" class="input-premium" placeholder="🏷️ اسم قناتك">
         <input type="text" id="ch-link" class="input-premium" placeholder="🔗 رابط القناة @username">
         
-        <label style="color:#888; font-size:12px; display: block; margin-bottom: 5px;">🌍 المنطقة (القارة):</label>
-<select id="ch-region" class="input-premium">
-    <option value="asia">آسيا 🌏</option>
-    <option value="africa">إفريقيا 🌍</option>
-    <option value="europe">أوروبا 🇪🇺</option>
-    <option value="north-america">أمريكا الشمالية 🌎</option>
-    <option value="south-america">أمريكا الجنوبية 🏔️</option>
-    <option value="australia">أستراليا 🇦🇺</option>
-    <option value="global">عالمي (كل القارات) ✨</option>
+        <label style="color: #888; font-size: 12px;">🌍 استهداف القناة:</label>
+<select id="ch-continent" class="input-premium" style="margin-bottom: 8px;">
+    <option value="">اختر المنطقة...</option>
 </select>
-
+<select id="ch-country" class="input-premium">
+    <option value="all">كل دول المنطقة</option>
+</select>
+        
         <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:15px; font-size:13px; border:1px solid #333;">
             <p style="margin-bottom:10px; color: #fff;">⏰ <b>منشور (24h):</b> 
                 <input type="number" id="price-24h" placeholder="0" style="width:60px; background:none; border:1px solid var(--gold); color:white; border-radius:5px; text-align: center;"> $ 
@@ -496,10 +493,18 @@ body {
     }
 
 // 1. فتح وإغلاق لوحة الإضافة مع تأثير اهتزاز خفيف
+
 function togglePublisherPanel() {
     const p = document.getElementById('publisher-panel');
     const isHidden = (p.style.display === 'none' || p.style.display === '');
     p.style.display = isHidden ? 'block' : 'none';
+
+    // --- الإضافة الجديدة هنا ---
+    // إذا فُتحت اللوحة، نقوم بتجهيز القوائم الجغرافية للناشر فوراً
+    if (isHidden) {
+        setupGeoDropdowns('ch-continent', 'ch-country');
+    }
+    // ---------------------------
 
     if (tg.HapticFeedback) {
         tg.HapticFeedback.impactOccurred('light');
@@ -512,11 +517,15 @@ function submitEliteChannel() {
     const l = document.getElementById('ch-link').value;
     const p = document.getElementById('price-24h').value;
     const cat = document.getElementById('ch-category').value;
-    const reg = document.getElementById('ch-region').value;
+    
+    // --- التعديل هنا لكي يأخذ القارة والدولة المختارة ---
+    const continent = document.getElementById('ch-continent').value;
+    const country = document.getElementById('ch-country').value;
+    // ------------------------------------------------
 
-    if (!n || !l || !p) {
+    if (!n || !l || !p || !continent) {
         tg.HapticFeedback.notificationOccurred('error');
-        return tg.showAlert("⚠️ عذراً، يرجى إكمال كافة البيانات أولاً!");
+        return tg.showAlert("⚠️ عذراً، يرجى إكمال كافة البيانات واختيار المنطقة!");
     }
 
     const data = {
@@ -524,30 +533,33 @@ function submitEliteChannel() {
         link: l,
         price: p,
         category: cat,
-        region: reg,
+        // --- حفظ البيانات الجغرافية في قاعدة البيانات ---
+        continent: continent,
+        country: country,
+        // ----------------------------------------------
         status: 'pending',
-        owner: user.id, // تم جلبه من تهيئة تليجرام في الأعلى
+        owner: user.id,
         date: new Date().toISOString()
     };
 
-    // حفظ البيانات في مسارين (للمستخدم وللإدارة)
+    // حفظ البيانات في Firebase
     db.ref('users/' + user.id + '/my_channels').push(data).then(() => {
         return db.ref('admin_requests').push(data);
     }).then(() => {
         tg.HapticFeedback.notificationOccurred('success');
-        tg.showAlert("✅ تم إرسال قناتك بنجاح! سيتم مراجعتها من قبل الإدارة خلال 24 ساعة.");
+        tg.showAlert("✅ تم إرسال قناتك بنجاح!");
         
-        // تفريغ المدخلات بعد النجاح
+        // تفريغ المدخلات
         document.getElementById('ch-name').value = '';
         document.getElementById('ch-link').value = '';
         document.getElementById('price-24h').value = '';
         
         togglePublisherPanel();
     }).catch((error) => {
-        tg.showAlert("❌ حدث خطأ أثناء الإرسال: " + error.message);
+        tg.showAlert("❌ حدث خطأ: " + error.message);
     });
 }
-
+    
 // 4. دالة التحقق من إضافة البوت (تنبيه شكلي في الوقت الحالي)
 function checkBotStatus() {
     tg.showAlert('🔍 يتم الآن التحقق من الصلاحيات ووجود البوت كمسؤول... يرجى الانتظار');
@@ -631,9 +643,9 @@ function rerunCampaign(pastData) {
 function openModal(id) {
     document.getElementById(id).style.display = 'flex';
     
-    // إذا فتح نافذة الإعلانات، قم بتحميل بيانات القارات فوراً
-    if (id === 'modal-smart-campaign') {
-        fetchGeoData();
+    // إذا كان المودال المفتوح هو الخاص بالمعلن
+    if (id === 'modal-smart-campaign' || id === 'modal-promo') {
+        setupGeoDropdowns('adv-continent', 'adv-country');
     }
 }
     
@@ -655,25 +667,21 @@ function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style
     
 
     // --- أضف هذا الكود هنا لضمان عدم التداخل مع دوال التنقل ---
-
-function fetchGeoData() {
-    const continentSelect = document.getElementById('adv-continent');
-    const countrySelect = document.getElementById('adv-country');
+function setupGeoDropdowns(continentId, countryId) {
+    const continentSelect = document.getElementById(continentId);
+    const countrySelect = document.getElementById(countryId);
 
     if (!continentSelect || !countrySelect) return;
 
-    // قاعدة بيانات شاملة - مستوى الشركات (V4)
     const geoDB = {
         "الوطن العربي 🚩": ["اليمن", "السعودية", "الإمارات", "الكويت", "قطر", "عمان", "البحرين", "العراق", "الأردن", "فلسطين", "لبنان", "سوريا", "مصر", "الجزائر", "المغرب", "تونس", "ليبيا", "السودان", "موريتانيا", "الصومال", "جيبوتي", "جزر القمر"],
-        "آسيا 🌏": ["تركيا", "إيران", "باكستان", "الهند", "الصين", "اليابان", "كوريا الجنوبية", "إندونيسيا", "ماليزيا", "تايلاند", "فيتنام", "أفغانستان", "أوزبكستان"],
-        "أفريقيا 🌍": ["نيجيريا", "إثيوبيا", "جنوب أفريقيا", "كينيا", "غانا", "السنغال", "تنزانيا", "أوغندا", "كوت ديفوار", "الكاميرون", "مالي"],
-        "أوروبا 🇪🇺": ["ألمانيا", "فرنسا", "بريطانيا", "إسبانيا", "إيطاليا", "روسيا", "أوكرانيا", "بولندا", "رومانيا", "هولندا", "بلجيكا", "اليونان", "البرتغال", "السويد", "النرويج", "سويسرا", "النمسا"],
-        "أمريكا 🌎": ["الولايات المتحدة", "كندا", "البرازيل", "الأرجنتين", "المكسيك", "كولومبيا", "تشيلي", "بيرو", "فنزويلا"],
-        "أوقيانوسيا 🇦🇺": ["أستراليا", "نيوزيلندا", "فيجي"]
+        "آسيا 🌏": ["تركيا", "إيران", "باكستان", "الهند", "الصين", "اليابان", "ماليزيا"],
+        "أوروبا 🇪🇺": ["ألمانيا", "فرنسا", "بريطانيا", "إسبانيا", "إيطاليا", "روسيا", "هولندا"],
+        "أمريكا 🌎": ["الولايات المتحدة", "كندا", "البرازيل", "المكسيك"],
+        "أوقيانوسيا 🇦🇺": ["أستراليا", "نيوزيلندا"]
     };
 
-    // 1. ملء قائمة المناطق
-    continentSelect.innerHTML = '<option value="">🌍 اختر المنطقة المستهدفة...</option>';
+    continentSelect.innerHTML = '<option value="">🌍 اختر المنطقة...</option>';
     for (let continent in geoDB) {
         let opt = document.createElement('option');
         opt.value = continent;
@@ -681,23 +689,32 @@ function fetchGeoData() {
         continentSelect.appendChild(opt);
     }
 
-    // 2. تحديث قائمة الدول بناءً على المنطقة المختارة
     continentSelect.onchange = function() {
         const selected = this.value;
-        countrySelect.innerHTML = '<option value="all">📍 استهداف كافة دول هذه المنطقة</option>';
-
+        countrySelect.innerHTML = '<option value="all">📍 كل دول المنطقة</option>';
         if (geoDB[selected]) {
-            // ترتيب الدول أبجدياً لسهولة البحث
-            const sortedCountries = geoDB[selected].sort((a, b) => a.localeCompare(b, 'ar'));
-            
-            sortedCountries.forEach(country => {
+            geoDB[selected].sort((a, b) => a.localeCompare(b, 'ar')).forEach(country => {
                 let opt = document.createElement('option');
                 opt.value = country;
                 opt.textContent = country;
                 countrySelect.appendChild(opt);
             });
         }
-        
+    };
+}
+
+// الآن نقوم بتشغيلها للاثنين معاً
+function initAllGeo() {
+    // للمعلن
+    setupGeoDropdowns('adv-continent', 'adv-country');
+    // للناشر
+    setupGeoDropdowns('ch-continent', 'ch-country');
+    }
+                   document.addEventListener('DOMContentLoaded', function() {
+    setupGeoDropdowns('adv-continent', 'adv-country');
+    setupGeoDropdowns('ch-continent', 'ch-country');
+});
+    
         // تفاعل بالاهتزاز عند تغيير المنطقة (لتحسين تجربة المستخدم في تليجرام)
         if(window.Telegram && Telegram.WebApp) {
             Telegram.WebApp.HapticFeedback.selectionChanged();
