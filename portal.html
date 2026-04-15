@@ -375,7 +375,7 @@ body {
     </div>
 </div>
     
-    <div id="sec-channels" class="section" style="display: none; padding: 15px;">
+    <div id="sec-channels" class="section" style="display: none; padding: 15px; overflow-y: auto; max-height: 80vh;">
     
     <div class="stats-grid">
         <div class="stat-card" style="border-bottom: 4px solid #3498db;">
@@ -396,72 +396,56 @@ body {
             <div class="profit-tag">الربح: $<span id="profit-timed">0.00</span></div>
         </div>
 
-        <div class="stat-card" style="background: var(--gold-linear); color: #000; border:none; display: flex; flex-direction: column; justify-content: center;">
+        <div class="stat-card" style="background: linear-gradient(135deg, #f1c40f, #f39c12); color: #000; border:none; display: flex; flex-direction: column; justify-content: center;">
             <h4 style="margin: 0; font-size: 12px; font-weight: 800;">💰 الإجمالي الصافي</h4>
             <h2 style="margin: 5px 0; font-size: 24px;">$<span id="total-net-earnings">0.00</span></h2>
         </div>
     </div>
 
-    <button class="btn-premium-add" onclick="togglePublisherPanel()">
+    <button class="btn-premium-add" onclick="togglePublisherPanel()" style="margin-top: 20px;">
         ➕ إضافة قناة جديدة للمنصة
     </button>
 
-    <div id="publisher-panel">
-        <h3 style="color: var(--gold); text-align: center; margin-bottom: 20px; font-weight: 800;">📝 بيانات القناة</h3>
+    <div id="publisher-panel" style="display: none; background: #1a1a1a; padding: 20px; border-radius: 15px; margin-top: 20px; border: 1px solid #333;">
+        <h3 style="color: #f1c40f; text-align: center; margin-bottom: 20px; font-weight: 800;">📝 بيانات القناة</h3>
         
         <input type="text" id="ch-name" class="input-premium" placeholder="🏷️ اسم قناتك">
         <input type="text" id="ch-link" class="input-premium" placeholder="🔗 رابط القناة @username">
         
-        <label style="color: #888; font-size: 12px;">🌍 استهداف القناة:</label>
-<select id="ch-continent" class="input-premium" style="margin-bottom: 8px;">
-    <option value="">اختر المنطقة...</option>
-</select>
-<select id="ch-country" class="input-premium">
-    <option value="all">كل دول المنطقة</option>
-</select>
+        <label style="color: #888; font-size: 12px; display: block; margin-top: 10px;">🌍 استهداف القناة:</label>
+        <select id="ch-continent" class="input-premium" style="margin-bottom: 8px; width: 100%;">
+            <option value="">اختر المنطقة...</option>
+        </select>
+        <select id="ch-country" class="input-premium" style="width: 100%;">
+            <option value="all">كل دول المنطقة</option>
+        </select>
         
-        <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:15px; font-size:13px; border:1px solid #333;">
+        <div style="background:rgba(0,0,0,0.6); padding:15px; border-radius:15px; margin: 15px 0; font-size:13px; border:1px solid #444;">
             <p style="margin-bottom:10px; color: #fff;">⏰ <b>منشور (24h):</b> 
-                <input type="number" id="price-24h" placeholder="0" style="width:60px; background:none; border:1px solid var(--gold); color:white; border-radius:5px; text-align: center;"> $ 
+                <input type="number" id="price-24h" placeholder="0" style="width:60px; background:none; border:1px solid #f1c40f; color:white; border-radius:5px; text-align: center;"> $ 
                 <small style="color: #888;">(عمولتنا 10%)</small>
             </p>
-            <p style="margin-bottom:10px; color: #fff;">🖱️ <b>نقرات (CPC):</b> <span style="color:var(--safe); font-weight: bold;">5$ / 1000</span></p>
-            <p style="margin: 0; color: #fff;">🚀 <b>مشاهدات (CPM):</b> <span style="color:var(--safe); font-weight: bold;">1$ / 1000</span></p>
+            <p style="margin-bottom:10px; color: #fff;">🖱️ <b>نقرات (CPC):</b> <span style="color:#2ecc71; font-weight: bold;">5$ / 1000</span></p>
+            <p style="margin: 0; color: #fff;">🚀 <b>مشاهدات (CPM):</b> <span style="color:#2ecc71; font-weight: bold;">1$ / 1000</span></p>
         </div>
 
-        <div style="background: rgba(255, 193, 7, 0.1); border-right: 4px solid #ffc107; padding: 12px; font-size: 11px; margin-bottom: 20px; color:#ddd; border-radius: 4px;">
-            ⚠️ يجب إضافة <b>@Ads_telegabot</b> كمسؤول. المتطلبات: +1000 مشترك وعمر القناة +1 شهر.
-        </div>
-
-        <button class="btn-premium-add" style="background:#0088cc; color:white; box-shadow:none; border-radius: 12px;" onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')">🤖 1. إضافة البوت كمسؤول</button>
-        
-        <button onclick="tg.showAlert('🔍 يتم الآن التحقق من الصلاحيات...')" style="width:100%; padding:12px; background:none; border:1px solid #444; color:white; border-radius:12px; margin-bottom:10px; cursor: pointer;">🔍 2. تحقق من الإضافة</button>
-        
-        <button onclick="submitEliteChannel()" style="width:100%; padding:15px; background:var(--safe); border:none; color:white; border-radius:12px; font-weight:bold; font-size:16px; cursor: pointer;">🚀 3. تقديم القناة للمراجعة</button>
+        <button class="btn-premium-add" style="background:#0088cc; color:white; border-radius: 12px; margin-bottom: 10px;" onclick="window.open('https://t.me/Ads_telegabot?startchannel=true')">🤖 1. إضافة البوت كمسؤول</button>
+        <button onclick="submitEliteChannel()" style="width:100%; padding:15px; background:#2ecc71; border:none; color:white; border-radius:12px; font-weight:bold; font-size:16px;">🚀 تقديم القناة للمراجعة</button>
     </div>
 
-    <h4 style="color:#666; font-size:14px; margin-top: 25px; margin-bottom:15px;">📺 قنواتك المسجلة:</h4>
-    <div id="my-elite-channels"></div>
-    </div>
+    <h4 style="color:#888; font-size:14px; margin-top: 30px;">📺 قنواتك المسجلة:</h4>
+    <div id="my-elite-channels" style="min-height: 50px;"></div>
+</div>
 
-    <div id="sec-referral" class="section">
-        <h3 style="margin: 15px;">👥 نظام النمو</h3>
-        <div class="stats-grid-4">
-            <div class="stat-item"><small>الإحالات</small><br><b id="ref-count-v3">0</b></div>
-            <div class="stat-item"><small>المكاسب ($)</small><br><b id="ref-earn-v3" style="color:var(--safe);">0.00</b></div>
-        </div>
-        <button class="btn btn-primary" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
-    </div>
-
-    <div id="sec-admin" class="section">
-        <h3 style="color:var(--danger); margin:15px;">🛠️ لوحة الإدارة</h3>
-        <div class="card">
-            <input type="text" id="adm-uid" class="input-premium" placeholder="User ID">
-            <input type="number" id="adm-val" class="input-premium" placeholder="المبلغ">
-            <button class="btn btn-primary" onclick="adminAction('add')">إضافة رصيد +</button>
-        </div>
+<div id="sec-admin" class="section" style="display: none; padding: 20px;">
+    <h3 style="color:#e74c3c; margin-bottom:20px;">🛠️ لوحة الإدارة</h3>
+    <div style="background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333;">
+        <input type="text" id="adm-uid" class="input-premium" placeholder="User ID">
+        <input type="number" id="adm-val" class="input-premium" placeholder="المبلغ">
+        <button class="btn-premium-add" style="background: #3498db;" onclick="adminAction('add')">إضافة رصيد +</button>
     </div>
 </div>
+    
 
 <script>
     // --- إعدادات Firebase من ملفك القديم ---
