@@ -328,36 +328,6 @@ body {
             </div>
         </div>
 
-<label>🌍 استهداف الدول</label>
-
-<input 
-  type="text" 
-  id="country-input" 
-  class="input-premium" 
-  placeholder="🔍 ابحث عن دولة أو قارة..."
-  onkeyup="searchCountries()"
->
-
-<!-- القارات -->
-<div id="regions" style="margin-top:8px;"></div>
-
-<!-- الاقتراحات -->
-<div id="country-suggestions" style="
-  background:var(--card);
-  border-radius:10px;
-  margin-top:5px;
-  max-height:150px;
-  overflow:auto;
-"></div>
-
-<!-- المختار -->
-<div id="selected-countries" style="
-  margin-top:10px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-"></div>
-        
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div>
                 <label class="label-small">💰 الميزانية اليومية ($):</label>
@@ -383,6 +353,20 @@ body {
             </div>
         </div>
 
+<div class="card" style="background: rgba(255,255,255,0.05); border: 1px dashed var(--accent);">
+    <label style="font-size: 12px; color: var(--accent);">🎯 استهداف جغرافي (مستوى الشركات)</label>
+    
+    <select id="adv-continent" class="input-premium" style="margin-top:10px;">
+        <option value="">اختر القارة...</option>
+    </select>
+
+    <select id="adv-country" class="input-premium">
+        <option value="all">كل دول العالم</option>
+    </select>
+</div>
+        
+
+        
         <label class="label-small">💬 ملاحظات للمراجع (اختياري):</label>
         <input type="text" id="adv-notes" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="مثال: يرجى النشر في وقت المساء...">
 
@@ -482,119 +466,6 @@ body {
 </div>
 
 <script>
-
-let countriesList = [];
-let selectedCountries = [];
-
-// تحميل الدول من API
-fetch("https://restcountries.com/v3.1/all")
-  .then(res => res.json())
-  .then(data => {
-    countriesList = data.map(c => ({
-      name: c.translations?.ara?.common || c.name.common,
-      code: c.cca2,
-      flag: c.flag,
-      region: c.region
-    }));
-
-    renderRegions();
-  });
-
-
-// عرض القارات
-function renderRegions() {
-  const regions = [...new Set(countriesList.map(c => c.region))];
-  const box = document.getElementById("regions");
-
-  box.innerHTML = "";
-
-  regions.forEach(r => {
-    const btn = document.createElement("button");
-    btn.innerText = r;
-    btn.className = "btn";
-
-    btn.onclick = () => selectRegion(r);
-
-    box.appendChild(btn);
-  });
-}
-
-// اختيار قارة
-function selectRegion(region) {
-  const filtered = countriesList.filter(c => c.region === region);
-
-  filtered.forEach(c => {
-    if (!selectedCountries.find(s => s.code === c.code)) {
-      selectedCountries.push(c);
-    }
-  });
-
-  renderSelected();
-}
-
-// البحث
-function searchCountries() {
-  const input = document.getElementById("country-input").value.toLowerCase();
-  const box = document.getElementById("country-suggestions");
-
-  box.innerHTML = "";
-
-  if (!input) return;
-
-  const results = countriesList.filter(c =>
-    c.name.toLowerCase().includes(input)
-  );
-
-  results.slice(0, 20).forEach(c => {
-    if (selectedCountries.find(s => s.code === c.code)) return;
-
-    const div = document.createElement("div");
-    div.style.padding = "6px";
-    div.style.cursor = "pointer";
-
-    div.innerHTML = `${c.flag} ${c.name}`;
-
-    div.onclick = () => addCountry(c);
-
-    box.appendChild(div);
-  });
-}
-
-// إضافة دولة
-function addCountry(c) {
-  selectedCountries.push(c);
-  renderSelected();
-
-  document.getElementById("country-input").value = "";
-  document.getElementById("country-suggestions").innerHTML = "";
-}
-
-// حذف
-function removeCountry(code) {
-  selectedCountries = selectedCountries.filter(c => c.code !== code);
-  renderSelected();
-}
-
-// عرض المختار
-function renderSelected() {
-  const container = document.getElementById("selected-countries");
-  container.innerHTML = "";
-
-  selectedCountries.forEach(c => {
-    const tag = document.createElement("div");
-
-    tag.style.background = "var(--accent)";
-    tag.style.color = "white";
-    tag.style.padding = "5px 10px";
-    tag.style.borderRadius = "20px";
-
-    tag.innerHTML = `${c.flag} ${c.name} ✕`;
-    tag.onclick = () => removeCountry(c.code);
-
-    container.appendChild(tag);
-  });
-    }
-    
     // --- إعدادات Firebase من ملفك القديم ---
     const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
@@ -719,43 +590,30 @@ function updateAdPreview() {
 }
 
 // 2. نظام الإطلاق، الميزانية اليومية، وإعادة الاستهداف
-function processNewCampaign() {
 
-  const data = {
-    text: document.getElementById('adv-text-manual').value,
-    media: document.getElementById('adv-media-url').value,
-    link: document.getElementById('adv-link-smart').value,
-    daily_budget: document.getElementById('adv-daily-budget').value,
-    quality: document.getElementById('adv-quality').value,
-    notes: document.getElementById('adv-notes').value,
-    start: document.getElementById('adv-start-date').value || 'Immediate',
+    function processNewCampaign() {
+    const data = {
+        text: document.getElementById('adv-text-manual').value,
+        media: document.getElementById('adv-media-url').value,
+        link: document.getElementById('adv-link-smart').value,
+        // --- إضافة بيانات الاستهداف الجغرافي ---
+        targetContinent: document.getElementById('adv-continent').value,
+        targetCountry: document.getElementById('adv-country').value,
+        // --------------------------------------
+        daily_budget: document.getElementById('adv-daily-budget').value,
+        owner: user.id,
+        status: 'pending',
+        created_at: Date.now()
+    };
 
-    countries: selectedCountries.map(c => c.code),
+    if(!data.text && !data.media) return tg.showAlert("⚠️ المحتوى فارغ!");
 
-    owner: user.id,
-    status: 'pending',
-    created_at: Date.now(),
-    metrics: { views: 0, clicks: 0 }
-  };
-
-  console.log("DATA:", data);
-
-  if (!data.text && !data.media) {
-    return tg.showAlert("⚠️ اكتب محتوى أو ارفع ميديا");
-  }
-
-  db.ref('campaigns').push(data).then(() => {
-    tg.HapticFeedback.notificationOccurred('success');
-
-    tg.showPopup({
-      title: '🚀 تم الإرسال',
-      message: 'تم إنشاء الحملة بنجاح',
-      buttons: [{ type: 'ok' }]
+    db.ref('campaigns').push(data).then(() => {
+        tg.showAlert("🚀 تم إطلاق الحملة المستهدفة بنجاح!");
+        closeModal();
     });
-
-    closeModal();
-  });
-}
+    }
+    
 
 // 3. ميزة إعادة الاستهداف (Re-run) - وظيفة استدعاء البيانات
 function rerunCampaign(pastData) {
@@ -784,6 +642,51 @@ function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style
 
     tg.HapticFeedback.impactOccurred('light');
     }
+
+    // --- أضف هذا الكود هنا لضمان عدم التداخل مع دوال التنقل ---
+
+async function fetchGeoData() {
+    try {
+        // جلب البيانات من API الدول والقارات
+        const response = await fetch('https://restcountries.com/v3.1/all?fields=name,continents');
+        const countries = await response.json();
+        
+        const continentSelect = document.getElementById('adv-continent');
+        const countrySelect = document.getElementById('adv-country');
+
+        if(!continentSelect || !countrySelect) return; // حماية في حال عدم وجود العناصر
+
+        // استخراج القارات بشكل فريد
+        const uniqueContinents = [...new Set(countries.map(c => c.continents[0]))];
+        uniqueContinents.sort();
+        
+        uniqueContinents.forEach(cont => {
+            const option = document.createElement('option');
+            option.value = cont;
+            option.textContent = cont;
+            continentSelect.appendChild(option);
+        });
+
+        // نظام الفلترة الذكي: تحديث الدول بناءً على اختيار القارة
+        continentSelect.addEventListener('change', () => {
+            countrySelect.innerHTML = '<option value="all">كل الدول في هذه القارة</option>';
+            const filtered = countries.filter(c => c.continents[0] === continentSelect.value);
+            filtered.sort((a, b) => a.name.common.localeCompare(b.name.common));
+            
+            filtered.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.name.common;
+                option.textContent = c.name.common;
+                countrySelect.appendChild(option);
+            });
+        });
+    } catch (error) {
+        console.error("خطأ في جلب بيانات API:", error);
+    }
+}
+
+// استدعاء الدالة فور تحميل الصفحة لكي تكون البيانات جاهزة
+fetchGeoData();
     
 </script>
 </body>
