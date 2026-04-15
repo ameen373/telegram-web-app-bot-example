@@ -339,44 +339,30 @@ body {
 
 <input 
   type="text" 
-  id="country-search" 
+  id="country-input" 
   class="input-premium" 
-  placeholder="🔍 ابحث عن دولة..."
-  onkeyup="filterCountries()"
-  style="margin-bottom:8px;"
+  placeholder="🔍 ابحث عن دولة أو قارة..."
+  onkeyup="searchCountries()"
 >
 
-<div id="countries-list" style="
-  max-height:150px;
-  overflow-y:auto;
+<!-- القارات -->
+<div id="regions" style="margin-top:8px;"></div>
+
+<!-- الاقتراحات -->
+<div id="country-suggestions" style="
   background:var(--card);
-  padding:10px;
   border-radius:10px;
-">
+  margin-top:5px;
+  max-height:150px;
+  overflow:auto;
+"></div>
 
-<label><input type="checkbox" value="SA"> السعودية</label><br>
-<label><input type="checkbox" value="AE"> الإمارات</label><br>
-<label><input type="checkbox" value="EG"> مصر</label><br>
-<label><input type="checkbox" value="IQ"> العراق</label><br>
-<label><input type="checkbox" value="JO"> الأردن</label><br>
-<label><input type="checkbox" value="US"> الولايات المتحدة</label><br>
-<label><input type="checkbox" value="GB"> المملكة المتحدة</label><br>
-<label><input type="checkbox" value="FR"> فرنسا</label><br>
-<label><input type="checkbox" value="DE"> ألمانيا</label><br>
-<label><input type="checkbox" value="TR"> تركيا</label><br>
-<label><input type="checkbox" value="IN"> الهند</label><br>
-<label><input type="checkbox" value="CN"> الصين</label><br>
-<label><input type="checkbox" value="RU"> روسيا</label><br>
-<label><input type="checkbox" value="BR"> البرازيل</label><br>
-<label><input type="checkbox" value="CA"> كندا</label><br>
-
-</div>
-
-<!-- عرض المختار -->
+<!-- المختار -->
 <div id="selected-countries" style="
   margin-top:10px;
-  font-size:12px;
-  color:var(--gold);
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
 "></div>
                 
                 <label class="label-small">📉 فلترة القنوات:</label>
@@ -497,6 +483,119 @@ body {
 </div>
 
 <script>
+
+let countriesList = [];
+let selectedCountries = [];
+
+// تحميل الدول من API
+fetch("https://restcountries.com/v3.1/all")
+  .then(res => res.json())
+  .then(data => {
+    countriesList = data.map(c => ({
+      name: c.translations?.ara?.common || c.name.common,
+      code: c.cca2,
+      flag: c.flag,
+      region: c.region
+    }));
+
+    renderRegions();
+  });
+
+
+// عرض القارات
+function renderRegions() {
+  const regions = [...new Set(countriesList.map(c => c.region))];
+  const box = document.getElementById("regions");
+
+  box.innerHTML = "";
+
+  regions.forEach(r => {
+    const btn = document.createElement("button");
+    btn.innerText = r;
+    btn.className = "btn";
+
+    btn.onclick = () => selectRegion(r);
+
+    box.appendChild(btn);
+  });
+}
+
+// اختيار قارة
+function selectRegion(region) {
+  const filtered = countriesList.filter(c => c.region === region);
+
+  filtered.forEach(c => {
+    if (!selectedCountries.find(s => s.code === c.code)) {
+      selectedCountries.push(c);
+    }
+  });
+
+  renderSelected();
+}
+
+// البحث
+function searchCountries() {
+  const input = document.getElementById("country-input").value.toLowerCase();
+  const box = document.getElementById("country-suggestions");
+
+  box.innerHTML = "";
+
+  if (!input) return;
+
+  const results = countriesList.filter(c =>
+    c.name.toLowerCase().includes(input)
+  );
+
+  results.slice(0, 20).forEach(c => {
+    if (selectedCountries.find(s => s.code === c.code)) return;
+
+    const div = document.createElement("div");
+    div.style.padding = "6px";
+    div.style.cursor = "pointer";
+
+    div.innerHTML = `${c.flag} ${c.name}`;
+
+    div.onclick = () => addCountry(c);
+
+    box.appendChild(div);
+  });
+}
+
+// إضافة دولة
+function addCountry(c) {
+  selectedCountries.push(c);
+  renderSelected();
+
+  document.getElementById("country-input").value = "";
+  document.getElementById("country-suggestions").innerHTML = "";
+}
+
+// حذف
+function removeCountry(code) {
+  selectedCountries = selectedCountries.filter(c => c.code !== code);
+  renderSelected();
+}
+
+// عرض المختار
+function renderSelected() {
+  const container = document.getElementById("selected-countries");
+  container.innerHTML = "";
+
+  selectedCountries.forEach(c => {
+    const tag = document.createElement("div");
+
+    tag.style.background = "var(--accent)";
+    tag.style.color = "white";
+    tag.style.padding = "5px 10px";
+    tag.style.borderRadius = "20px";
+
+    tag.innerHTML = `${c.flag} ${c.name} ✕`;
+    tag.onclick = () => removeCountry(c.code);
+
+    container.appendChild(tag);
+  });
+    }
+    
     // --- إعدادات Firebase من ملفك القديم ---
     const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
@@ -546,10 +645,7 @@ function submitEliteChannel() {
     const countries = Array.from(document.getElementById("adv-countries").selectedOptions)
   .map(opt => opt.value);
 
-const countries = Array.from(
-  document.querySelectorAll("#countries-list input:checked")
-).map(cb => cb.value);
-
+const countries = selectedCountries.map(c => c.code);
 console.log(countries);
 
     const data = {
@@ -651,22 +747,6 @@ function processNewCampaign() {
         closeModal();
     });
 }
-
-function filterCountries() {
-  const input = document.getElementById("country-search").value.toLowerCase();
-  const labels = document.querySelectorAll("#countries-list label");
-
-  labels.forEach(label => {
-    const text = label.innerText.toLowerCase();
-    label.style.display = text.includes(input) ? "block" : "none";
-  });
-}
-
-
-// عرض الدول المختارة
-document.querySelectorAll("#countries-list input").forEach(cb => {
-  cb.addEventListener("change", updateSelectedCountries);
-});
 
 function updateSelectedCountries() {
   const selected = Array.from(document.querySelectorAll("#countries-list input:checked"))
