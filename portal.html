@@ -356,16 +356,17 @@ body {
 <div class="card" style="background: rgba(255,255,255,0.05); border: 1px dashed var(--accent);">
     <label style="font-size: 12px; color: var(--accent);">🎯 استهداف جغرافي (مستوى الشركات)</label>
     
-    <select id="adv-continent" class="input-premium" style="margin-top:10px;">
-        <option value="">اختر القارة...</option>
+    <div class="card" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(59, 130, 246, 0.3); margin-top: 10px;">
+    <label style="font-size: 11px; color: var(--accent); display: block; margin-bottom: 8px;">🎯 استهداف المناطق (مستوى الشركات)</label>
+    
+    <select id="adv-continent" class="input-premium" style="margin-bottom: 10px; background: #1a1f2e; cursor: pointer;">
+        <option value="">🌍 اختر القارة...</option>
     </select>
 
-    <select id="adv-country" class="input-premium">
-        <option value="all">كل دول العالم</option>
+    <select id="adv-country" class="input-premium" style="background: #1a1f2e; cursor: pointer;">
+        <option value="all">📍 كل دول العالم</option>
     </select>
-</div>
-        
-
+    </div>
         
         <label class="label-small">💬 ملاحظات للمراجع (اختياري):</label>
         <input type="text" id="adv-notes" class="input-premium" style="background: var(--card); color: var(--text);" placeholder="مثال: يرجى النشر في وقت المساء...">
@@ -646,47 +647,63 @@ function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style
     // --- أضف هذا الكود هنا لضمان عدم التداخل مع دوال التنقل ---
 
 async function fetchGeoData() {
+    const continentSelect = document.getElementById('adv-continent');
+    const countrySelect = document.getElementById('adv-country');
+    
+    if (!continentSelect) return;
+
     try {
-        // جلب البيانات من API الدول والقارات
+        // جلب البيانات من الـ API العالمي
         const response = await fetch('https://restcountries.com/v3.1/all?fields=name,continents');
         const countries = await response.json();
         
-        const continentSelect = document.getElementById('adv-continent');
-        const countrySelect = document.getElementById('adv-country');
-
-        if(!continentSelect || !countrySelect) return; // حماية في حال عدم وجود العناصر
-
-        // استخراج القارات بشكل فريد
-        const uniqueContinents = [...new Set(countries.map(c => c.continents[0]))];
-        uniqueContinents.sort();
+        // استخراج القارات بشكل فريد وترتيبها
+        const uniqueContinents = [...new Set(countries.map(c => c.continents[0]))].sort();
         
+        // ملء قائمة القارات
         uniqueContinents.forEach(cont => {
-            const option = document.createElement('option');
-            option.value = cont;
-            option.textContent = cont;
-            continentSelect.appendChild(option);
+            let opt = document.createElement('option');
+            opt.value = cont;
+            opt.innerHTML = cont;
+            continentSelect.appendChild(opt);
         });
 
-        // نظام الفلترة الذكي: تحديث الدول بناءً على اختيار القارة
-        continentSelect.addEventListener('change', () => {
-            countrySelect.innerHTML = '<option value="all">كل الدول في هذه القارة</option>';
-            const filtered = countries.filter(c => c.continents[0] === continentSelect.value);
-            filtered.sort((a, b) => a.name.common.localeCompare(b.name.common));
+        // نظام الربط الذكي: عند تغيير القارة تظهر دولها فقط
+        continentSelect.addEventListener('change', function() {
+            const selectedCont = this.value;
+            countrySelect.innerHTML = '<option value="all">📍 كل دول القارة</option>';
             
-            filtered.forEach(c => {
-                const option = document.createElement('option');
-                option.value = c.name.common;
-                option.textContent = c.name.common;
-                countrySelect.appendChild(option);
-            });
+            if (selectedCont) {
+                const filteredCountries = countries
+                    .filter(c => c.continents[0] === selectedCont)
+                    .sort((a, b) => a.name.common.localeCompare(b.name.common));
+                
+                filteredCountries.forEach(c => {
+                    let opt = document.createElement('option');
+                    opt.value = c.name.common;
+                    opt.innerHTML = c.name.common;
+                    countrySelect.appendChild(opt);
+                });
+            }
         });
+
+        console.log("✅ تم تحميل بيانات الاستهداف بنجاح");
     } catch (error) {
-        console.error("خطأ في جلب بيانات API:", error);
+        console.error("❌ خطأ في API الدول:", error);
+        // في حال فشل الـ API، نضع قارات افتراضية لكي لا يتعطل النظام
+        const fallback = ["Africa", "Asia", "Europe", "Americas", "Oceania"];
+        fallback.forEach(f => {
+            let opt = document.createElement('option');
+            opt.value = f;
+            opt.innerHTML = f;
+            continentSelect.appendChild(opt);
+        });
     }
 }
 
-// استدعاء الدالة فور تحميل الصفحة لكي تكون البيانات جاهزة
-fetchGeoData();
+// تشغيل الدالة بمجرد تحميل الصفحة
+document.addEventListener('DOMContentLoaded', fetchGeoData);
+    
     
 </script>
 </body>
