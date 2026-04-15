@@ -731,7 +731,7 @@ function processNewCampaign() {
         owner: user.id,
         status: 'pending',
 
-const data = {
+
   text: document.getElementById('adv-text-manual').value,
   media: document.getElementById('adv-media-url').value,
   link: document.getElementById('adv-link-smart').value,
@@ -740,7 +740,7 @@ const data = {
   notes: document.getElementById('adv-notes').value,
   start: document.getElementById('adv-start-date').value || 'Immediate',
 
-  // ✅ أضف هذا هنا 👇
+  // 🔥 هذا الجديد (الدول)
   countries: selectedCountries.map(c => c.code),
 
   owner: user.id,
