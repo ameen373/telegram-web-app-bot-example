@@ -440,15 +440,50 @@ body {
     <div id="my-elite-channels" style="min-height: 50px;"></div>
 </div>
 
-<div id="sec-admin" class="section" style="display: none; padding: 20px;">
-    <h3 style="color:#e74c3c; margin-bottom:20px;">🛠️ لوحة الإدارة</h3>
-    <div style="background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333;">
-        <input type="text" id="adm-uid" class="input-premium" placeholder="User ID">
-        <input type="number" id="adm-val" class="input-premium" placeholder="المبلغ">
-        <button class="btn-premium-add" style="background: #3498db;" onclick="adminAction('add')">إضافة رصيد +</button>
+<div id="sec-admin" class="section" style="display: none; padding: 15px; background: #0f172a; min-height: 100vh;">
+    
+    <div class="card-glass" style="background: linear-gradient(135deg, #1e3799, #0984e3); color: white; padding: 25px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h2 style="margin:0; font-size: 20px;">👑 لوحة القائد</h2>
+                <p style="margin:5px 0 0; font-size:11px; opacity:0.8;">إدارة النظام المركزي | v3.0</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 12px; backdrop-filter: blur(5px); font-size: 12px;">
+                Admin Active ✅
+            </div>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <div style="background: #1e293b; padding: 15px; border-radius: 18px; border-bottom: 3px solid #f1c40f;">
+            <small style="color: #64748b;">الطلبات المعلقة</small><br>
+            <b id="pending-count" style="font-size: 18px; color: #f1c40f;">0</b>
+        </div>
+        <div style="background: #1e293b; padding: 15px; border-radius: 18px; border-bottom: 3px solid #2ecc71;">
+            <small style="color: #64748b;">الحالة</small><br>
+            <b style="font-size: 14px; color: #2ecc71;">متصل الآن</b>
+        </div>
+    </div>
+
+    <div class="card" style="background: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 22px; margin-bottom: 25px;">
+        <h4 style="color: #94a3b8; margin-top: 0; margin-bottom: 15px; font-size: 14px;">🛠️ إضافة رصيد يدوي (طوارئ)</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <input type="text" id="adm-uid" class="input-premium" placeholder="ID المستخدم" style="margin:0; background: #0f172a;">
+            <input type="number" id="adm-val" class="input-premium" placeholder="المبلغ $" style="margin:0; background: #0f172a;">
+        </div>
+        <button onclick="adminAction('add')" style="width: 100%; background: #0984e3; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer;">
+            تنفيذ الإضافة اليدوية +
+        </button>
+    </div>
+
+    <div>
+        <h4 style="color: #f1c40f; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+            📩 طلبات USDT قيد الانتظار
+        </h4>
+        <div id="admin-pending-list" style="display: flex; flex-direction: column; gap: 12px;">
+            </div>
     </div>
 </div>
-    
 
 <script>
     // --- إعدادات Firebase من ملفك القديم ---
@@ -756,7 +791,90 @@ function setupGeoDropdowns(continentId, countryId) {
         }
     };
 }
+
+    // --- [1] إعدادات الهوية والأمان ---
+const MY_ADMIN_ID = 549686235; 
+
+function checkAdminPrivileges(user) {
+    if (user && user.id === MY_ADMIN_ID) {
+        // إذا كان المستخدم هو أمين، نظهر له قسم الإدارة
+        document.getElementById('sec-admin').style.display = 'block';
+        // تشغيل نظام المراقبة الحية للطلبات
+        initAdminRealtime();
+    } else {
+        // لأي مستخدم آخر، نحذف القسم تماماً لزيادة الأمان
+        const adminSec = document.getElementById('sec-admin');
+        if (adminSec) adminSec.remove();
+    }
+}
+
+// --- [2] نظام المراقبة الحية لطلبات الشحن ---
+function initAdminRealtime() {
+    db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snapshot) => {
+        const listArea = document.getElementById('admin-pending-list');
+        const countBadge = document.getElementById('pending-count');
+        listArea.innerHTML = ''; 
+        
+        if (!snapshot.exists()) {
+            countBadge.innerText = '0';
+            listArea.innerHTML = '<p style="text-align:center; color:#475569; font-size:12px; padding:20px;">✅ لا توجد طلبات معلقة حالياً.</p>';
+            return;
+        }
+
+        let count = 0;
+        snapshot.forEach(child => {
+            count++;
+            const req = child.val();
+            const reqId = child.key;
+
+            listArea.innerHTML += `
+                <div style="background: #1e293b; padding: 15px; border-radius: 20px; border-right: 5px solid #f1c40f; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <b style="color: #f8fafc; font-size: 14px;">👤 ${req.userName}</b>
+                        <b style="color: #2ecc71; font-size: 16px;">$${req.amount}</b>
+                    </div>
+                    <div style="background: #0f172a; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #334155;">
+                        <code style="font-size: 9px; color: #94a3b8; word-break: break-all;">TXID: ${req.txid}</code>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="approveDeposit('${reqId}', '${req.uid}', ${req.amount})" style="flex: 2; background: #2ecc71; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer;">موافقة</button>
+                        <button onclick="rejectDeposit('${reqId}')" style="flex: 1; background: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 8px; border-radius: 8px; cursor: pointer;">رفض</button>
+                    </div>
+                </div>`;
+        });
+        countBadge.innerText = count;
+    });
+}
+
+// --- [3] تنفيذ الموافقة وإضافة الرصيد ---
+function approveDeposit(reqId, userId, amount) {
+    tg.showConfirm(`تأكيد إضافة $${amount} لحساب المستخدم؟`, (ok) => {
+        if (ok) {
+            tg.showProgress();
+            // تحديث حالة الطلب
+            db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
+            // إضافة الرصيد للمستخدم
+            db.ref('users/' + userId + '/balance').transaction(curr => (curr || 0) + parseFloat(amount))
+            .then(() => {
+                tg.hideProgress();
+                tg.showAlert("✅ تمت العملية بنجاح!");
+            });
+        }
+    });
+}
+
+// --- [4] الإضافة اليدوية السريعة (للطوارئ) ---
+function adminAction(type) {
+    const uid = document.getElementById('adm-uid').value;
+    const val = parseFloat(document.getElementById('adm-val').value);
     
+    if(!uid || !val) return tg.showAlert("⚠️ أدخل الـ ID والمبلغ");
+
+    db.ref('users/' + uid + '/balance').transaction(curr => (curr || 0) + val).then(() => {
+        tg.showAlert("✅ تمت إضافة الرصيد يدوياً");
+        document.getElementById('adm-val').value = '';
+    });
+}
     
 </script>
 </body>
