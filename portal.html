@@ -720,50 +720,41 @@ function updateAdPreview() {
 
 // 2. نظام الإطلاق، الميزانية اليومية، وإعادة الاستهداف
 function processNewCampaign() {
-    const data = {
-        text: document.getElementById('adv-text-manual').value,
-        media: document.getElementById('adv-media-url').value,
-        link: document.getElementById('adv-link-smart').value,
-        daily_budget: document.getElementById('adv-daily-budget').value,
-        quality: document.getElementById('adv-quality').value,
-        notes: document.getElementById('adv-notes').value,
-        start: document.getElementById('adv-start-date').value || 'Immediate',
-        owner: user.id,
-        status: 'pending',
 
+  const data = {
+    text: document.getElementById('adv-text-manual').value,
+    media: document.getElementById('adv-media-url').value,
+    link: document.getElementById('adv-link-smart').value,
+    daily_budget: document.getElementById('adv-daily-budget').value,
+    quality: document.getElementById('adv-quality').value,
+    notes: document.getElementById('adv-notes').value,
+    start: document.getElementById('adv-start-date').value || 'Immediate',
 
-  text: document.getElementById('adv-text-manual').value,
-  media: document.getElementById('adv-media-url').value,
-  link: document.getElementById('adv-link-smart').value,
-  daily_budget: document.getElementById('adv-daily-budget').value,
-  quality: document.getElementById('adv-quality').value,
-  notes: document.getElementById('adv-notes').value,
-  start: document.getElementById('adv-start-date').value || 'Immediate',
+    countries: selectedCountries.map(c => c.code),
 
-  // 🔥 هذا الجديد (الدول)
-  countries: selectedCountries.map(c => c.code),
+    owner: user.id,
+    status: 'pending',
+    created_at: Date.now(),
+    metrics: { views: 0, clicks: 0 }
+  };
 
-  owner: user.id,
-  status: 'pending',
-  created_at: Date.now(),
-  metrics: { views: 0, clicks: 0 }
-};
-        
-        created_at: Date.now(),
-        metrics: { views: 0, clicks: 0 } // تقارير متقدمة
-    };
+  console.log("DATA:", data);
 
-    if(!data.text && !data.media) return tg.showAlert("⚠️ المحتوى فارغ! اكتب نصاً أو ارفع ميديا.");
+  if (!data.text && !data.media) {
+    return tg.showAlert("⚠️ اكتب محتوى أو ارفع ميديا");
+  }
 
-    db.ref('campaigns').push(data).then(() => {
-        tg.HapticFeedback.notificationOccurred('success');
-        tg.showPopup({
-            title: '🚀 انطلاق إمبراطوري',
-            message: 'تمت جدولة حملتك بنجاح. سيقوم المراجعون بالرد خلال دقائق.',
-            buttons: [{type: 'ok'}]
-        });
-        closeModal();
+  db.ref('campaigns').push(data).then(() => {
+    tg.HapticFeedback.notificationOccurred('success');
+
+    tg.showPopup({
+      title: '🚀 تم الإرسال',
+      message: 'تم إنشاء الحملة بنجاح',
+      buttons: [{ type: 'ok' }]
     });
+
+    closeModal();
+  });
 }
 
 // 3. ميزة إعادة الاستهداف (Re-run) - وظيفة استدعاء البيانات
