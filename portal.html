@@ -1059,17 +1059,23 @@ function adminAction(type) {
 </div>
 
 <script>
+// ==========================================
+// 1. الثوابت الأساسية
+// ==========================================
 const ADMIN_ID = 549686235;
 const tg = window.Telegram.WebApp;
+tg.expand(); // توسيع الشاشة لتجربة أفضل
 
-// --- [أ] نظام التسجيل والمراقبة الحية ---
+// ==========================================
+// 2. دالة تشغيل النظام والمراقبة (الدالة الأم)
+// ==========================================
 function initUserSystem() {
     const user = tg.initDataUnsafe.user;
     if (!user) return;
 
     const userRef = db.ref('users/' + user.id);
 
-    // 1. تسجيل المستخدم إذا لم يكن موجوداً (حل مشكلة الخانات الفارغة)
+    // تسجيل المستخدم الجديد تلقائياً
     userRef.once('value', (snap) => {
         if (!snap.exists()) {
             userRef.set({
@@ -1081,86 +1087,53 @@ function initUserSystem() {
         }
     });
 
-    // 2. مراقبة الرصيد وتحديثه في الواجهة فوراً
+    // مراقبة الرصيد الحي (Live Update)
     userRef.child('balance').on('value', (snap) => {
         const balance = snap.val() || 0;
-        const el = document.getElementById('user-balance-display'); // تأكد من وجود هذا الـ ID في الـ HTML لديك
+        const el = document.getElementById('user-balance-display'); 
         if (el) {
             el.innerText = parseFloat(balance).toFixed(2) + " $";
-            el.style.color = "#2ecc71";
-            setTimeout(() => { el.style.color = ""; }, 1000);
         }
     });
 
-    // 3. تشغيل لوحة الإدارة إذا كان المستخدم هو أمين
+    // تفعيل لوحة الإدارة لأمين فقط
     if (user.id === ADMIN_ID) {
         setupAdminWatch();
     }
 }
 
-// --- [ب] وظائف واجهة الشحن ---
-function openModal(id) { document.getElementById(id).style.display = 'flex'; tg.HapticFeedback.impactOccurred('medium'); }
-function closeModal() { document.getElementById('modal-crypto-deposit').style.display = 'none'; }
-
-function copyWalletAddress() {
-    const addr = "TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV";
-    navigator.clipboard.writeText(addr).then(() => tg.showAlert("✅ تم نسخ العنوان! استخدم شبكة TRC20 فقط."));
-}
-
-function processDepositSubmission() {
-    const amt = document.getElementById('final-amount').value;
-    const tx = document.getElementById('final-txid').value;
-    const user = tg.initDataUnsafe.user;
-
-    if (!amt || !tx) { tg.showAlert("⚠️ يرجى ملء كافة البيانات"); return; }
-
-    const btn = document.getElementById('main-submit-btn');
-    btn.disabled = true;
-    btn.innerText = "جاري الإرسال...";
-
-    db.ref('deposit_requests').push({
-        uid: user.id,
-        userName: user.first_name,
-        amount: amt,
-        txid: tx,
-        status: 'pending',
-        timestamp: Date.now()
-    }).then(() => {
-        tg.showAlert("✅ تم إرسال الطلب! سيتم تحديث رصيدك فور مراجعة القائد.");
-        closeModal();
-    }).finally(() => {
-        btn.disabled = false;
-        btn.innerText = "🚀 إرسال الطلب للمراجعة";
-    });
-}
-
-// --- [ج] لوحة التحكم (خاصة بأمين) ---
+// ==========================================
+// 3. دالة مراقبة طلبات الشحن (خاصة بأمين)
+// ==========================================
 function setupAdminWatch() {
     db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
         const adminList = document.getElementById('admin-pending-list');
         const badge = document.getElementById('pending-count');
-        const count = snap.numChildren();
-
-        if (badge) { badge.innerText = count; badge.style.display = count > 0 ? 'block' : 'none'; }
+        
+        if (badge) {
+            const count = snap.numChildren();
+            badge.innerText = count;
+            badge.style.display = count > 0 ? 'block' : 'none';
+        }
         
         if (adminList) {
             adminList.innerHTML = '';
             if (!snap.exists()) {
-                adminList.innerHTML = '<p style="text-align:center; color:#64748b;">✅ لا توجد طلبات معلقة</p>';
+                adminList.innerHTML = '<p style="text-align:center; color:#64748b; padding:10px;">✅ لا توجد طلبات معلقة</p>';
                 return;
             }
             snap.forEach(child => {
                 const req = child.val();
                 adminList.innerHTML += `
                     <div style="background:#1e293b; padding:15px; border-radius:20px; margin-bottom:12px; border-right:4px solid #f1c40f;">
-                        <div style="display:flex; justify-content:space-between;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
                             <b style="color:white;">👤 ${req.userName}</b>
                             <b style="color:#2ecc71;">$${req.amount}</b>
                         </div>
-                        <p style="font-size:10px; color:#94a3b8; word-break:break-all;">TXID: ${req.txid}</p>
-                        <div style="display:flex; gap:10px; margin-top:10px;">
-                            <button onclick="handleAdminDecision('${child.key}', '${req.uid}', ${req.amount}, 'approve')" style="flex:2; background:#2ecc71; border:none; padding:10px; border-radius:10px; color:white; font-weight:bold;">موافقة</button>
-                            <button onclick="handleAdminDecision('${child.key}', null, null, 'reject')" style="flex:1; background:transparent; border:1px solid #e74c3c; color:#e74c3c; padding:10px; border-radius:10px;">رفض</button>
+                        <p style="font-size:10px; color:#94a3b8; word-break:break-all; margin:8px 0;">TXID: ${req.txid}</p>
+                        <div style="display:flex; gap:10px;">
+                            <button onclick="handleAdminDecision('${child.key}', '${req.uid}', ${req.amount}, 'approve')" style="flex:2; background:#2ecc71; border:none; padding:10px; border-radius:10px; color:white; font-weight:bold; cursor:pointer;">موافقة</button>
+                            <button onclick="handleAdminDecision('${child.key}', null, null, 'reject')" style="flex:1; background:transparent; border:1px solid #e74c3c; color:#e74c3c; padding:10px; border-radius:10px; cursor:pointer;">رفض</button>
                         </div>
                     </div>`;
             });
@@ -1168,21 +1141,59 @@ function setupAdminWatch() {
     });
 }
 
+// ==========================================
+// 4. دالة اتخاذ القرار (موافقة / رفض)
+// ==========================================
 function handleAdminDecision(reqId, userId, amount, action) {
     if (action === 'approve') {
         tg.showConfirm(`تأكيد شحن $${amount} للمستخدم؟`, (ok) => {
             if (ok) {
-                db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
-                db.ref('users/' + userId + '/balance').transaction(curr => (parseFloat(curr) || 0) + parseFloat(amount))
-                .then(() => tg.showAlert("✅ تمت العملية بنجاح"));
+                // تحديث الحالة ثم تحديث الرصيد
+                db.ref('deposit_requests/' + reqId).update({ status: 'approved' })
+                .then(() => {
+                    return db.ref('users/' + userId + '/balance').transaction(curr => (parseFloat(curr) || 0) + parseFloat(amount));
+                })
+                .then(() => tg.showAlert("✅ تمت العملية بنجاح!"))
+                .catch(e => tg.showAlert("❌ خطأ: " + e.message));
             }
         });
     } else {
-        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
-        tg.showAlert("❌ تم الرفض");
+        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' })
+        .then(() => tg.showAlert("❌ تم رفض الطلب"));
     }
 }
 
-// تشغيل النظام
+// ==========================================
+// 5. دالة إرسال الطلب (للمعلن)
+// ==========================================
+function processDepositSubmission() {
+    const amt = document.getElementById('final-amount').value;
+    const tx = document.getElementById('final-txid').value;
+    if (!amt || !tx) { tg.showAlert("⚠️ أكمل البيانات أولاً"); return; }
+
+    const btn = document.getElementById('main-submit-btn');
+    btn.disabled = true;
+    btn.innerText = "جاري الإرسال...";
+
+    db.ref('deposit_requests').push({
+        uid: tg.initDataUnsafe.user.id,
+        userName: tg.initDataUnsafe.user.first_name,
+        amount: amt,
+        txid: tx,
+        status: 'pending',
+        timestamp: Date.now()
+    }).then(() => {
+        tg.showAlert("✅ تم الإرسال للمراجعة");
+        closeModal();
+    }).finally(() => {
+        btn.disabled = false;
+        btn.innerText = "🚀 إرسال الطلب للمراجعة";
+    });
+}
+
+// ==========================================
+// 6. تشغيل كل شيء (السطر الأخير والضروري)
+// ==========================================
 initUserSystem();
-</script>
+
+    </script>
