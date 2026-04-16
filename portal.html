@@ -1040,128 +1040,127 @@ function adminAction(type) {
 
 <script>
 
-function handleAdminDecision(reqId, userId, amount, action) {
-    if (action === 'approve') {
-        tg.showConfirm(`تأكيد شحن $${amount} للمستخدم ذو الأيدي ${userId}؟`, (ok) => {
-            if (ok) {
-                // 1. تحديث حالة الطلب في قائمة الطلبات
-                db.ref('deposit_requests/' + reqId).update({ status: 'approved' })
-                .then(() => {
-                    // 2. تحديث الرصيد في مسار المستخدم الصحيح
-                    // تأكد أن userId هو الرقم الذي ظهر لك في Firebase
-                    const userBalanceRef = db.ref('users/' + userId + '/balance');
-                    
-                    return userBalanceRef.transaction((currentBalance) => {
-                        // تحويل القيمة لرقم لضمان عدم حدوث أخطاء حسابية
-                        return (parseFloat(currentBalance) || 0) + parseFloat(amount);
-                    });
-                })
-                .then(() => {
-                    tg.showAlert("✅ تم شحن الرصيد بنجاح! تحقق من Firebase الآن.");
-                })
-                .catch((error) => {
-                    tg.showAlert("❌ حدث خطأ تقني: " + error.message);
-                });
-            }
-        });
-    } else {
-        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
-        tg.showAlert("❌ تم رفض الطلب");
-    }
-}
-    
-    
-// --- [ أ ] الثوابت الأساسية ---
+<div id="modal-crypto-deposit" class="modal" style="display: none; position: fixed; z-index: 10000; inset: 0; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+    <div class="modal-content" style="border: 2px solid #2ecc71; width: 92%; max-width: 400px; background: #0f172a; border-radius: 30px; padding: 25px; position: relative;">
+        <span style="position: absolute; top: 15px; left: 20px; cursor: pointer; font-size: 24px; color: #64748b;" onclick="closeModal()">✕</span>
+        <h3 style="color:#2ecc71; text-align:center; margin-top:0;">🪙 شحن USDT (TRC20)</h3>
+        
+        <div style="background: rgba(46, 204, 113, 0.05); padding: 15px; border-radius: 20px; border: 1px dashed #2ecc71; text-align: center; margin: 20px 0;">
+            <small style="color: #94a3b8; display: block; margin-bottom: 8px;">العنوان (شبكة TRON):</small>
+            <b id="wallet-addr" style="display:block; color: #fff; font-size: 11px; word-break: break-all; margin-bottom: 15px; font-family: monospace;">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</b>
+            <button onclick="copyWalletAddress()" style="width:100%; background:#2ecc71; border:none; padding:12px; border-radius:15px; font-weight:800; cursor:pointer;">📋 نسخ العنوان</button>
+        </div>
+
+        <input type="number" id="final-amount" placeholder="المبلغ ($)" style="width:100%; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px; margin-bottom:10px;">
+        <input type="text" id="final-txid" placeholder="معرف العملية (TXID)" style="width:100%; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px; margin-bottom:20px;">
+        
+        <button id="main-submit-btn" onclick="processDepositSubmission()" style="width:100%; background:#2ecc71; border:none; padding:18px; border-radius:20px; color:white; font-weight:800; cursor:pointer;">🚀 إرسال الطلب للمراجعة</button>
+    </div>
+</div>
+
+<script>
 const ADMIN_ID = 549686235;
-const webApp = window.Telegram.WebApp;
+const tg = window.Telegram.WebApp;
 
-// --- [ ب ] وظائف التحكم في الواجهة ---
-function openModal(id) {
-    const target = document.getElementById(id);
-    if(target) {
-        target.style.display = 'flex';
-        webApp.HapticFeedback.impactOccurred('medium');
+// --- [أ] نظام التسجيل والمراقبة الحية ---
+function initUserSystem() {
+    const user = tg.initDataUnsafe.user;
+    if (!user) return;
+
+    const userRef = db.ref('users/' + user.id);
+
+    // 1. تسجيل المستخدم إذا لم يكن موجوداً (حل مشكلة الخانات الفارغة)
+    userRef.once('value', (snap) => {
+        if (!snap.exists()) {
+            userRef.set({
+                username: user.username || "Guest",
+                firstName: user.first_name || "User",
+                balance: 0,
+                joinedAt: Date.now()
+            });
+        }
+    });
+
+    // 2. مراقبة الرصيد وتحديثه في الواجهة فوراً
+    userRef.child('balance').on('value', (snap) => {
+        const balance = snap.val() || 0;
+        const el = document.getElementById('user-balance-display'); // تأكد من وجود هذا الـ ID في الـ HTML لديك
+        if (el) {
+            el.innerText = parseFloat(balance).toFixed(2) + " $";
+            el.style.color = "#2ecc71";
+            setTimeout(() => { el.style.color = ""; }, 1000);
+        }
+    });
+
+    // 3. تشغيل لوحة الإدارة إذا كان المستخدم هو أمين
+    if (user.id === ADMIN_ID) {
+        setupAdminWatch();
     }
 }
 
-function closeModal() {
-    document.getElementById('modal-crypto-deposit').style.display = 'none';
-}
+// --- [ب] وظائف واجهة الشحن ---
+function openModal(id) { document.getElementById(id).style.display = 'flex'; tg.HapticFeedback.impactOccurred('medium'); }
+function closeModal() { document.getElementById('modal-crypto-deposit').style.display = 'none'; }
 
 function copyWalletAddress() {
-    const address = "TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV";
-    navigator.clipboard.writeText(address).then(() => {
-        webApp.showAlert("✅ تم النسخ! يرجى التأكد من اختيار شبكة (TRC20) عند التحويل.");
-    });
+    const addr = "TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV";
+    navigator.clipboard.writeText(addr).then(() => tg.showAlert("✅ تم نسخ العنوان! استخدم شبكة TRC20 فقط."));
 }
 
-// --- [ ج ] معالجة طلب الشحن (للمعلن) ---
 function processDepositSubmission() {
     const amt = document.getElementById('final-amount').value;
     const tx = document.getElementById('final-txid').value;
-    const currentUser = webApp.initDataUnsafe.user || {id: 0, first_name: 'Unknown'};
+    const user = tg.initDataUnsafe.user;
 
-    if (!amt || !tx) {
-        webApp.showAlert("⚠️ يرجى إدخال البيانات");
-        return;
-    }
+    if (!amt || !tx) { tg.showAlert("⚠️ يرجى ملء كافة البيانات"); return; }
 
-    const dbRef = db.ref('deposit_requests').push();
-    dbRef.set({
-        uid: currentUser.id,
-        userName: currentUser.first_name,
+    const btn = document.getElementById('main-submit-btn');
+    btn.disabled = true;
+    btn.innerText = "جاري الإرسال...";
+
+    db.ref('deposit_requests').push({
+        uid: user.id,
+        userName: user.first_name,
         amount: amt,
         txid: tx,
         status: 'pending',
         timestamp: Date.now()
     }).then(() => {
-        // --- 🔔 الجزء الجديد: إرسال إشعار لتليجرام أمين ---
-        const botToken = "توكن_بوتك_هنا"; // 8750226509:AAF3zo4Og56FJj83PyajLpxN_7lquo5NsUI
-        const myId = "549686235"; // الأيدي الخاص بك
-        const message = `🔔 *طلب شحن جديد!*\n\n👤 المستخدم: ${currentUser.first_name}\n💰 المبلغ: $${amt}\n📑 TXID: \`${tx}\``;
-        
-        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${myId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-        // ------------------------------------------
-
-        webApp.showAlert("✅ تم إرسال الطلب بنجاح!");
+        tg.showAlert("✅ تم إرسال الطلب! سيتم تحديث رصيدك فور مراجعة القائد.");
         closeModal();
+    }).finally(() => {
+        btn.disabled = false;
+        btn.innerText = "🚀 إرسال الطلب للمراجعة";
     });
 }
 
-// --- [ د ] نظام المراقبة والتنبيهات (لأمين فقط) ---
+// --- [ج] لوحة التحكم (خاصة بأمين) ---
 function setupAdminWatch() {
     db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
-        const badge = document.getElementById('pending-count'); // العداد في شريط التنقل
-        const adminList = document.getElementById('admin-pending-list'); // قائمة الطلبات في صفحة الإدارة
-        
+        const adminList = document.getElementById('admin-pending-list');
+        const badge = document.getElementById('pending-count');
         const count = snap.numChildren();
-        
-        // تحديث العداد الأحمر
-        if (badge) {
-            badge.innerText = count;
-            badge.style.display = count > 0 ? 'block' : 'none';
-            if(count > 0) webApp.HapticFeedback.notificationOccurred('warning');
-        }
 
-        // تحديث القائمة في صفحة الإدارة
+        if (badge) { badge.innerText = count; badge.style.display = count > 0 ? 'block' : 'none'; }
+        
         if (adminList) {
             adminList.innerHTML = '';
-            if (count === 0) {
-                adminList.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">✅ لا توجد طلبات جديدة</p>';
+            if (!snap.exists()) {
+                adminList.innerHTML = '<p style="text-align:center; color:#64748b;">✅ لا توجد طلبات معلقة</p>';
                 return;
             }
-            snap.forEach(item => {
-                const data = item.val();
+            snap.forEach(child => {
+                const req = child.val();
                 adminList.innerHTML += `
                     <div style="background:#1e293b; padding:15px; border-radius:20px; margin-bottom:12px; border-right:4px solid #f1c40f;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="color:white; font-weight:bold;">👤 ${data.userName}</span>
-                            <span style="color:#2ecc71; font-weight:bold;">$${data.amount}</span>
+                        <div style="display:flex; justify-content:space-between;">
+                            <b style="color:white;">👤 ${req.userName}</b>
+                            <b style="color:#2ecc71;">$${req.amount}</b>
                         </div>
-                        <p style="font-size:10px; color:#64748b; margin:10px 0; word-break:break-all; background:#0f172a; padding:5px; border-radius:5px;">TXID: ${data.txid}</p>
-                        <div style="display:flex; gap:10px;">
-                            <button onclick="handleAdminDecision('${item.key}', '${data.uid}', ${data.amount}, 'approve')" style="flex:2; background:#2ecc71; border:none; padding:10px; border-radius:10px; color:white; font-weight:bold; cursor:pointer;">موافقة</button>
-                            <button onclick="handleAdminDecision('${item.key}', null, null, 'reject')" style="flex:1; background:transparent; border:1px solid #e74c3c; color:#e74c3c; padding:10px; border-radius:10px; cursor:pointer;">رفض</button>
+                        <p style="font-size:10px; color:#94a3b8; word-break:break-all;">TXID: ${req.txid}</p>
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <button onclick="handleAdminDecision('${child.key}', '${req.uid}', ${req.amount}, 'approve')" style="flex:2; background:#2ecc71; border:none; padding:10px; border-radius:10px; color:white; font-weight:bold;">موافقة</button>
+                            <button onclick="handleAdminDecision('${child.key}', null, null, 'reject')" style="flex:1; background:transparent; border:1px solid #e74c3c; color:#e74c3c; padding:10px; border-radius:10px;">رفض</button>
                         </div>
                     </div>`;
             });
@@ -1169,17 +1168,21 @@ function setupAdminWatch() {
     });
 }
 
-
-// دالة لتحديث عرض الرصيد في الشاشة فوراً
-function updateUserInterface(newBalance) {
-    const balanceElement = document.getElementById('user-balance-display'); // تأكد من أن هذا هو الـ ID الخاص بعرض الرصيد في تصميمك
-    if (balanceElement) {
-        balanceElement.innerText = parseFloat(newBalance).toFixed(2) + " $";
-        // إضافة تأثير وميض بسيط ليعرف المستخدم أن الرصيد تغير
-        balanceElement.style.color = "#2ecc71";
-        setTimeout(() => { balanceElement.style.color = "white"; }, 2000);
+function handleAdminDecision(reqId, userId, amount, action) {
+    if (action === 'approve') {
+        tg.showConfirm(`تأكيد شحن $${amount} للمستخدم؟`, (ok) => {
+            if (ok) {
+                db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
+                db.ref('users/' + userId + '/balance').transaction(curr => (parseFloat(curr) || 0) + parseFloat(amount))
+                .then(() => tg.showAlert("✅ تمت العملية بنجاح"));
+            }
+        });
+    } else {
+        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
+        tg.showAlert("❌ تم الرفض");
     }
 }
-    
-    
+
+// تشغيل النظام
+initUserSystem();
 </script>
