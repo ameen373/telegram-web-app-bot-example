@@ -949,39 +949,32 @@ function adminAction(type) {
     });
 }
 
-<div id="modal-crypto-deposit" class="modal" style="display: none; position: fixed; z-index: 10000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; backdrop-filter: blur(5px);">
-    <div class="modal-content" style="border: 2px solid #2ecc71; width: 90%; max-width: 380px; background: #0f172a; border-radius: 25px; padding: 25px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-        
+    <div id="modal-crypto-deposit" class="modal" style="display: none; position: fixed; z-index: 10000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div class="modal-content" style="border: 2px solid #2ecc71; width: 90%; max-width: 380px; background: #0f172a; border-radius: 25px; padding: 25px; position: relative;">
         <span style="position: absolute; top: 15px; left: 20px; cursor: pointer; font-size: 22px; color: #64748b;" onclick="closeModal()">✕</span>
-        
         <h3 style="color:#2ecc71; text-align:center; margin-top:0;">🪙 شحن USDT (TRC20)</h3>
-        
         <div style="background: rgba(46, 204, 113, 0.05); padding: 15px; border-radius: 20px; border: 1px dashed #2ecc71; text-align: center; margin: 20px 0;">
-            <small style="color: #94a3b8; display: block; margin-bottom: 8px;">عنوان المحفظة (الشبكة: Tron):</small>
+            <small style="color: #94a3b8; display: block; margin-bottom: 8px;">عنوان المحفظة (TRC20):</small>
             <b id="usdt-address" style="display:block; color: #fff; font-size: 10px; word-break: break-all; margin-bottom: 12px; font-family: monospace;">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</b>
-            <button onclick="copyAddress()" style="width:100%; background:#2ecc71; border:none; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer; color:#000;">📋 نسخ العنوان</button>
+            <button onclick="copyAddress()" style="width:100%; background:#2ecc71; border:none; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer;">📋 نسخ العنوان</button>
         </div>
-
         <input type="number" id="crypto-amount" class="input-premium" placeholder="المبلغ $" style="width:100%; margin-bottom:10px; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px;">
         <input type="text" id="crypto-txid" class="input-premium" placeholder="معرف العملية TXID" style="width:100%; margin-bottom:15px; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px;">
-        
         <button onclick="verifyCryptoPayment()" style="width:100%; background:#2ecc71; border:none; padding:15px; border-radius:15px; color:white; font-weight:800; cursor:pointer;">🚀 تأكيد الشحن الآن</button>
     </div>
 </div>
 
 <script>
-// دالة فتح النوافذ (لأنها قد لا تكون موجودة في الكود القديم)
+// --- [ أ ] وظائف النوافذ والنسخ ---
 function openModal(id) {
     const modal = document.getElementById(id);
     if(modal) modal.style.display = 'flex';
 }
 
-// دالة إغلاق النوافذ
 function closeModal() {
     document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
 }
 
-// دالة نسخ المحفظة
 function copyAddress() {
     const addr = "TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV";
     navigator.clipboard.writeText(addr).then(() => {
@@ -989,41 +982,55 @@ function copyAddress() {
     });
 }
 
-// دالة إرسال طلب الشحن (هذه تربط المعلن بلوحة الإدارة التي لديك)
+// --- [ ب ] إرسال طلب الشحن (للمعلن) ---
 function verifyCryptoPayment() {
     const amount = document.getElementById('crypto-amount').value;
     const txid = document.getElementById('crypto-txid').value;
     const user = window.Telegram.WebApp.initDataUnsafe.user;
 
-    if (!amount || !txid) return tg.showAlert("⚠️ أكمل البيانات أولاً");
+    if (!amount || !txid) return tg.showAlert("⚠️ يرجى إكمال البيانات");
 
-    tg.showConfirm("تأكيد إرسال طلب الشحن؟", (ok) => {
+    const requestRef = db.ref('deposit_requests').push();
+    requestRef.set({
+        uid: user.id,
+        userName: user.first_name || "Unknown",
+        amount: amount,
+        txid: txid,
+        status: 'pending',
+        timestamp: Date.now()
+    }).then(() => {
+        tg.showAlert("✅ تم إرسال الطلب بنجاح!");
+        closeModal();
+    });
+}
+
+// --- [ ج ] دوال الإدارة الخاصة بأمين (المدمجة) ---
+function approveDeposit(reqId, userId, amount) {
+    tg.showConfirm(`تأكيد إضافة $${amount} للمستخدم؟`, (ok) => {
         if (ok) {
-            const requestRef = db.ref('deposit_requests').push();
-            requestRef.set({
-                uid: user.id,
-                userName: user.first_name || "مستخدم",
-                amount: amount,
-                txid: txid,
-                status: 'pending',
-                timestamp: Date.now()
-            }).then(() => {
-                tg.showAlert("✅ تم إرسال الطلب! سيظهر الآن عند الإدارة للمراجعة.");
-                closeModal();
-            });
+            db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
+            db.ref('users/' + userId + '/balance').transaction(curr => (curr || 0) + parseFloat(amount))
+            .then(() => tg.showAlert("✅ تمت الموافقة والشحن!"));
         }
     });
 }
 
-// دالة الرفض (لإكمال النظام لديك)
 function rejectDeposit(reqId) {
-    tg.showConfirm("هل تريد رفض هذا الطلب؟", (ok) => {
-        if (ok) {
-            db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
-            tg.showAlert("❌ تم رفض الطلب");
-        }
+    db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
+    tg.showAlert("❌ تم رفض الطلب");
+}
+
+function adminAction(type) {
+    const uid = document.getElementById('adm-uid').value;
+    const val = parseFloat(document.getElementById('adm-val').value);
+    if(!uid || !val) return tg.showAlert("⚠️ أدخل البيانات");
+    db.ref('users/' + uid + '/balance').transaction(curr => (curr || 0) + val).then(() => {
+        tg.showAlert("✅ تم الشحن اليدوي");
+        document.getElementById('adm-val').value = '';
     });
 }
+</script>
+    
     
 </script>
 </body>
