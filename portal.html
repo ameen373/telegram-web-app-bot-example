@@ -1012,16 +1012,10 @@ function processDepositSubmission() {
     const currentUser = webApp.initDataUnsafe.user || {id: 0, first_name: 'Unknown'};
 
     if (!amt || !tx) {
-        webApp.showAlert("⚠️ عذراً أمين، يرجى إدخال المبلغ ومعرف العملية أولاً.");
+        webApp.showAlert("⚠️ يرجى إدخال البيانات");
         return;
     }
 
-    // تعطيل الزر مؤقتاً لمنع التكرار
-    const btn = document.getElementById('main-submit-btn');
-    btn.disabled = true;
-    btn.innerText = "جاري الإرسال...";
-
-    // حفظ الطلب في Firebase
     const dbRef = db.ref('deposit_requests').push();
     dbRef.set({
         uid: currentUser.id,
@@ -1031,16 +1025,16 @@ function processDepositSubmission() {
         status: 'pending',
         timestamp: Date.now()
     }).then(() => {
-        webApp.showAlert("✅ ممتاز! تم إرسال طلبك. سيقوم القائد بمراجعته وشحن رصيدك قريباً.");
+        // --- 🔔 الجزء الجديد: إرسال إشعار لتليجرام أمين ---
+        const botToken = "توكن_بوتك_هنا"; // ضع توكن بوتك
+        const myId = "549686235"; // الأيدي الخاص بك
+        const message = `🔔 *طلب شحن جديد!*\n\n👤 المستخدم: ${currentUser.first_name}\n💰 المبلغ: $${amt}\n📑 TXID: \`${tx}\``;
+        
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${myId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
+        // ------------------------------------------
+
+        webApp.showAlert("✅ تم إرسال الطلب بنجاح!");
         closeModal();
-        // إعادة تهيئة الحقول
-        document.getElementById('final-amount').value = '';
-        document.getElementById('final-txid').value = '';
-    }).catch(err => {
-        webApp.showAlert("❌ حدث خطأ: " + err.message);
-    }).finally(() => {
-        btn.disabled = false;
-        btn.innerText = "🚀 إرسال الطلب للمراجعة";
     });
 }
 
