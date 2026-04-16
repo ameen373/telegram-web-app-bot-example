@@ -1154,38 +1154,32 @@ function initUserSystem() {
     const user = webApp.initDataUnsafe.user;
     if (!user) return;
 
+    // التأكد من المسار الصحيح: users/549686235
     const userRef = db.ref('users/' + user.id);
 
-    // 1. تسجيل المستخدم الجديد تلقائياً في Firebase
-    userRef.once('value', (snap) => {
-        if (!snap.exists()) {
-            userRef.set({
-                username: user.username || "Guest",
-                firstName: user.first_name || "User",
-                balance: 0,
-                joinedAt: Date.now()
-            });
+    // مراقبة الرصيد (Live Update)
+    userRef.on('value', (snap) => {
+        const userData = snap.val();
+        
+        // هنا نتحقق من وجود كلمة balance كما هي في Firebase الخاص بك
+        if (userData && userData.balance !== undefined) {
+            const currentBalance = userData.balance;
+            
+            // تحديث الواجهة
+            const el = document.getElementById('user-balance-display'); 
+            if (el) {
+                // parseFloat للتأكد من التعامل معه كرقم
+                el.innerText = parseFloat(currentBalance).toFixed(2) + " $";
+                
+                // إضافة تأثير بصري للتأكيد
+                el.style.color = "#2ecc71";
+                setTimeout(() => { el.style.color = ""; }, 1000);
+            }
         }
     });
 
-    // 2. مراقبة الرصيد بشكل حي (Live Update)
-    userRef.child('balance').on('value', (snap) => {
-        const balance = snap.val() || 0;
-        const el = document.getElementById('user-balance-display'); // تأكد أن الـ ID هذا هو نفسه في الـ HTML لعرض الرصيد
-        if (el) {
-            el.innerText = parseFloat(balance).toFixed(2) + " $";
-            el.style.color = "#2ecc71";
-            setTimeout(() => { el.style.color = ""; }, 1000);
-        }
-    });
-
-    // 3. تفعيل لوحة الإدارة لأمين
     if (user.id === ADMIN_ID) {
         setupAdminWatch();
     }
 }
-
-// تشغيل النظام فوراً عند التحميل
-initUserSystem();
-
-</script>
+    </script>
