@@ -1009,6 +1009,37 @@ function adminAction(type) {
 </div>
 
 <script>
+
+function handleAdminDecision(reqId, userId, amount, action) {
+    if (action === 'approve') {
+        // تنبيه تأكيد قبل التنفيذ
+        tg.showConfirm(`تأكيد شحن $${amount} لهذا المستخدم؟`, (ok) => {
+            if (ok) {
+                // 1. تحديث حالة الطلب لـ approved
+                db.ref('deposit_requests/' + reqId).update({ status: 'approved' })
+                .then(() => {
+                    // 2. تحديث الرصيد (استخدام المسار الموحد)
+                    const userRef = db.ref('users/' + userId + '/balance');
+                    
+                    return userRef.transaction((current) => {
+                        return (current || 0) + parseFloat(amount);
+                    });
+                })
+                .then(() => {
+                    tg.showAlert("✅ تمت العملية بنجاح! تم تحديث الرصيد.");
+                })
+                .catch((err) => {
+                    tg.showAlert("❌ فشل التحديث: " + err.message);
+                });
+            }
+        });
+    } else {
+        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
+        tg.showAlert("❌ تم رفض الطلب");
+    }
+}
+    
+    
 // --- [ أ ] الثوابت الأساسية ---
 const ADMIN_ID = 549686235;
 const webApp = window.Telegram.WebApp;
