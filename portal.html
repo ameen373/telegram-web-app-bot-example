@@ -1026,7 +1026,7 @@ function processDepositSubmission() {
         timestamp: Date.now()
     }).then(() => {
         // --- 🔔 الجزء الجديد: إرسال إشعار لتليجرام أمين ---
-        const botToken = "توكن_بوتك_هنا"; // ضع توكن بوتك
+        const botToken = "توكن_بوتك_هنا"; // 8750226509:AAF3zo4Og56FJj83PyajLpxN_7lquo5NsUI
         const myId = "549686235"; // الأيدي الخاص بك
         const message = `🔔 *طلب شحن جديد!*\n\n👤 المستخدم: ${currentUser.first_name}\n💰 المبلغ: $${amt}\n📑 TXID: \`${tx}\``;
         
