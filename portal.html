@@ -1042,24 +1042,25 @@ function adminAction(type) {
 
 function handleAdminDecision(reqId, userId, amount, action) {
     if (action === 'approve') {
-        // تنبيه تأكيد قبل التنفيذ
-        tg.showConfirm(`تأكيد شحن $${amount} لهذا المستخدم؟`, (ok) => {
+        tg.showConfirm(`تأكيد شحن $${amount} للمستخدم ذو الأيدي ${userId}؟`, (ok) => {
             if (ok) {
-                // 1. تحديث حالة الطلب لـ approved
+                // 1. تحديث حالة الطلب في قائمة الطلبات
                 db.ref('deposit_requests/' + reqId).update({ status: 'approved' })
                 .then(() => {
-                    // 2. تحديث الرصيد (استخدام المسار الموحد)
-                    const userRef = db.ref('users/' + userId + '/balance');
+                    // 2. تحديث الرصيد في مسار المستخدم الصحيح
+                    // تأكد أن userId هو الرقم الذي ظهر لك في Firebase
+                    const userBalanceRef = db.ref('users/' + userId + '/balance');
                     
-                    return userRef.transaction((current) => {
-                        return (current || 0) + parseFloat(amount);
+                    return userBalanceRef.transaction((currentBalance) => {
+                        // تحويل القيمة لرقم لضمان عدم حدوث أخطاء حسابية
+                        return (parseFloat(currentBalance) || 0) + parseFloat(amount);
                     });
                 })
                 .then(() => {
-                    tg.showAlert("✅ تمت العملية بنجاح! تم تحديث الرصيد.");
+                    tg.showAlert("✅ تم شحن الرصيد بنجاح! تحقق من Firebase الآن.");
                 })
-                .catch((err) => {
-                    tg.showAlert("❌ فشل التحديث: " + err.message);
+                .catch((error) => {
+                    tg.showAlert("❌ حدث خطأ تقني: " + error.message);
                 });
             }
         });
@@ -1068,7 +1069,7 @@ function handleAdminDecision(reqId, userId, amount, action) {
         tg.showAlert("❌ تم رفض الطلب");
     }
 }
-
+    
     
 // --- [ أ ] الثوابت الأساسية ---
 const ADMIN_ID = 549686235;
@@ -1168,60 +1169,6 @@ function setupAdminWatch() {
     });
 }
 
-// دالة اتخاذ القرار (موافقة/رفض)
-function handleAdminDecision(reqId, userId, amount, action) {
-    if (action === 'approve') {
-        webApp.showConfirm(`هل أنت متأكد من شحن $${amount} للمستخدم؟`, (ok) => {
-            if (ok) {
-                db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
-                db.ref('users/' + userId + '/balance').transaction(curr => (curr || 0) + parseFloat(amount));
-                webApp.showAlert("✅ تمت الموافقة وإضافة الرصيد");
-            }
-        });
-    } else {
-        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
-        webApp.showAlert("❌ تم رفض الطلب");
-    }
-}
-
-// تشغيل النظام تلقائياً إذا كان المستخدم هو القائد أمين
-setTimeout(() => {
-    const user = webApp.initDataUnsafe.user;
-    if (user && user.id === ADMIN_ID) {
-        setupAdminWatch();
-    }
-}, 1500);
-
-// دالة اتخاذ القرار (موافقة/رفض) المحدثة
-function handleAdminDecision(reqId, userId, amount, action) {
-    if (action === 'approve') {
-        webApp.showConfirm(`هل أنت متأكد من شحن $${amount} للمستخدم؟`, (ok) => {
-            if (ok) {
-                // 1. تحديث حالة الطلب إلى "مقبول"
-                db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
-
-                // 2. تحديث الرصيد في قاعدة البيانات بشكل آمن
-                const userBalanceRef = db.ref('users/' + userId + '/balance');
-                userBalanceRef.transaction((currentBalance) => {
-                    return (currentBalance || 0) + parseFloat(amount);
-                }, (error, committed, snapshot) => {
-                    if (committed) {
-                        webApp.showAlert("✅ تمت العملية! تم إضافة $" + amount + " لرصيد المستخدم.");
-                        
-                        // 3. الخطوة السحرية: تحديث واجهة المستخدم فوراً إذا كان المستخدم الحالي هو صاحب الشحن
-                        const currentUser = webApp.initDataUnsafe.user;
-                        if (currentUser && currentUser.id.toString() === userId.toString()) {
-                            updateUserInterface(snapshot.val()); 
-                        }
-                    }
-                });
-            }
-        });
-    } else {
-        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
-        webApp.showAlert("❌ تم رفض الطلب");
-    }
-}
 
 // دالة لتحديث عرض الرصيد في الشاشة فوراً
 function updateUserInterface(newBalance) {
