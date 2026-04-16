@@ -541,16 +541,25 @@ body {
 </div>
 
 <script>
-    // --- إعدادات Firebase من ملفك القديم ---
-    const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
+
+// إعدادات Firebase ببياناتك الحقيقية
+const firebaseConfig = {
+  apiKey: "AIzaSyB9wJ3RKL9Sc0VqIgOz3HIL6PAZMK1GZos",
+  authDomain: "telega-io.firebaseapp.com",
+  databaseURL: "https://telega-io-default-rtdb.firebaseio.com", // الرابط الذي يحل مشكلة الـ 350 دولار
+  projectId: "telega-io",
+  storageBucket: "telega-io.firebasestorage.app",
+  messagingSenderId: "413242252888",
+  appId: "1:413242252888:web:6055aaa7fcdd256910b42d",
+  measurementId: "G-H7D702XSXY"
+};
+
+// تهيئة Firebase بالطريقة التي تناسب تطبيق تليجرام
+if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-  const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe.user || { id: 549686235 }; // معرف أمين الافتراضي
-
-    // إظهار لوحة الإدارة لأمين فقط
-    if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
+}
+const db = firebase.database(); // هذا هو المتغير الذي سيجلب لك الرصيد
+    
 
     // نظام الأرباح المطور (الناشر)
     function updatePublisherStats(userId) {
