@@ -580,6 +580,37 @@ if (window.Telegram.WebApp.initDataUnsafe.user) {
     // إظهار لوحة الإدارة لأمين فقط
     if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
+// دالة لتسجيل المستخدم فور دخوله التطبيق
+function registerUserIfNotExists() {
+    const user = window.Telegram.WebApp.initDataUnsafe.user;
+    
+    if (user) {
+        const userId = user.id;
+        const userRef = db.ref('users/' + userId);
+
+        // التحقق هل المستخدم موجود أم لا
+        userRef.once('value', (snapshot) => {
+            if (!snapshot.exists()) {
+                // إذا لم يكن موجوداً، نقوم بإنشائه الآن
+                userRef.set({
+                    username: user.username || "Unknown",
+                    firstName: user.first_name || "Guest",
+                    balance: 0, // الرصيد الابتدائي
+                    joinedAt: Date.now()
+                }).then(() => {
+                    console.log("✅ تم تسجيل مستخدم جديد في Firebase");
+                });
+            } else {
+                console.log("✅ المستخدم مسجل مسبقاً");
+            }
+        });
+    }
+}
+
+// استدعاء الدالة فوراً عند فتح التطبيق
+registerUserIfNotExists();
+    
+    
     // نظام الأرباح المطور (الناشر)
     function updatePublisherStats(userId) {
         db.ref('users/' + userId + '/stats').on('value', snap => {
@@ -596,7 +627,6 @@ if (window.Telegram.WebApp.initDataUnsafe.user) {
             document.getElementById('total-net-earnings').innerText = (cp + vp + tp).toFixed(2);
         });
     }
-
 
 // 3. تقديم القناة للمراجعة مع حفظ القارة والتصنيف
 function submitEliteChannel() {
@@ -1038,7 +1068,7 @@ function handleAdminDecision(reqId, userId, amount, action) {
         tg.showAlert("❌ تم رفض الطلب");
     }
 }
-    
+
     
 // --- [ أ ] الثوابت الأساسية ---
 const ADMIN_ID = 549686235;
