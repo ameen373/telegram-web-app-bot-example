@@ -1040,45 +1040,6 @@ function adminAction(type) {
 
 <script>
 
-    // --- إعدادات Firebase من ملفك القديم ---
-    const firebaseConfig = { databaseURL: "https://telega-io-default-rtdb.firebaseio.com/" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-  const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe.user || { id: 549686235 }; // معرف أمين الافتراضي
-
-// --- نظام المراقبة الحية للرصيد (Live Balance Sync) ---
-if (window.Telegram.WebApp.initDataUnsafe.user) {
-    const userId = window.Telegram.WebApp.initDataUnsafe.user.id;
-    
-    // مراقبة مسار الرصيد في Firebase لكل مستخدم بشكل حي
-    db.ref('users/' + userId + '/balance').on('value', (snapshot) => {
-        const balance = snapshot.val() || 0;
-        
-        // البحث عن عنصر عرض الرصيد - تأكد من مطابقة الـ ID هنا مع الـ HTML لديك
-        const balanceElement = document.getElementById('user-balance-display'); 
-        
-        if (balanceElement) {
-            // تحديث الرقم مع تنسيق (خانتين بعد الفاصلة)
-            balanceElement.innerText = parseFloat(balance).toFixed(2);
-            
-            // إضافة تأثير بصري (تغيير اللون للحظة) ليشعر المستخدم بالتحديث
-            balanceElement.style.transition = "color 0.5s";
-            balanceElement.style.color = "#2ecc71"; // لون أخضر عند التحديث
-            setTimeout(() => {
-                balanceElement.style.color = ""; // العودة للون الأصلي
-            }, 1000);
-        }
-    }, (error) => {
-        console.error("خطأ في قراءة الرصيد:", error);
-    });
-}
-    
-    
-    // إظهار لوحة الإدارة لأمين فقط
-    if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
-
 function handleAdminDecision(reqId, userId, amount, action) {
     if (action === 'approve') {
         // تنبيه تأكيد قبل التنفيذ
