@@ -954,131 +954,133 @@ function adminAction(type) {
 </html>
 
 <div id="modal-crypto-deposit" class="modal" style="display: none; position: fixed; z-index: 10000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; backdrop-filter: blur(5px);">
-    <div class="modal-content" style="border: 2px solid #2ecc71; width: 90%; max-width: 380px; background: #0f172a; border-radius: 25px; padding: 25px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-        
+    <div class="modal-content" style="border: 2px solid #2ecc71; width: 90%; max-width: 380px; background: #0f172a; border-radius: 25px; padding: 25px; position: relative;">
         <span style="position: absolute; top: 15px; left: 20px; cursor: pointer; font-size: 22px; color: #64748b;" onclick="closeModal()">✕</span>
-        
         <h3 style="color:#2ecc71; text-align:center; margin-top:0;">🪙 شحن USDT (TRC20)</h3>
-        
         <div style="background: rgba(46, 204, 113, 0.05); padding: 15px; border-radius: 20px; border: 1px dashed #2ecc71; text-align: center; margin: 20px 0;">
             <small style="color: #94a3b8; display: block; margin-bottom: 8px;">عنوان المحفظة (الشبكة: Tron):</small>
             <b id="usdt-address" style="display:block; color: #fff; font-size: 10px; word-break: break-all; margin-bottom: 12px; font-family: monospace;">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</b>
             <button onclick="copyAddress()" style="width:100%; background:#2ecc71; border:none; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer; color:#000;">📋 نسخ العنوان</button>
         </div>
-
-        <input type="number" id="crypto-amount" class="input-premium" placeholder="المبلغ المطلوب شحنه $" style="width:100%; margin-bottom:10px; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px;">
-        <input type="text" id="crypto-txid" class="input-premium" placeholder="أدخل معرف العملية TXID" style="width:100%; margin-bottom:15px; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px;">
-        
-        <button onclick="verifyCryptoPayment()" style="width:100%; background:#2ecc71; border:none; padding:15px; border-radius:15px; color:white; font-weight:800; cursor:pointer; font-size:16px; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);">🚀 تأكيد الشحن الآن</button>
-        <button onclick="closeModal()" style="width:100%; background:transparent; border:1px solid #334155; margin-top:10px; padding:10px; border-radius:12px; color:#64748b; cursor:pointer;">إلغاء</button>
+        <input type="number" id="crypto-amount" class="input-premium" placeholder="المبلغ $" style="width:100%; margin-bottom:10px; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px;">
+        <input type="text" id="crypto-txid" class="input-premium" placeholder="معرف العملية TXID" style="width:100%; margin-bottom:15px; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px;">
+        <button onclick="verifyCryptoPayment()" style="width:100%; background:#2ecc71; border:none; padding:15px; border-radius:15px; color:white; font-weight:800; cursor:pointer;">🚀 تأكيد الشحن الآن</button>
     </div>
 </div>
 
 <script>
-// --- [ أ ] إعدادات الهوية والأمان ---
-const MY_ADMIN_ID = 549686235; 
+// --- [ أ ] الثوابت والبدء ---
+const MY_ADMIN_ID = 549686235;
 
-// --- [ ب ] دوال النوافذ العامة ---
-function openModal(id) {
-    const modal = document.getElementById(id);
-    if(modal) {
-        modal.style.display = 'flex';
-        modal.style.opacity = '1';
+// تشغيل النظام فوراً عند تحميل الصفحة لأمين
+setTimeout(() => {
+    const user = window.Telegram.WebApp.initDataUnsafe.user;
+    if (user && user.id === MY_ADMIN_ID) {
+        initAdminRealtime(); // بدء نظام التنبيهات الحي
     }
+}, 1000);
+
+// --- [ ب ] وظائف النوافذ والنسخ ---
+function openModal(id) {
+    const m = document.getElementById(id);
+    if(m) m.style.display = 'flex';
 }
 
 function closeModal() {
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(m => m.style.display = 'none');
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
 }
 
-// --- [ ج ] دالة النسخ الذكي ---
 function copyAddress() {
     const addr = "TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV";
     navigator.clipboard.writeText(addr).then(() => {
-        tg.showAlert("✅ تم نسخ العنوان بنجاح!\nالشبكة: TRC20");
-    }).catch(() => {
-        tg.showAlert("العنوان: " + addr);
+        tg.showAlert("✅ تم نسخ العنوان!\nتأكد من اختيار شبكة Tron TRC20");
     });
 }
 
-// --- [ د ] وظيفة تأكيد الشحن (للمعلن) ---
+// --- [ ج ] نظام المعلن (طلب الشحن) ---
 function verifyCryptoPayment() {
     const amount = document.getElementById('crypto-amount').value;
     const txid = document.getElementById('crypto-txid').value;
     const user = window.Telegram.WebApp.initDataUnsafe.user;
 
-    if (!amount || !txid) {
-        return tg.showAlert("⚠️ يرجى إدخال المبلغ ومعرف العملية (TXID)");
-    }
+    if (!amount || !txid) return tg.showAlert("⚠️ أكمل البيانات أولاً");
 
-    tg.showConfirm("تأكيد إرسال الطلب للمراجعة؟", (ok) => {
-        if (ok) {
-            const requestRef = db.ref('deposit_requests').push();
-            requestRef.set({
-                uid: user.id,
-                userName: user.first_name || "Unknown",
-                amount: amount,
-                txid: txid,
-                status: 'pending',
-                timestamp: Date.now()
-            }).then(() => {
-                tg.showAlert("✅ تم إرسال الطلب! سيتم تحديث رصيدك بعد التحقق.");
-                closeModal();
-                // تنظيف الخانات
-                document.getElementById('crypto-amount').value = '';
-                document.getElementById('crypto-txid').value = '';
+    const requestRef = db.ref('deposit_requests').push();
+    requestRef.set({
+        uid: user.id,
+        userName: user.first_name || "Unknown",
+        amount: amount,
+        txid: txid,
+        status: 'pending',
+        timestamp: Date.now()
+    }).then(() => {
+        tg.showAlert("✅ تم إرسال الطلب! سيتم شحن رصيدك بعد التحقق.");
+        closeModal();
+    });
+}
+
+// --- [ د ] نظام الإدارة والتنبيهات (لأمين فقط) ---
+function initAdminRealtime() {
+    db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snapshot) => {
+        const listArea = document.getElementById('admin-pending-list');
+        const countBadge = document.getElementById('pending-count'); // تأكد من وجود الـ ID في الـ HTML
+        
+        const count = snapshot.numChildren();
+        if (countBadge) {
+            countBadge.innerText = count;
+            countBadge.style.display = count > 0 ? 'block' : 'none';
+            if(count > 0) tg.HapticFeedback.notificationOccurred('warning'); // اهتزاز عند وجود طلب
+        }
+
+        if (listArea) {
+            listArea.innerHTML = '';
+            if (!snapshot.exists()) {
+                listArea.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px;">✅ لا توجد طلبات معلقة</p>';
+                return;
+            }
+            snapshot.forEach(child => {
+                const req = child.val();
+                listArea.innerHTML += `
+                    <div style="background: #1e293b; padding: 15px; border-radius: 20px; border-right: 5px solid #f1c40f; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <b style="color:white;">👤 ${req.userName}</b>
+                            <b style="color:#2ecc71;">$${req.amount}</b>
+                        </div>
+                        <code style="font-size: 9px; color: #94a3b8; display:block; margin: 10px 0;">TXID: ${req.txid}</code>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="approveDeposit('${child.key}', '${req.uid}', ${req.amount})" style="flex:2; background:#2ecc71; color:white; border:none; padding:8px; border-radius:8px; font-weight:bold;">موافقة</button>
+                            <button onclick="rejectDeposit('${child.key}')" style="flex:1; background:transparent; border:1px solid #e74c3c; color:#e74c3c; padding:8px; border-radius:8px;">رفض</button>
+                        </div>
+                    </div>`;
             });
         }
     });
 }
 
-// --- [ هـ ] وظائف الإدارة (لأمين فقط) ---
+function approveDeposit(reqId, userId, amount) {
+    tg.showConfirm(`شحن $${amount} لهذا المستخدم؟`, (ok) => {
+        if (ok) {
+            db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
+            db.ref('users/' + userId + '/balance').transaction(curr => (curr || 0) + parseFloat(amount));
+            tg.showAlert("✅ تمت الموافقة بنجاح");
+        }
+    });
+}
+
+function rejectDeposit(reqId) {
+    db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
+    tg.showAlert("❌ تم رفض الطلب");
+}
+
 function adminAction(type) {
     const uid = document.getElementById('adm-uid').value;
     const val = parseFloat(document.getElementById('adm-val').value);
-    
-    if(!uid || !val) return tg.showAlert("⚠️ أدخل الـ ID والمبلغ");
-
+    if(!uid || !val) return tg.showAlert("⚠️ أدخل البيانات");
     db.ref('users/' + uid + '/balance').transaction(curr => (curr || 0) + val).then(() => {
-        tg.showAlert("✅ تمت إضافة الرصيد يدوياً للمستخدم: " + uid);
+        tg.showAlert("✅ تم الشحن اليدوي");
         document.getElementById('adm-uid').value = '';
         document.getElementById('adm-val').value = '';
     });
 }
-
-// --- [ و ] تشغيل مراقبة الطلبات للمدير ---
-function initAdminPanel(userId) {
-    if (userId === MY_ADMIN_ID) {
-        // إظهار قسم الإدارة إذا كان المخفي
-        const adminSec = document.getElementById('sec-admin');
-        if(adminSec) adminSec.style.display = 'block';
-        
-        // ربط مراقبة البيانات الحية
-        db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snapshot) => {
-            const area = document.getElementById('admin-pending-list');
-            if(!area) return;
-            area.innerHTML = '';
-            snapshot.forEach(child => {
-                const req = child.val();
-                area.innerHTML += `
-                    <div style="background:#1e293b; padding:15px; border-radius:15px; margin-top:10px; border-right:4px solid #f1c40f;">
-                        <p style="color:white; margin:0;">👤 ${req.userName} | <b style="color:#2ecc71;">$${req.amount}</b></p>
-                        <small style="color:#64748b; font-size:9px;">TXID: ${req.txid}</small>
-                        <button onclick="approveDeposit('${child.key}', '${req.uid}', ${req.amount})" style="width:100%; background:#2ecc71; border:none; border-radius:8px; margin-top:10px; padding:8px; color:white; font-weight:bold; cursor:pointer;">✅ موافقة وشحن</button>
-                    </div>`;
-            });
-        });
-    }
-}
-
-// دالة الموافقة النهائية
-function approveDeposit(reqId, userId, amount) {
-    db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
-    db.ref('users/' + userId + '/balance').transaction(curr => (curr || 0) + parseFloat(amount))
-    .then(() => {
-        tg.showAlert("✅ تم شحن حساب المستخدم بنجاح!");
-    });
-}
-    
-</script>
+                        </script>
+                        
