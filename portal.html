@@ -1079,36 +1079,6 @@ if (window.Telegram.WebApp.initDataUnsafe.user) {
     // إظهار لوحة الإدارة لأمين فقط
     if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
-// دالة لتسجيل المستخدم فور دخوله التطبيق
-function registerUserIfNotExists() {
-    const user = window.Telegram.WebApp.initDataUnsafe.user;
-    
-    if (user) {
-        const userId = user.id;
-        const userRef = db.ref('users/' + userId);
-
-        // التحقق هل المستخدم موجود أم لا
-        userRef.once('value', (snapshot) => {
-            if (!snapshot.exists()) {
-                // إذا لم يكن موجوداً، نقوم بإنشائه الآن
-                userRef.set({
-                    username: user.username || "Unknown",
-                    firstName: user.first_name || "Guest",
-                    balance: 0, // الرصيد الابتدائي
-                    joinedAt: Date.now()
-                }).then(() => {
-                    console.log("✅ تم تسجيل مستخدم جديد في Firebase");
-                });
-            } else {
-                console.log("✅ المستخدم مسجل مسبقاً");
-            }
-        });
-    }
-}
-
-// استدعاء الدالة فوراً عند فتح التطبيق
-registerUserIfNotExists();
-
 function handleAdminDecision(reqId, userId, amount, action) {
     if (action === 'approve') {
         // تنبيه تأكيد قبل التنفيذ
