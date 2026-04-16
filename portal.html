@@ -549,6 +549,34 @@ body {
   const tg = window.Telegram.WebApp;
     const user = tg.initDataUnsafe.user || { id: 549686235 }; // معرف أمين الافتراضي
 
+// --- نظام المراقبة الحية للرصيد (Live Balance Sync) ---
+if (window.Telegram.WebApp.initDataUnsafe.user) {
+    const userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+    
+    // مراقبة مسار الرصيد في Firebase لكل مستخدم بشكل حي
+    db.ref('users/' + userId + '/balance').on('value', (snapshot) => {
+        const balance = snapshot.val() || 0;
+        
+        // البحث عن عنصر عرض الرصيد - تأكد من مطابقة الـ ID هنا مع الـ HTML لديك
+        const balanceElement = document.getElementById('user-balance-display'); 
+        
+        if (balanceElement) {
+            // تحديث الرقم مع تنسيق (خانتين بعد الفاصلة)
+            balanceElement.innerText = parseFloat(balance).toFixed(2);
+            
+            // إضافة تأثير بصري (تغيير اللون للحظة) ليشعر المستخدم بالتحديث
+            balanceElement.style.transition = "color 0.5s";
+            balanceElement.style.color = "#2ecc71"; // لون أخضر عند التحديث
+            setTimeout(() => {
+                balanceElement.style.color = ""; // العودة للون الأصلي
+            }, 1000);
+        }
+    }, (error) => {
+        console.error("خطأ في قراءة الرصيد:", error);
+    });
+}
+    
+    
     // إظهار لوحة الإدارة لأمين فقط
     if(user.id.toString() === "549686235") document.getElementById('adm-tab').style.display = 'block';
 
@@ -1103,4 +1131,47 @@ setTimeout(() => {
     }
 }, 1500);
 
+// دالة اتخاذ القرار (موافقة/رفض) المحدثة
+function handleAdminDecision(reqId, userId, amount, action) {
+    if (action === 'approve') {
+        webApp.showConfirm(`هل أنت متأكد من شحن $${amount} للمستخدم؟`, (ok) => {
+            if (ok) {
+                // 1. تحديث حالة الطلب إلى "مقبول"
+                db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
+
+                // 2. تحديث الرصيد في قاعدة البيانات بشكل آمن
+                const userBalanceRef = db.ref('users/' + userId + '/balance');
+                userBalanceRef.transaction((currentBalance) => {
+                    return (currentBalance || 0) + parseFloat(amount);
+                }, (error, committed, snapshot) => {
+                    if (committed) {
+                        webApp.showAlert("✅ تمت العملية! تم إضافة $" + amount + " لرصيد المستخدم.");
+                        
+                        // 3. الخطوة السحرية: تحديث واجهة المستخدم فوراً إذا كان المستخدم الحالي هو صاحب الشحن
+                        const currentUser = webApp.initDataUnsafe.user;
+                        if (currentUser && currentUser.id.toString() === userId.toString()) {
+                            updateUserInterface(snapshot.val()); 
+                        }
+                    }
+                });
+            }
+        });
+    } else {
+        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
+        webApp.showAlert("❌ تم رفض الطلب");
+    }
+}
+
+// دالة لتحديث عرض الرصيد في الشاشة فوراً
+function updateUserInterface(newBalance) {
+    const balanceElement = document.getElementById('user-balance-display'); // تأكد من أن هذا هو الـ ID الخاص بعرض الرصيد في تصميمك
+    if (balanceElement) {
+        balanceElement.innerText = parseFloat(newBalance).toFixed(2) + " $";
+        // إضافة تأثير وميض بسيط ليعرف المستخدم أن الرصيد تغير
+        balanceElement.style.color = "#2ecc71";
+        setTimeout(() => { balanceElement.style.color = "white"; }, 2000);
+    }
+}
+    
+    
 </script>
