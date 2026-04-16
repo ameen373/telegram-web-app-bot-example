@@ -964,27 +964,21 @@ function adminAction(type) {
 
 <div id="modal-crypto-deposit" class="modal" style="display: none; position: fixed; z-index: 10000; inset: 0; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; backdrop-filter: blur(8px);">
     <div class="modal-content" style="border: 2px solid #2ecc71; width: 92%; max-width: 400px; background: #0f172a; border-radius: 30px; padding: 25px; position: relative; box-shadow: 0 0 30px rgba(46, 204, 113, 0.2);">
-        
         <span style="position: absolute; top: 15px; left: 20px; cursor: pointer; font-size: 24px; color: #64748b;" onclick="closeModal()">✕</span>
-        
         <h3 style="color:#2ecc71; text-align:center; margin-top:0; font-family: sans-serif;">🪙 شحن USDT (TRC20)</h3>
-        
         <div style="background: rgba(46, 204, 113, 0.05); padding: 15px; border-radius: 20px; border: 1px dashed #2ecc71; text-align: center; margin: 20px 0;">
             <small style="color: #94a3b8; display: block; margin-bottom: 8px;">قم بالتحويل إلى العنوان التالي (شبكة TRON):</small>
             <b id="wallet-addr" style="display:block; color: #fff; font-size: 11px; word-break: break-all; margin-bottom: 15px; font-family: monospace; letter-spacing: 0.5px;">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</b>
             <button onclick="copyWalletAddress()" style="width:100%; background:#2ecc71; border:none; padding:12px; border-radius:15px; font-weight:800; cursor:pointer; color:#000;">📋 نسخ عنوان المحفظة</button>
         </div>
-
         <div style="margin-bottom: 15px;">
             <label style="color: #94a3b8; font-size: 12px; margin-right: 5px;">المبلغ بالدولار ($):</label>
             <input type="number" id="final-amount" placeholder="مثلاً: 50" style="width:100%; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px; margin-top:5px; outline:none;">
         </div>
-
         <div style="margin-bottom: 20px;">
             <label style="color: #94a3b8; font-size: 12px; margin-right: 5px;">معرف العملية (TXID):</label>
             <input type="text" id="final-txid" placeholder="الصق الـ TXID هنا" style="width:100%; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px; margin-top:5px; outline:none;">
         </div>
-        
         <button id="main-submit-btn" onclick="processDepositSubmission()" style="width:100%; background:#2ecc71; border:none; padding:18px; border-radius:20px; color:white; font-weight:800; cursor:pointer; font-size:16px; transition: 0.3s;">🚀 إرسال الطلب للمراجعة</button>
     </div>
 </div>
@@ -1014,23 +1008,21 @@ function copyWalletAddress() {
     });
 }
 
-// --- [ ج ] معالجة طلب الشحن (للمعلن) ---
+// --- [ ج ] معالجة طلب الشحن ---
 function processDepositSubmission() {
     const amt = document.getElementById('final-amount').value;
     const tx = document.getElementById('final-txid').value;
     const currentUser = webApp.initDataUnsafe.user || {id: 0, first_name: 'Unknown'};
 
     if (!amt || !tx) {
-        webApp.showAlert("⚠️ عذراً أمين، يرجى إدخال المبلغ ومعرف العملية أولاً.");
+        webApp.showAlert("⚠️ عذراً، يرجى إدخال المبلغ ومعرف العملية أولاً.");
         return;
     }
 
-    // تعطيل الزر مؤقتاً لمنع التكرار
     const btn = document.getElementById('main-submit-btn');
     btn.disabled = true;
     btn.innerText = "جاري الإرسال...";
 
-    // حفظ الطلب في Firebase
     const dbRef = db.ref('deposit_requests').push();
     dbRef.set({
         uid: currentUser.id,
@@ -1040,9 +1032,8 @@ function processDepositSubmission() {
         status: 'pending',
         timestamp: Date.now()
     }).then(() => {
-        webApp.showAlert("✅ ممتاز! تم إرسال طلبك. سيقوم القائد بمراجعته وشحن رصيدك قريباً.");
+        webApp.showAlert("✅ ممتاز! تم إرسال طلبك للمراجعة.");
         closeModal();
-        // إعادة تهيئة الحقول
         document.getElementById('final-amount').value = '';
         document.getElementById('final-txid').value = '';
     }).catch(err => {
@@ -1056,19 +1047,16 @@ function processDepositSubmission() {
 // --- [ د ] نظام المراقبة والتنبيهات (لأمين فقط) ---
 function setupAdminWatch() {
     db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
-        const badge = document.getElementById('pending-count'); // العداد في شريط التنقل
-        const adminList = document.getElementById('admin-pending-list'); // قائمة الطلبات في صفحة الإدارة
-        
+        const badge = document.getElementById('pending-count');
+        const adminList = document.getElementById('admin-pending-list');
         const count = snap.numChildren();
         
-        // تحديث العداد الأحمر
         if (badge) {
             badge.innerText = count;
             badge.style.display = count > 0 ? 'block' : 'none';
             if(count > 0) webApp.HapticFeedback.notificationOccurred('warning');
         }
 
-        // تحديث القائمة في صفحة الإدارة
         if (adminList) {
             adminList.innerHTML = '';
             if (count === 0) {
@@ -1094,7 +1082,6 @@ function setupAdminWatch() {
     });
 }
 
-// دالة اتخاذ القرار (موافقة/رفض)
 function handleAdminDecision(reqId, userId, amount, action) {
     if (action === 'approve') {
         webApp.showConfirm(`هل أنت متأكد من شحن $${amount} للمستخدم؟`, (ok) => {
@@ -1110,12 +1097,46 @@ function handleAdminDecision(reqId, userId, amount, action) {
     }
 }
 
-// تشغيل النظام تلقائياً إذا كان المستخدم هو القائد أمين
-setTimeout(() => {
+// ==========================================
+// ⭐ الدوال الجديدة المضافة لربط النظام بالكامل ⭐
+// ==========================================
+
+function initUserSystem() {
     const user = webApp.initDataUnsafe.user;
-    if (user && user.id === ADMIN_ID) {
+    if (!user) return;
+
+    const userRef = db.ref('users/' + user.id);
+
+    // 1. تسجيل المستخدم الجديد تلقائياً في Firebase
+    userRef.once('value', (snap) => {
+        if (!snap.exists()) {
+            userRef.set({
+                username: user.username || "Guest",
+                firstName: user.first_name || "User",
+                balance: 0,
+                joinedAt: Date.now()
+            });
+        }
+    });
+
+    // 2. مراقبة الرصيد بشكل حي (Live Update)
+    userRef.child('balance').on('value', (snap) => {
+        const balance = snap.val() || 0;
+        const el = document.getElementById('user-balance-display'); // تأكد أن الـ ID هذا هو نفسه في الـ HTML لعرض الرصيد
+        if (el) {
+            el.innerText = parseFloat(balance).toFixed(2) + " $";
+            el.style.color = "#2ecc71";
+            setTimeout(() => { el.style.color = ""; }, 1000);
+        }
+    });
+
+    // 3. تفعيل لوحة الإدارة لأمين
+    if (user.id === ADMIN_ID) {
         setupAdminWatch();
     }
-}, 1500);
+}
+
+// تشغيل النظام فوراً عند التحميل
+initUserSystem();
 
 </script>
