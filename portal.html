@@ -750,27 +750,6 @@ function rerunCampaign(pastData) {
     tg.showAlert("🔄 تم استعادة بيانات الحملة القديمة بنجاح!");
 }
 
-    // --- 1. دالة التنقل بين الأقسام (الرئيسية، الناشر، المعلن، الإدارة) ---
-function openTab(tab, el) {
-    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-    document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-
-    const target = document.getElementById('sec-' + tab);
-    if (target) {
-        target.style.display = 'block';
-    }
-
-    if (el) el.classList.add('active');
-
-    if (tab === 'channels' && typeof updatePublisherStats === 'function') {
-        updatePublisherStats(user.id);
-    }
-
-    if (window.tg && tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('light');
-    }
-}
-
 // --- 1. دالة فتح النوافذ المنبثقة المطورة (الفتح الذكي) ---
 function openModal(id) {
     // إغلاق أي نافذة مفتوحة أولاً لضمان سلاسة العرض
@@ -1078,17 +1057,39 @@ function processDepositSubmission() {
 }
 
 // 6. دوال الواجهة (التنقل والنوافذ)
-function openTab(tabName, el) {
+function openTab(tab, el) {
+    // 1. إخفاء جميع الأقسام
     document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-    const target = document.getElementById('sec-' + tabName);
-    if (target) target.style.display = 'block';
     
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    if (el) el.classList.add('active');
-}
+    // 2. إزالة حالة النشاط من جميع أزرار القائمة
+    document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
 
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+    // 3. إظهار القسم المطلوب (تأكد أن الـ ID في الـ HTML يبدأ بـ -sec)
+    const target = document.getElementById('sec-' + tab);
+    if (target) {
+        target.style.display = 'block';
+    }
+
+    // 4. إضافة حالة النشاط للزر الحالي
+    if (el) el.classList.add('active');
+
+    // 5. تحديث البيانات فورياً بناءً على القسم
+    const user = webApp.initDataUnsafe.user;
+    if (user) {
+        if (tab === 'promo' || tab === 'home') {
+            startBalanceMonitor(user.id); // تحديث الرصيد فوراً
+        }
+        if (tab === 'channels' && typeof updatePublisherStats === 'function') {
+            updatePublisherStats(user.id);
+        }
+    }
+
+    // 6. إضافة لمسة اهتزاز خفيفة (خاص بتطبيق تليجرام)
+    if (webApp.HapticFeedback) {
+        webApp.HapticFeedback.impactOccurred('light');
+    }
+}
+    
 function copyWalletAddress() {
     navigator.clipboard.writeText("TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV");
     webApp.showAlert("✅ تم نسخ عنوان المحفظة");
