@@ -1071,6 +1071,28 @@ startApp();
         }
     });
      }
-        
+
+     function showTab(tabId) {
+    // 1. إخفاء جميع الأقسام
+    const sections = document.querySelectorAll('.app-section'); // تأكد أن أقسامك تحمل هذا الكلاس
+    sections.forEach(s => s.style.display = 'none');
+
+    // 2. إظهار القسم المطلوب
+    const activeSection = document.getElementById(tabId);
+    if (activeSection) {
+        activeSection.style.display = 'block';
+    }
+
+    // 3. تحديث الرصيد فوراً عند الانتقال لقسم المعلن
+    if (tabId === 'advertiser-section' || tabId === 'المعلن') {
+        const user = webApp.initDataUnsafe.user;
+        if (user) {
+            // استدعاء دالة المراقبة للتأكد من أن الرقم ليس 0
+            startBalanceMonitor(user.id);
+        }
+    }
+     }
+     
+     
  </script>
  
