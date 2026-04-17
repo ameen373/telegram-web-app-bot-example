@@ -1020,15 +1020,6 @@ function processDepositSubmission() {
     });
 }
 
-// 4. دوال التحكم في الواجهة
-function openModal(id) {
-    document.getElementById(id).style.display = 'flex';
-}
-
-function closeModal() {
-    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-}
-
 function copyWalletAddress() {
     navigator.clipboard.writeText("TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV");
     webApp.showAlert("✅ تم نسخ العنوان");
