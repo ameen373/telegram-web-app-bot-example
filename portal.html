@@ -546,19 +546,42 @@ body {
 const firebaseConfig = {
   apiKey: "AIzaSyB9wJ3RKL9Sc0VqIgOz3HIL6PAZMK1GZos",
   authDomain: "telega-io.firebaseapp.com",
-  databaseURL: "https://telega-io-default-rtdb.firebaseio.com", // الرابط الذي يحل مشكلة الـ 350 دولار
+  databaseURL: "https://telega-io-default-rtdb.firebaseio.com", 
   projectId: "telega-io",
   storageBucket: "telega-io.firebasestorage.app",
   messagingSenderId: "413242252888",
-  appId: "1:413242252888:web:6055aaa7fcdd256910b42d",
-  measurementId: "G-H7D702XSXY"
+  appId: "1:413242252888:web:6055aaa7fcdd256910b42d"
 };
 
-// تهيئة Firebase بالطريقة التي تناسب تطبيق تليجرام
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
-const db = firebase.database(); // هذا هو المتغير الذي سيجلب لك الرصيد
+const db = firebase.database();
+const webApp = window.Telegram.WebApp; // اعتمد مسمى واحد فقط
+
+    function startBalanceMonitor(userId) {
+    // نراقب حقل balance مباشرة داخل مستخدم معين
+    db.ref('users/' + userId + '/balance').on('value', (snap) => {
+        const balance = snap.val() || 0;
+        const display = document.getElementById('user-balance-display');
+        if (display) {
+            display.innerText = parseFloat(balance).toFixed(2) + " $";
+        }
+    });
+    }
+
+    function startAdminMonitor() {
+    db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
+        const list = document.getElementById('admin-pending-list');
+        if (!list) return;
+        list.innerHTML = '';
+        snap.forEach(child => {
+            const data = child.val();
+            // هنا تضع كود الـ HTML لعرض الطلب
+            console.log("طلب جديد من:", data.userName);
+        });
+    });
+    }
     
 
     // نظام الأرباح المطور (الناشر)
@@ -890,43 +913,6 @@ function checkAdminPrivileges(user) {
     }
 }
 
-// --- [2] نظام المراقبة الحية لطلبات الشحن ---
-function initAdminRealtime() {
-    db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snapshot) => {
-        const listArea = document.getElementById('admin-pending-list');
-        const countBadge = document.getElementById('pending-count');
-        listArea.innerHTML = ''; 
-        
-        if (!snapshot.exists()) {
-            countBadge.innerText = '0';
-            listArea.innerHTML = '<p style="text-align:center; color:#475569; font-size:12px; padding:20px;">✅ لا توجد طلبات معلقة حالياً.</p>';
-            return;
-        }
-
-        let count = 0;
-        snapshot.forEach(child => {
-            count++;
-            const req = child.val();
-            const reqId = child.key;
-
-            listArea.innerHTML += `
-                <div style="background: #1e293b; padding: 15px; border-radius: 20px; border-right: 5px solid #f1c40f; margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <b style="color: #f8fafc; font-size: 14px;">👤 ${req.userName}</b>
-                        <b style="color: #2ecc71; font-size: 16px;">$${req.amount}</b>
-                    </div>
-                    <div style="background: #0f172a; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #334155;">
-                        <code style="font-size: 9px; color: #94a3b8; word-break: break-all;">TXID: ${req.txid}</code>
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button onclick="approveDeposit('${reqId}', '${req.uid}', ${req.amount})" style="flex: 2; background: #2ecc71; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer;">موافقة</button>
-                        <button onclick="rejectDeposit('${reqId}')" style="flex: 1; background: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 8px; border-radius: 8px; cursor: pointer;">رفض</button>
-                    </div>
-                </div>`;
-        });
-        countBadge.innerText = count;
-    });
-}
 
 // --- [3] تنفيذ الموافقة وإضافة الرصيد ---
 function approveDeposit(reqId, userId, amount) {
@@ -1007,113 +993,110 @@ function adminAction(type) {
     </div>
 
     <script>
-    // --- [ أ ] بيانات Firebase الحقيقية الخاصة بك ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyB9wJ3RKL9Sc0VqIgOz3HIL6PAZMK1GZos",
-        authDomain: "telega-io.firebaseapp.com",
-        databaseURL: "https://telega-io-default-rtdb.firebaseio.com",
-        projectId: "telega-io",
-        storageBucket: "telega-io.firebasestorage.app",
-        messagingSenderId: "413242252888",
-        appId: "1:413242252888:web:6055aaa7fcdd256910b42d",
-        measurementId: "G-H7D702XSXY"
-    };
+>
+// --- [ أ ] الثوابت الأساسية ---
+const ADMIN_ID = 549686235;
+const webApp = window.Telegram.WebApp;
 
-    // تهيئة Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const ADMIN_ID = 549686235;
-    const webApp = window.Telegram.WebApp;
-    webApp.expand();
+function copyWalletAddress() {
+    const address = "TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV";
+    navigator.clipboard.writeText(address).then(() => {
+        webApp.showAlert("✅ تم النسخ! يرجى التأكد من اختيار شبكة (TRC20) عند التحويل.");
+    });
+}
 
-    // --- [ ب ] نظام المستخدم والرصيد ---
-    function initApp() {
-        const user = webApp.initDataUnsafe.user;
-        if (!user) {
-            document.getElementById('user-balance-display').innerText = "افتح من التليجرام";
-            return;
-        }
+// --- [ ج ] معالجة طلب الشحن ---
+function processDepositSubmission() {
+    const amt = document.getElementById('final-amount').value;
+    const tx = document.getElementById('final-txid').value;
+    const currentUser = webApp.initDataUnsafe.user || {id: 0, first_name: 'Unknown'};
 
-        const userRef = db.ref('users/' + user.id);
+    if (!amt || !tx) {
+        webApp.showAlert("⚠️ عذراً، يرجى إدخال المبلغ ومعرف العملية أولاً.");
+        return;
+    }
 
-        // مراقبة الرصيد الحي (سيقرأ الرقم 350 فوراً)
-        userRef.on('value', (snap) => {
-            const data = snap.val();
-            const el = document.getElementById('user-balance-display');
-            if (data && el) {
-                el.innerText = parseFloat(data.balance || 0).toFixed(2) + " $";
-            } else if (!data) {
-                // إذا كان المستخدم غير موجود، ننشئه برصيد 0
-                userRef.set({ name: user.first_name, balance: 0, role: "user" });
+    const btn = document.getElementById('main-submit-btn');
+    btn.disabled = true;
+    btn.innerText = "جاري الإرسال...";
+
+    const dbRef = db.ref('deposit_requests').push();
+    dbRef.set({
+        uid: currentUser.id,
+        userName: currentUser.first_name,
+        amount: amt,
+        txid: tx,
+        status: 'pending',
+        timestamp: Date.now()
+    }).then(() => {
+        webApp.showAlert("✅ ممتاز! تم إرسال طلبك للمراجعة.");
+        closeModal();
+        document.getElementById('final-amount').value = '';
+        document.getElementById('final-txid').value = '';
+    }).catch(err => {
+        webApp.showAlert("❌ حدث خطأ: " + err.message);
+    }).finally(() => {
+        btn.disabled = false;
+        btn.innerText = "🚀 إرسال الطلب للمراجعة";
+    });
+}
+
+
+function handleAdminDecision(reqId, userId, amount, action) {
+    if (action === 'approve') {
+        webApp.showConfirm(`هل أنت متأكد من شحن $${amount} للمستخدم؟`, (ok) => {
+            if (ok) {
+                db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
+                db.ref('users/' + userId + '/balance').transaction(curr => (curr || 0) + parseFloat(amount));
+                webApp.showAlert("✅ تمت الموافقة وإضافة الرصيد");
             }
         });
+    } else {
+        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
+        webApp.showAlert("❌ تم رفض الطلب");
+    }
+}
 
-        // إظهار لوحة الإدارة لأمين
-        if (user.id === ADMIN_ID) {
-            document.getElementById('admin-section').style.display = 'block';
-            setupAdminWatch();
+// ==========================================
+// ⭐ الدوال الجديدة المضافة لربط النظام بالكامل ⭐
+// ==========================================
+
+function initUserSystem() {
+    const user = webApp.initDataUnsafe.user;
+    if (!user) return;
+
+    const userRef = db.ref('users/' + user.id);
+
+    // 1. تسجيل المستخدم الجديد تلقائياً في Firebase
+    userRef.once('value', (snap) => {
+        if (!snap.exists()) {
+            userRef.set({
+                username: user.username || "Guest",
+                firstName: user.first_name || "User",
+                balance: 0,
+                joinedAt: Date.now()
+            });
         }
-    }
+    });
 
-    // --- [ ج ] وظائف الإدارة والشحن ---
-    function setupAdminWatch() {
-        db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
-            const list = document.getElementById('admin-pending-list');
-            const badge = document.getElementById('pending-count');
-            badge.innerText = snap.numChildren();
-            
-            if (list) {
-                list.innerHTML = '';
-                snap.forEach(child => {
-                    const req = child.val();
-                    list.innerHTML += `
-                        <div style="background:#1e293b; padding:15px; border-radius:15px; margin-bottom:10px; border-right:4px solid #f1c40f; text-align:right;">
-                            <b>👤 ${req.userName}</b> | <b style="color:#2ecc71;">$${req.amount}</b>
-                            <p style="font-size:10px; color:#64748b;">TXID: ${req.txid}</p>
-                            <button onclick="handleDecision('${child.key}', '${req.uid}', ${req.amount}, 'approve')" style="background:#2ecc71; border:none; padding:8px; border-radius:8px; font-weight:bold;">موافقة ✅</button>
-                            <button onclick="handleDecision('${child.key}', null, null, 'reject')" style="background:none; border:1px solid #e74c3c; color:#e74c3c; padding:8px; border-radius:8px;">رفض</button>
-                        </div>`;
-                });
-            }
-        });
-    }
-
-    function handleDecision(reqId, userId, amount, action) {
-        if (action === 'approve') {
-            db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
-            db.ref('users/' + userId + '/balance').transaction(curr => (curr || 0) + parseFloat(amount));
-            webApp.showAlert("✅ تم الشحن بنجاح");
-        } else {
-            db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
+    // 2. مراقبة الرصيد بشكل حي (Live Update)
+    userRef.child('balance').on('value', (snap) => {
+        const balance = snap.val() || 0;
+        const el = document.getElementById('user-balance-display'); // تأكد أن الـ ID هذا هو نفسه في الـ HTML لعرض الرصيد
+        if (el) {
+            el.innerText = parseFloat(balance).toFixed(2) + " $";
+            el.style.color = "#2ecc71";
+            setTimeout(() => { el.style.color = ""; }, 1000);
         }
+    });
+
+    // 3. تفعيل لوحة الإدارة لأمين
+    if (user.id === ADMIN_ID) {
+        setupAdminWatch();
     }
+}
 
-    function processDepositSubmission() {
-        const amt = document.getElementById('final-amount').value;
-        const tx = document.getElementById('final-txid').value;
-        if (!amt || !tx) return webApp.showAlert("أكمل البيانات");
+// تشغيل النظام فوراً عند التحميل
+initUserSystem();
 
-        db.ref('deposit_requests').push({
-            uid: webApp.initDataUnsafe.user.id,
-            userName: webApp.initDataUnsafe.user.first_name,
-            amount: amt,
-            txid: tx,
-            status: 'pending'
-        }).then(() => {
-            webApp.showAlert("✅ تم الإرسال");
-            closeModal();
-        });
-    }
-
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal() { document.getElementById('modal-crypto-deposit').style.display = 'none'; }
-    function copyWalletAddress() {
-        navigator.clipboard.writeText("TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV");
-        webApp.showAlert("تم النسخ ✅");
-    }
-
-    // تشغيل التطبيق
-    initApp();
-    </script>
-</body>
-</html>
+</script>
