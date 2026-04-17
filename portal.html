@@ -988,19 +988,6 @@ function adminAction(type) {
 const ADMIN_ID = 549686235;
 const webApp = window.Telegram.WebApp;
 
-// --- [ ب ] وظائف التحكم في الواجهة ---
-function openModal(id) {
-    const target = document.getElementById(id);
-    if(target) {
-        target.style.display = 'flex';
-        webApp.HapticFeedback.impactOccurred('medium');
-    }
-}
-
-function closeModal() {
-    document.getElementById('modal-crypto-deposit').style.display = 'none';
-}
-
 function copyWalletAddress() {
     const address = "TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV";
     navigator.clipboard.writeText(address).then(() => {
