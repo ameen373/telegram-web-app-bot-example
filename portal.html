@@ -583,7 +583,32 @@ const webApp = window.Telegram.WebApp; // اعتمد مسمى واحد فقط
     });
     }
     
+// --- [ كود التشغيل النهائي ] ---
 
+function startApp() {
+    const user = webApp.initDataUnsafe.user;
+    
+    if (user) {
+        // 1. تشغيل مراقبة الرصيد (الذي أضفته في الجزء الثاني)
+        startBalanceMonitor(user.id);
+
+        // 2. إذا كنت أنت (أمين)، قم بتشغيل مراقبة الإدارة
+        if (user.id === 549686235) {
+            startAdminMonitor();
+            
+            // إظهار قسم الإدارة في الواجهة إذا كان مخفياً
+            const adminSec = document.getElementById('sec-admin');
+            if(adminSec) adminSec.style.display = 'block';
+        }
+    } else {
+        console.error("يرجى فتح التطبيق من تليجرام");
+    }
+}
+
+// إطلاق النظام
+startApp();
+    
+    
     // نظام الأرباح المطور (الناشر)
     function updatePublisherStats(userId) {
         db.ref('users/' + userId + '/stats').on('value', snap => {
