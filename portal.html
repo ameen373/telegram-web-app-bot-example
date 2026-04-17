@@ -892,15 +892,19 @@ function approveDeposit(reqId, userId, amount) {
 
 // --- [4] الإضافة اليدوية السريعة (للطوارئ) ---
 function adminAction(type) {
-    const uid = document.getElementById('adm-uid').value;
-    const val = parseFloat(document.getElementById('adm-val').value);
-    
-    if(!uid || !val) return tg.showAlert("⚠️ أدخل الـ ID والمبلغ");
+    if (type === 'add') {
+        const targetUid = document.getElementById('adm-uid').value;
+        const amount = document.getElementById('adm-val').value;
 
-    db.ref('users/' + uid + '/balance').transaction(curr => (curr || 0) + val).then(() => {
-        tg.showAlert("✅ تمت إضافة الرصيد يدوياً");
-        document.getElementById('adm-val').value = '';
-    });
+        if (!targetUid || !amount) return webApp.showAlert("⚠️ أدخل الـ ID والمبلغ أولاً");
+
+        db.ref('users/' + targetUid + '/balance').transaction(curr => (parseFloat(curr) || 0) + parseFloat(amount))
+        .then(() => {
+            webApp.showAlert("✅ تمت إضافة $" + amount + " بنجاح إلى ID: " + targetUid);
+            document.getElementById('adm-val').value = ''; // تصفير المبلغ بعد التنفيذ
+        })
+        .catch(err => webApp.showAlert("❌ خطأ: " + err.message));
+    }
 }
     
 </script>
@@ -982,6 +986,50 @@ function startBalanceMonitor(userId) {
     });
 }
 
+function startAdminMonitor() {
+    db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
+        const list = document.getElementById('admin-pending-list');
+        const badge = document.getElementById('pending-count');
+        if (!list) return;
+
+        list.innerHTML = '';
+        const count = snap.numChildren();
+        if (badge) badge.innerText = count;
+
+        if (!snap.exists()) {
+            list.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">لا توجد طلبات معلقة حالياً ☕</div>';
+            return;
+        }
+
+        snap.forEach(child => {
+            const data = child.val();
+            list.innerHTML += `
+                <div class="card" style="background: #1e293b; padding: 15px; border-radius: 18px; border: 1px solid #334155; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                        <div>
+                            <b style="color: #fff; display: block;">👤 ${data.userName}</b>
+                            <small style="color: #64748b; font-size: 10px;">ID: ${data.uid}</small>
+                        </div>
+                        <b style="color: #2ecc71; font-size: 18px;">$${data.amount}</b>
+                    </div>
+                    <p style="background: #0f172a; padding: 8px; border-radius: 10px; font-size: 11px; color: #94a3b8; word-break: break-all; margin: 10px 0;">
+                        TXID: ${data.txid}
+                    </p>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="handleDecision('${child.key}', '${data.uid}', ${data.amount}, 'approve')" 
+                                style="flex: 2; background: #2ecc71; color: white; border: none; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                            موافقة ✅
+                        </button>
+                        <button onclick="handleDecision('${child.key}', null, null, 'reject')" 
+                                style="flex: 1; background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid #e74c3c; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                            رفض
+                        </button>
+                    </div>
+                </div>`;
+        });
+    });
+    }
+    
 // 3. دالة إرسال الطلب (المصححة)
 function processDepositSubmission() {
     const amtField = document.getElementById('final-amount');
@@ -1036,15 +1084,20 @@ function startApp() {
     webApp.ready();
     webApp.expand();
     const user = webApp.initDataUnsafe.user;
+
     if (user) {
         startBalanceMonitor(user.id);
+
+        // التحقق من الإدارة (تأكد أن ADMIN_ID مطابق لـ ID حسابك)
         if (user.id === ADMIN_ID) {
-            const adminSec = document.getElementById('admin-section');
-            if(adminSec) adminSec.style.display = 'block';
+            // نستخدم sec-admin بدلاً من admin-section ليتطابق مع الـ HTML الجديد
+            const adminSec = document.getElementById('sec-admin');
+            if(adminSec) {
+                console.log("مرحباً أيها القائد، تم تفعيل لوحة الإدارة");
+                startAdminMonitor(); // تشغيل مراقبة الطلبات فوراً
+            }
         }
     }
 }
-
-window.onload = startApp;
 </script>
     
