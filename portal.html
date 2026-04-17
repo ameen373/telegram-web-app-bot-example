@@ -1006,6 +1006,22 @@ function handleDecision(reqId, userId, amount, action) {
     }
 }
 
+// --- [ قسم التحكم في التنقل ] ---
+function showTab(tabId) {
+    // إخفاء كل الأقسام (تأكد أن أقسامك لها كلاس باسم app-section)
+    document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
+
+    // إظهار القسم المطلوب
+    const target = document.getElementById(tabId);
+    if (target) target.style.display = 'block';
+
+    // تحديث الرصيد فوراً عند الانتقال لقسم المعلن لضمان عدم ظهور 0
+    const user = webApp.initDataUnsafe.user;
+    if (user && (tabId === 'advertiser-section' || tabId === 'section-ads')) {
+        startBalanceMonitor(user.id);
+    }
+}
+     
 // 3. كود التشغيل (Execution)
 function startApp() {
     const user = webApp.initDataUnsafe.user;
@@ -1028,28 +1044,23 @@ function copyWalletAddress() {
 
 // إطلاق كل شيء
 startApp();
-
+     
      function processDepositSubmission() {
-    // 1. جلب القيم من الحقول
     const amt = document.getElementById('final-amount').value;
     const tx = document.getElementById('final-txid').value;
-    
-    // 2. جلب بيانات المستخدم (التأكد من تعريف webApp في بداية الكود)
-    const currentUser = window.Telegram.WebApp.initDataUnsafe.user || {id: 0, first_name: 'Unknown'};
+    const currentUser = webApp.initDataUnsafe.user || {id: 0, first_name: 'Unknown'};
 
     if (!amt || !tx) {
-        return window.Telegram.WebApp.showAlert("⚠️ يرجى إدخال المبلغ ومعرف العملية (TXID)");
+        webApp.showAlert("⚠️ عذراً، يرجى إدخال المبلغ ومعرف العملية أولاً.");
+        return;
     }
 
-    // 3. تعطيل الزر لمنع الإرسال المتكرر
     const btn = document.getElementById('main-submit-btn');
-    if(btn) {
-        btn.disabled = true;
-        btn.innerText = "جاري الإرسال...";
-    }
+    btn.disabled = true;
+    btn.innerText = "جاري الإرسال...";
 
-    // 4. الإرسال إلى Firebase
-    db.ref('deposit_requests').push({
+    const dbRef = db.ref('deposit_requests').push();
+    dbRef.set({
         uid: currentUser.id,
         userName: currentUser.first_name,
         amount: amt,
@@ -1057,40 +1068,16 @@ startApp();
         status: 'pending',
         timestamp: Date.now()
     }).then(() => {
-        window.Telegram.WebApp.showAlert("✅ تم إرسال طلبك بنجاح! ستتم مراجعته قريباً.");
-        closeModal(); // إغلاق النافذة
-        // تفريغ الحقول
+        webApp.showAlert("✅ ممتاز! تم إرسال طلبك للمراجعة.");
+        closeModal();
         document.getElementById('final-amount').value = '';
         document.getElementById('final-txid').value = '';
     }).catch(err => {
-        window.Telegram.WebApp.showAlert("❌ خطأ: " + err.message);
+        webApp.showAlert("❌ حدث خطأ: " + err.message);
     }).finally(() => {
-        if(btn) {
-            btn.disabled = false;
-            btn.innerText = "🚀 إرسال الطلب";
-        }
+        btn.disabled = false;
+        btn.innerText = "🚀 إرسال الطلب للمراجعة";
     });
-     }
-
-     function showTab(tabId) {
-    // 1. إخفاء جميع الأقسام
-    const sections = document.querySelectorAll('.app-section'); // تأكد أن أقسامك تحمل هذا الكلاس
-    sections.forEach(s => s.style.display = 'none');
-
-    // 2. إظهار القسم المطلوب
-    const activeSection = document.getElementById(tabId);
-    if (activeSection) {
-        activeSection.style.display = 'block';
-    }
-
-    // 3. تحديث الرصيد فوراً عند الانتقال لقسم المعلن
-    if (tabId === 'advertiser-section' || tabId === 'المعلن') {
-        const user = webApp.initDataUnsafe.user;
-        if (user) {
-            // استدعاء دالة المراقبة للتأكد من أن الرقم ليس 0
-            startBalanceMonitor(user.id);
-        }
-    }
      }
      
      
