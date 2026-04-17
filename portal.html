@@ -927,16 +927,25 @@ function adminAction(type) {
 </head>
 <body>
 
-    <div id="modal-crypto-deposit" class="modal">
-        <div style="background: #0f172a; padding: 25px; border-radius: 30px; border: 1px solid #2ecc71; width: 90%; max-width: 400px;">
-            <h3 style="color:#2ecc71;">شحن USDT (TRC20)</h3>
-            <p style="font-size: 11px; color: #94a3b8;">العنوان: <br> <span id="wallet-addr" style="color:white;">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</span></p>
-            <button onclick="copyWalletAddress()" style="width:100%; background:#2ecc71; padding:10px; border-radius:10px; margin-bottom:10px;">نسخ العنوان</button>
-            <input type="number" id="final-amount" placeholder="المبلغ ($)" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px; border:none;">
-            <input type="text" id="final-txid" placeholder="TXID معرف العملية" style="width:90%; padding:10px; margin-bottom:20px; border-radius:10px; border:none;">
-            <button id="main-submit-btn" onclick="processDepositSubmission()">🚀 إرسال الطلب</button>
-            <button onclick="closeModal()" style="background:none; border:none; color:#64748b; margin-top:10px;">إغلاق</button>
+    <div id="modal-crypto-deposit" class="modal" style="display: none; position: fixed; z-index: 10000; inset: 0; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+    <div class="modal-content" style="border: 2px solid #2ecc71; width: 92%; max-width: 400px; background: #0f172a; border-radius: 30px; padding: 25px; position: relative; box-shadow: 0 0 30px rgba(46, 204, 113, 0.2);">
+        <span style="position: absolute; top: 15px; left: 20px; cursor: pointer; font-size: 24px; color: #64748b;" onclick="closeModal()">✕</span>
+        <h3 style="color:#2ecc71; text-align:center; margin-top:0; font-family: sans-serif;">🪙 شحن USDT (TRC20)</h3>
+        <div style="background: rgba(46, 204, 113, 0.05); padding: 15px; border-radius: 20px; border: 1px dashed #2ecc71; text-align: center; margin: 20px 0;">
+            <small style="color: #94a3b8; display: block; margin-bottom: 8px;">قم بالتحويل إلى العنوان التالي (شبكة TRON):</small>
+            <b id="wallet-addr" style="display:block; color: #fff; font-size: 11px; word-break: break-all; margin-bottom: 15px; font-family: monospace; letter-spacing: 0.5px;">TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV</b>
+            <button onclick="copyWalletAddress()" style="width:100%; background:#2ecc71; border:none; padding:12px; border-radius:15px; font-weight:800; cursor:pointer; color:#000;">📋 نسخ عنوان المحفظة</button>
         </div>
+        <div style="margin-bottom: 15px;">
+            <label style="color: #94a3b8; font-size: 12px; margin-right: 5px;">المبلغ بالدولار ($):</label>
+            <input type="number" id="final-amount" placeholder="مثلاً: 50" style="width:100%; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px; margin-top:5px; outline:none;">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label style="color: #94a3b8; font-size: 12px; margin-right: 5px;">معرف العملية (TXID):</label>
+            <input type="text" id="final-txid" placeholder="الصق الـ TXID هنا" style="width:100%; background:#1e293b; color:white; border:1px solid #334155; padding:12px; border-radius:12px; margin-top:5px; outline:none;">
+        </div>
+        <button id="main-submit-btn" onclick="processDepositSubmission()" style="width:100%; background:#2ecc71; border:none; padding:18px; border-radius:20px; color:white; font-weight:800; cursor:pointer; font-size:16px; transition: 0.3s;">🚀 إرسال الطلب للمراجعة</button>
+    </div>
     </div>
 
  <script>
