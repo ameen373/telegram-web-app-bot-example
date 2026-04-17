@@ -1054,40 +1054,58 @@ function copyWalletAddress() {
 // إطلاق كل شيء
 startApp();
      
-     function processDepositSubmission() {
-    const amt = document.getElementById('final-amount').value;
-    const tx = document.getElementById('final-txid').value;
-    const currentUser = webApp.initDataUnsafe.user || {id: 0, first_name: 'Unknown'};
 
-    if (!amt || !tx) {
-        webApp.showAlert("⚠️ عذراً، يرجى إدخال المبلغ ومعرف العملية أولاً.");
-        return;
-    }
+        // تأكد من تعريف هؤلاء في بداية السكريبت لديك
+        const webApp = window.Telegram.WebApp;
+        const db = firebase.database();
 
-    const btn = document.getElementById('main-submit-btn');
-    btn.disabled = true;
-    btn.innerText = "جاري الإرسال...";
+        function processDepositSubmission() {
+            // 1. جلب القيم
+            const amtField = document.getElementById('final-amount');
+            const txField = document.getElementById('final-txid');
+            const btn = document.getElementById('main-submit-btn');
 
-    const dbRef = db.ref('deposit_requests').push();
-    dbRef.set({
-        uid: currentUser.id,
-        userName: currentUser.first_name,
-        amount: amt,
-        txid: tx,
-        status: 'pending',
-        timestamp: Date.now()
-    }).then(() => {
-        webApp.showAlert("✅ ممتاز! تم إرسال طلبك للمراجعة.");
-        closeModal();
-        document.getElementById('final-amount').value = '';
-        document.getElementById('final-txid').value = '';
-    }).catch(err => {
-        webApp.showAlert("❌ حدث خطأ: " + err.message);
-    }).finally(() => {
-        btn.disabled = false;
-        btn.innerText = "🚀 إرسال الطلب للمراجعة";
-    });
-     }
+            const amt = amtField.value;
+            const tx = txField.value;
+
+            // جلب بيانات المستخدم من تليجرام
+            const currentUser = webApp.initDataUnsafe.user || { id: 0, first_name: 'Unknown User' };
+
+            // 2. التحقق من البيانات
+            if (!amt || !tx) {
+                webApp.showAlert("⚠️ عذراً، يرجى إدخال المبلغ ومعرف العملية أولاً.");
+                return;
+            }
+
+            // 3. تعطيل الزر لمنع التكرار
+            btn.disabled = true;
+            btn.innerText = "جاري الإرسال...";
+
+            // 4. الإرسال إلى Firebase
+            const dbRef = db.ref('deposit_requests').push();
+            dbRef.set({
+                uid: currentUser.id,
+                userName: currentUser.first_name,
+                amount: amt,
+                txid: tx,
+                status: 'pending',
+                timestamp: Date.now()
+            }).then(() => {
+                webApp.showAlert("✅ ممتاز! تم إرسال طلبك للمراجعة.");
+                closeModal(); // إغلاق النافذة
+                
+                // تفريغ الحقول بعد النجاح
+                amtField.value = '';
+                txField.value = '';
+            }).catch(err => {
+                webApp.showAlert("❌ حدث خطأ أثناء الإرسال: " + err.message);
+            }).finally(() => {
+                // إعادة الزر لحالته الطبيعية
+                btn.disabled = false;
+                btn.innerText = "🚀 إرسال الطلب للمراجعة";
+            });
+        }
+     
      
      
  </script>
