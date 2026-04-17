@@ -948,8 +948,8 @@ function adminAction(type) {
     </div>
     </div>
 
- <script>
-// 1. الإعدادات (Config)
+<script>
+// 1. الإعدادات (Config) - عرفها مرة واحدة فقط في البداية
 const firebaseConfig = {
   apiKey: "AIzaSyB9wJ3RKL9Sc0VqIgOz3HIL6PAZMK1GZos",
   authDomain: "telega-io.firebaseapp.com",
@@ -960,153 +960,100 @@ const firebaseConfig = {
   appId: "1:413242252888:web:6055aaa7fcdd256910b42d"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.database();
 const webApp = window.Telegram.WebApp;
 const ADMIN_ID = 549686235;
 
-// 2. الدوال المنفصلة (الأدوات)
+// 2. دالة مراقبة الرصيد (المحسنة لتدعم كل الأقسام)
 function startBalanceMonitor(userId) {
     db.ref('users/' + userId + '/balance').on('value', (snap) => {
         const balance = snap.val() || 0;
-        // نحدث فقط التصميم القديم الذي تحبه
-        const advRemDisplay = document.getElementById('adv-rem-bal');
-        if (advRemDisplay) {
-            advRemDisplay.innerText = parseFloat(balance).toFixed(2);
-        }
-    });
-}
+        const formattedBalance = parseFloat(balance).toFixed(2);
 
-function startAdminMonitor() {
-    db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
-        const list = document.getElementById('admin-pending-list');
-        const badge = document.getElementById('pending-count');
-        if (!list) return;
-        
-        list.innerHTML = '';
-        badge.innerText = snap.numChildren();
-        
-        if (!snap.exists()) {
-            list.innerHTML = '<p style="color:#64748b;">لا توجد طلبات حالياً</p>';
-            return;
-        }
-
-        snap.forEach(child => {
-            const data = child.val();
-            list.innerHTML += `
-                <div style="background:#1e293b; padding:15px; border-radius:15px; margin-bottom:10px; border-right:4px solid #f1c40f;">
-                    <b>👤 ${data.userName}</b> | <b style="color:#2ecc71;">$${data.amount}</b>
-                    <div style="display:flex; gap:10px; margin-top:10px;">
-                        <button onclick="handleDecision('${child.key}', '${data.uid}', ${data.amount}, 'approve')" style="flex:1; background:#2ecc71; border:none; padding:8px; border-radius:8px; font-weight:bold;">موافقة</button>
-                        <button onclick="handleDecision('${child.key}', null, null, 'reject')" style="flex:1; background:none; border:1px solid #e74c3c; color:#e74c3c; padding:8px; border-radius:8px;">رفض</button>
-                    </div>
-                </div>`;
+        // تحديث الرصيد في كل مكان محتمل (الرئيسية والمعلن)
+        const ids = ['bal-total', 'adv-rem-bal', 'user-balance-display'];
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = formattedBalance;
         });
     });
 }
 
-function handleDecision(reqId, userId, amount, action) {
-    if (action === 'approve') {
-        db.ref('deposit_requests/' + reqId).update({ status: 'approved' });
-        db.ref('users/' + userId + '/balance').transaction(curr => (parseFloat(curr) || 0) + parseFloat(amount));
-        webApp.showAlert("✅ تمت الموافقة");
-    } else {
-        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
+// 3. دالة إرسال الطلب (المصححة)
+function processDepositSubmission() {
+    const amtField = document.getElementById('final-amount');
+    const txField = document.getElementById('final-txid');
+    const btn = document.getElementById('main-submit-btn');
+
+    const amt = amtField.value;
+    const tx = txField.value;
+    const user = webApp.initDataUnsafe.user || { id: 0, first_name: 'Unknown' };
+
+    if (!amt || !tx) {
+        webApp.showAlert("⚠️ يرجى إدخال المبلغ ومعرف العملية.");
+        return;
     }
+
+    btn.disabled = true;
+    btn.innerText = "جاري الإرسال...";
+
+    db.ref('deposit_requests').push({
+        uid: user.id,
+        userName: user.first_name,
+        amount: amt,
+        txid: tx,
+        status: 'pending',
+        timestamp: Date.now()
+    }).then(() => {
+        webApp.showAlert("✅ تم إرسال طلبك بنجاح.");
+        closeModal();
+        amtField.value = '';
+        txField.value = '';
+    }).catch(err => {
+        webApp.showAlert("❌ خطأ: " + err.message);
+    }).finally(() => {
+        btn.disabled = false;
+        btn.innerText = "🚀 إرسال الطلب للمراجعة";
+    });
 }
 
-// --- [ قسم التحكم في التنقل ] ---
-function showTab(tabId) {
-    // إخفاء كل الأقسام (تأكد أن أقسامك لها كلاس باسم app-section)
-    document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
-
-    // إظهار القسم المطلوب
-    const target = document.getElementById(tabId);
-    if (target) target.style.display = 'block';
-
-    // تحديث الرصيد فوراً عند الانتقال لقسم المعلن لضمان عدم ظهور 0
-    const user = webApp.initDataUnsafe.user;
-    if (user && (tabId === 'advertiser-section' || tabId === 'section-ads')) {
-        startBalanceMonitor(user.id);
-    }
-}
-     
-// 3. كود التشغيل (Execution)
-function startApp() {
-    const user = webApp.initDataUnsafe.user;
-    if (user) {
-        startBalanceMonitor(user.id); // جلب الـ 350$
-
-        if (user.id === ADMIN_ID) {
-            document.getElementById('admin-section').style.display = 'block';
-            startAdminMonitor();
-        }
-    }
-    webApp.expand();
+// 4. دوال التحكم في الواجهة
+function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
 }
 
-// دوال الواجهة (إغلاق وفتح المودال)
+function closeModal() {
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+}
+
 function copyWalletAddress() {
     navigator.clipboard.writeText("TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV");
     webApp.showAlert("✅ تم نسخ العنوان");
 }
 
-// إطلاق كل شيء
-startApp();
-     
+function showTab(tabId) {
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    const target = document.getElementById(tabId);
+    if (target) target.style.display = 'block';
+}
 
-        // تأكد من تعريف هؤلاء في بداية السكريبت لديك
-        const webApp = window.Telegram.WebApp;
-        const db = firebase.database();
-
-        function processDepositSubmission() {
-            // 1. جلب القيم
-            const amtField = document.getElementById('final-amount');
-            const txField = document.getElementById('final-txid');
-            const btn = document.getElementById('main-submit-btn');
-
-            const amt = amtField.value;
-            const tx = txField.value;
-
-            // جلب بيانات المستخدم من تليجرام
-            const currentUser = webApp.initDataUnsafe.user || { id: 0, first_name: 'Unknown User' };
-
-            // 2. التحقق من البيانات
-            if (!amt || !tx) {
-                webApp.showAlert("⚠️ عذراً، يرجى إدخال المبلغ ومعرف العملية أولاً.");
-                return;
-            }
-
-            // 3. تعطيل الزر لمنع التكرار
-            btn.disabled = true;
-            btn.innerText = "جاري الإرسال...";
-
-            // 4. الإرسال إلى Firebase
-            const dbRef = db.ref('deposit_requests').push();
-            dbRef.set({
-                uid: currentUser.id,
-                userName: currentUser.first_name,
-                amount: amt,
-                txid: tx,
-                status: 'pending',
-                timestamp: Date.now()
-            }).then(() => {
-                webApp.showAlert("✅ ممتاز! تم إرسال طلبك للمراجعة.");
-                closeModal(); // إغلاق النافذة
-                
-                // تفريغ الحقول بعد النجاح
-                amtField.value = '';
-                txField.value = '';
-            }).catch(err => {
-                webApp.showAlert("❌ حدث خطأ أثناء الإرسال: " + err.message);
-            }).finally(() => {
-                // إعادة الزر لحالته الطبيعية
-                btn.disabled = false;
-                btn.innerText = "🚀 إرسال الطلب للمراجعة";
-            });
+// 5. تشغيل التطبيق
+function startApp() {
+    webApp.ready();
+    webApp.expand();
+    const user = webApp.initDataUnsafe.user;
+    if (user) {
+        startBalanceMonitor(user.id);
+        if (user.id === ADMIN_ID) {
+            const adminSec = document.getElementById('admin-section');
+            if(adminSec) adminSec.style.display = 'block';
         }
-     
-     
-     
- </script>
- 
+    }
+}
+
+window.onload = startApp;
+</script>
+    
