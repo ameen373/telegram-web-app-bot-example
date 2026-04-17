@@ -927,8 +927,6 @@ function adminAction(type) {
 </head>
 <body>
 
-    <button onclick="openModal('modal-crypto-deposit')" style="background:#2ecc71; border:none; padding:15px; border-radius:15px; color:black; font-weight:bold;">🪙 شحن رصيد USDT</button>
-
     <div id="modal-crypto-deposit" class="modal">
         <div style="background: #0f172a; padding: 25px; border-radius: 30px; border: 1px solid #2ecc71; width: 90%; max-width: 400px;">
             <h3 style="color:#2ecc71;">شحن USDT (TRC20)</h3>
@@ -1037,5 +1035,49 @@ function copyWalletAddress() {
 
 // إطلاق كل شيء
 startApp();
+
+     function processDepositSubmission() {
+    // 1. جلب القيم من الحقول
+    const amt = document.getElementById('final-amount').value;
+    const tx = document.getElementById('final-txid').value;
+    
+    // 2. جلب بيانات المستخدم (التأكد من تعريف webApp في بداية الكود)
+    const currentUser = window.Telegram.WebApp.initDataUnsafe.user || {id: 0, first_name: 'Unknown'};
+
+    if (!amt || !tx) {
+        return window.Telegram.WebApp.showAlert("⚠️ يرجى إدخال المبلغ ومعرف العملية (TXID)");
+    }
+
+    // 3. تعطيل الزر لمنع الإرسال المتكرر
+    const btn = document.getElementById('main-submit-btn');
+    if(btn) {
+        btn.disabled = true;
+        btn.innerText = "جاري الإرسال...";
+    }
+
+    // 4. الإرسال إلى Firebase
+    db.ref('deposit_requests').push({
+        uid: currentUser.id,
+        userName: currentUser.first_name,
+        amount: amt,
+        txid: tx,
+        status: 'pending',
+        timestamp: Date.now()
+    }).then(() => {
+        window.Telegram.WebApp.showAlert("✅ تم إرسال طلبك بنجاح! ستتم مراجعته قريباً.");
+        closeModal(); // إغلاق النافذة
+        // تفريغ الحقول
+        document.getElementById('final-amount').value = '';
+        document.getElementById('final-txid').value = '';
+    }).catch(err => {
+        window.Telegram.WebApp.showAlert("❌ خطأ: " + err.message);
+    }).finally(() => {
+        if(btn) {
+            btn.disabled = false;
+            btn.innerText = "🚀 إرسال الطلب";
+        }
+    });
+     }
+        
  </script>
  
