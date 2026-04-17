@@ -972,9 +972,17 @@ const ADMIN_ID = 549686235;
 function startBalanceMonitor(userId) {
     db.ref('users/' + userId + '/balance').on('value', (snap) => {
         const balance = snap.val() || 0;
-        const display = document.getElementById('user-balance-display');
-        if (display) {
-            display.innerText = parseFloat(balance).toFixed(2) + " $";
+        const formattedBalance = parseFloat(balance).toFixed(2);
+
+        // 1. تحديث النظام الجديد (إذا كان موجوداً)
+        const mainDisplay = document.getElementById('user-balance-display');
+        if (mainDisplay) mainDisplay.innerText = formattedBalance + " $";
+
+        // 2. تحديث قسم المعلن (التصميم الذي أرسلته الآن)
+        // لاحظ أننا استخدمنا المعرف الموجود في الكود الخاص بك: adv-rem-bal
+        const advRemDisplay = document.getElementById('adv-rem-bal');
+        if (advRemDisplay) {
+            advRemDisplay.innerText = formattedBalance;
         }
     });
 }
