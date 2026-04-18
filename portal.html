@@ -432,6 +432,31 @@ body {
         <button class="btn btn-primary" style="background:var(--safe); width:100%; border-radius:50px; padding: 12px; font-weight: bold;" onclick="processNewCampaign()">🚀 إطلاق الحملة الآن</button>
     </div>
 </div>
+    <div id="sec-stats" class="section" style="display: none; padding: 15px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+        <div class="card" style="background: #1e293b; padding: 15px; border-radius: 20px; border-bottom: 3px solid #0984e3;">
+            <small style="color: #64748b;">إجمالي المشاهدات</small><br>
+            <b id="stat-views" style="font-size: 20px; color: #fff;">0</b>
+        </div>
+        <div class="card" style="background: #1e293b; padding: 15px; border-radius: 20px; border-bottom: 3px solid #e84393;">
+            <small style="color: #64748b;">النقرات (Clicks)</small><br>
+            <b id="stat-clicks" style="font-size: 20px; color: #fff;">0</b>
+        </div>
+    </div>
+    
+    <div class="card" style="background: #1e293b; padding: 20px; border-radius: 22px; margin-bottom: 20px;">
+        <h4 style="color: #94a3b8; margin-bottom: 15px; font-size: 14px;">📊 أداء الحملات (آخر 7 أيام)</h4>
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 100px;">
+            <div id="bar-1" style="width: 15px; background: #0984e3; border-radius: 4px; height: 10%;"></div>
+            <div id="bar-2" style="width: 15px; background: #0984e3; border-radius: 4px; height: 30%;"></div>
+            <div id="bar-3" style="width: 15px; background: #0984e3; border-radius: 4px; height: 50%;"></div>
+            <div id="bar-4" style="width: 15px; background: #0984e3; border-radius: 4px; height: 40%;"></div>
+            <div id="bar-5" style="width: 15px; background: #0984e3; border-radius: 4px; height: 80%;"></div>
+            <div id="bar-6" style="width: 15px; background: #0984e3; border-radius: 4px; height: 60%;"></div>
+            <div id="bar-7" style="width: 15px; background: #2ecc71; border-radius: 4px; height: 90%;"></div>
+        </div>
+    </div>
+    </div>
     
 <div id="sec-channels" class="section" style="display: none; padding: 15px;">
     
@@ -1014,6 +1039,58 @@ function startBalanceMonitor(userId) {
     });
 }
 
+// --- [ تابع لقسم 3: دوال المراقبة الأساسية ] ---
+
+// 1. دالة سجل العمليات (أضفها هنا)
+function startTransactionMonitor(userId) {
+    db.ref('transactions/' + userId).orderByChild('timestamp').limitToLast(10).on('value', (snap) => {
+        const list = document.getElementById('trans-history-list');
+        if (!list) return;
+        list.innerHTML = '';
+        if (!snap.exists()) {
+            list.innerHTML = '<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">لا توجد عمليات مسجلة بعد 📋</p>';
+            return;
+        }
+        let transactions = [];
+        snap.forEach(child => { transactions.unshift({ id: child.key, ...child.val() }); });
+        transactions.forEach(tx => {
+            const isDeposit = tx.type === 'deposit';
+            const statusColor = tx.status === 'approved' ? '#2ecc71' : (tx.status === 'pending' ? '#f1c40f' : '#e74c3c');
+            list.innerHTML += `
+                <div style="background: #0f172a; padding: 12px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border-right: 3px solid ${statusColor}; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 18px;">${isDeposit ? '💰' : '📢'}</span>
+                        <div style="text-align: right;">
+                            <b style="font-size: 13px; color: #fff; display: block;">${tx.title || 'عملية نظام'}</b>
+                            <small style="color: #64748b; font-size: 10px;">${new Date(tx.timestamp).toLocaleString('ar-EG')}</small>
+                        </div>
+                    </div>
+                    <div style="text-align: left;">
+                        <b style="color: ${isDeposit ? '#2ecc71' : '#fff'}; display: block;">${isDeposit ? '+' : '-'}$${parseFloat(tx.amount).toFixed(2)}</b>
+                    </div>
+                </div>`;
+        });
+    });
+}
+
+// 2. دالة الإحصائيات المباشرة (أضفها هنا أيضاً)
+function updateRealTimeStats(userId) {
+    db.ref('stats/' + userId).on('value', (snap) => {
+        if (!snap.exists()) return;
+        const data = snap.val();
+        animateValue('stat-views', window.lastViews || 0, data.totalViews || 0, 1000);
+        animateValue('stat-clicks', window.lastClicks || 0, data.totalClicks || 0, 1000);
+        window.lastViews = data.totalViews;
+        window.lastClicks = data.totalClicks;
+        if (data.weeklyProgress) {
+            data.weeklyProgress.forEach((val, index) => {
+                const bar = document.getElementById('bar-' + (index + 1));
+                if (bar) bar.style.height = val + '%'; 
+            });
+        }
+    });
+}
+    
 function startAdminMonitor() {
     db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
         const list = document.getElementById('admin-pending-list');
@@ -1044,13 +1121,12 @@ function startAdminMonitor() {
 }
 
 // --- [ 4. دوال العمليات (إيداع/قرار) ] ---
-
 function handleDecision(reqId, userId, amount, action) {
     if (action === 'approve') {
-        db.ref('deposit_requests/' + reqId).update({ status: 'approved' })
-        .then(() => {
+        db.ref('deposit_requests/' + reqId).update({ status: 'approved' }).then(() => {
             db.ref('users/' + userId + '/balance').transaction(curr => (parseFloat(curr) || 0) + parseFloat(amount));
-            showToast("✅ تمت الموافقة وإضافة الرصيد");
+            db.ref('transactions/' + userId).push({ type: 'deposit', title: 'شحن رصيد USDT', amount: amount, status: 'approved', timestamp: Date.now() });
+            showToast("✅ تمت الموافقة وتحديث الرصيد والسجل");
         });
     } else {
         db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
@@ -1098,15 +1174,15 @@ function processDepositSubmission() {
 }
 
 // --- [ 5. دوال الواجهة والتنقل ] ---
-
 function openTab(tab, el) {
     document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
     document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-
     const target = document.getElementById('sec-' + tab);
     if (target) target.style.display = 'block';
     if (el) el.classList.add('active');
 
+    const user = webApp.initDataUnsafe.user;
+    if (user && tab === 'stats') updateRealTimeStats(user.id);
     if (webApp.HapticFeedback) webApp.HapticFeedback.impactOccurred('light');
 }
 
@@ -1125,9 +1201,8 @@ function startApp() {
     const user = webApp.initDataUnsafe.user;
     if (user) {
         startBalanceMonitor(user.id);
-        if (user.id === ADMIN_ID) {
-            startAdminMonitor();
-        }
+        startTransactionMonitor(user.id);
+        if (user.id === ADMIN_ID) startAdminMonitor();
     }
 }
 
