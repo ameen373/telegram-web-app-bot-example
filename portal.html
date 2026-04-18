@@ -1116,6 +1116,61 @@ function updateRealTimeStats(userId) {
         }
     });
 }
+
+    function startCampaignsMonitor(userId) {
+    db.ref('campaigns').orderByChild('owner').equalTo(userId).on('value', (snap) => {
+        const dashboard = document.getElementById('active-campaigns-dashboard');
+        if (!dashboard) return;
+
+        dashboard.innerHTML = ''; // مسح المحتوى القديم
+
+        if (!snap.exists()) {
+            dashboard.innerHTML = '<div style="opacity:0.5; font-size:11px; padding:20px;">لا توجد حملات جارية حالياً..</div>';
+            return;
+        }
+
+        snap.forEach(child => {
+            const camp = child.val();
+            const statusInfo = getStatusStyle(camp.status);
+            
+            dashboard.innerHTML += `
+                <div class="card" style="background: #0f172a; border: 1px solid #334155; padding: 12px; margin-bottom: 10px; text-align: right; border-radius: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                        <span style="background: ${statusInfo.bg}; color: ${statusInfo.color}; padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: bold;">
+                            ${statusInfo.text}
+                        </span>
+                        <b style="color: #fff; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px;">
+                            ${camp.text || "حملة بدون نص"}
+                        </b>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
+                        <div style="color: #94a3b8;">💰 الميزانية: <span style="color: #fff;">$${camp.daily_budget}</span></div>
+                        <div style="color: #94a3b8;">🌍 المنطقة: <span style="color: #fff;">${camp.targetContinent}</span></div>
+                    </div>
+                    
+                    ${camp.status === 'active' ? `
+                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #1e293b; display: flex; justify-content: space-around;">
+                        <div style="text-align: center;"><small style="color: #64748b; display: block;">مشاهدة</small><b style="color: #0984e3;">${camp.views || 0}</b></div>
+                        <div style="text-align: center;"><small style="color: #64748b; display: block;">نقرة</small><b style="color: #e84393;">${camp.clicks || 0}</b></div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        });
+    });
+}
+
+// دالة مساعدة لتحديد شكل الحالة
+function getStatusStyle(status) {
+    switch(status) {
+        case 'active': return { text: 'تعمل الآن 🟢', bg: 'rgba(46, 204, 113, 0.1)', color: '#2ecc71' };
+        case 'pending': return { text: 'قيد المراجعة ⏳', bg: 'rgba(241, 196, 15, 0.1)', color: '#f1c40f' };
+        case 'completed': return { text: 'منتهية ✅', bg: 'rgba(148, 163, 184, 0.1)', color: '#94a3b8' };
+        case 'rejected': return { text: 'مرفوضة ❌', bg: 'rgba(231, 76, 60, 0.1)', color: '#e74c3c' };
+        default: return { text: 'غير معروف', bg: '#334155', color: '#fff' };
+    }
+}
     
 function startAdminMonitor() {
     db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
@@ -1229,6 +1284,8 @@ function openTab(tab, el) {
     const user = webApp.initDataUnsafe.user;
     if (user && tab === 'stats') updateRealTimeStats(user.id);
     if (webApp.HapticFeedback) webApp.HapticFeedback.impactOccurred('light');
+    if (tab === 'promo') {
+    startCampaignsMonitor(user.id);
 }
 
 function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
@@ -1247,6 +1304,8 @@ function startApp() {
     if (user) {
         startBalanceMonitor(user.id);
         startTransactionMonitor(user.id);
+        startCampaignsMonitor(user.id); // <--- أضف هذا السطر هنا
+        
         if (user.id === ADMIN_ID) startAdminMonitor();
     }
 }
