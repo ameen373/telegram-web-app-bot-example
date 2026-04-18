@@ -932,9 +932,11 @@ function adminAction(type) {
     </div>
 
 <script>
-// 1. الإعدادات الأساسية (Globals)
+    <script>
+// 1. التعريفات الأساسية (Globals)
 const webApp = window.Telegram.WebApp;
 const ADMIN_ID = 549686235;
+let lastBalance = 0; // هام جداً للعداد الرقمي
 
 const firebaseConfig = {
   apiKey: "AIzaSyB9wJ3RKL9Sc0VqIgOz3HIL6PAZMK1GZos",
@@ -946,43 +948,74 @@ const firebaseConfig = {
   appId: "1:413242252888:web:6055aaa7fcdd256910b42d"
 };
 
-// تهيئة Firebase لمرة واحدة لضمان عدم توقف الاتصال
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const db = firebase.database();
 
-// 2. دالة مراقبة الرصيد (تحديث حي للرصيد)
+// --- [ 2. الدوال المساعدة: الإشعارات والعداد ] ---
+
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.style = `
+        position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+        padding: 14px 28px; border-radius: 50px; color: white; font-weight: bold;
+        z-index: 100000; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        background: ${type === 'success' ? 'linear-gradient(135deg, #2ecc71, #27ae60)' : 'linear-gradient(135deg, #e74c3c, #c0392b)'};
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3); font-size: 14px;
+    `;
+    toast.innerHTML = message;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.top = '30px'; }, 100);
+    setTimeout(() => { 
+        toast.style.top = '-100px'; 
+        setTimeout(() => toast.remove(), 500); 
+    }, 3500);
+}
+
+function animateValue(id, start, end, duration) {
+    const obj = document.getElementById(id);
+    if (!obj) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = (progress * (end - start) + start).toFixed(2);
+        if (progress < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+}
+
+// --- [ 3. دوال المراقبة الأساسية ] ---
+
 function startBalanceMonitor(userId) {
     db.ref('users/' + userId + '/balance').on('value', (snap) => {
-        const balance = snap.val() || 0;
-        const formatted = parseFloat(balance).toFixed(2);
-
-        // تحديث جميع خانات الرصيد في الواجهة لضمان عدم ظهور 0
-        const ids = ['bal-total', 'adv-rem-bal', 'user-balance-display', 'bal-avail'];
-        ids.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.innerText = formatted;
+        const newBal = parseFloat(snap.val() || 0);
+        
+        const targetIds = ['bal-total', 'adv-rem-bal', 'bal-avail', 'user-balance-display'];
+        targetIds.forEach(id => {
+            animateValue(id, lastBalance, newBal, 1000);
         });
+
+        if (newBal > lastBalance && lastBalance !== 0) {
+            if (webApp.HapticFeedback) webApp.HapticFeedback.notificationOccurred('success');
+            showToast("💰 تم تحديث رصيدك بنجاح!");
+        }
+        lastBalance = newBal;
     });
 }
 
-// 3. دالة مراقبة لوحة الإدارة (تحديث حي للطلبات)
 function startAdminMonitor() {
     db.ref('deposit_requests').orderByChild('status').equalTo('pending').on('value', (snap) => {
         const list = document.getElementById('admin-pending-list');
         const badge = document.getElementById('pending-count');
         if (!list) return;
-
         list.innerHTML = '';
-        const count = snap.numChildren();
-        if (badge) badge.innerText = count;
-
+        if (badge) badge.innerText = snap.numChildren();
         if (!snap.exists()) {
-            list.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">لا توجد طلبات حالياً ☕</div>';
+            list.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">لا توجد طلبات معلقة حالياً ☕</div>';
             return;
         }
-
         snap.forEach(child => {
             const data = child.val();
             list.innerHTML += `
@@ -1001,22 +1034,21 @@ function startAdminMonitor() {
     });
 }
 
-// 4. دالة اتخاذ القرار في الإدارة
+// --- [ 4. دوال العمليات (إيداع/قرار) ] ---
+
 function handleDecision(reqId, userId, amount, action) {
     if (action === 'approve') {
         db.ref('deposit_requests/' + reqId).update({ status: 'approved' })
         .then(() => {
-            // إضافة الرصيد للمستخدم بشكل صحيح عبر Transaction
             db.ref('users/' + userId + '/balance').transaction(curr => (parseFloat(curr) || 0) + parseFloat(amount));
-            webApp.showAlert("✅ تمت الموافقة وإضافة الرصيد للمستخدم.");
+            showToast("✅ تمت الموافقة وإضافة الرصيد");
         });
     } else {
         db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
-        webApp.showAlert("❌ تم رفض الطلب.");
+        showToast("❌ تم رفض الطلب", "error");
     }
 }
 
-// 5. دالة إرسال الطلب من قبل المستخدم
 function processDepositSubmission() {
     const amtField = document.getElementById('final-amount');
     const txField = document.getElementById('final-txid');
@@ -1029,7 +1061,7 @@ function processDepositSubmission() {
     const user = webApp.initDataUnsafe.user || { id: 0, first_name: 'Unknown' };
 
     if (!amt || !tx) {
-        webApp.showAlert("⚠️ يرجى إدخال المبلغ ومعرف العملية أولاً.");
+        showToast("⚠️ يرجى إدخال البيانات المطلوبة", "error");
         return;
     }
 
@@ -1044,76 +1076,55 @@ function processDepositSubmission() {
         status: 'pending',
         timestamp: Date.now()
     }).then(() => {
-        webApp.showAlert("✅ تم إرسال طلبك بنجاح للمراجعة.");
+        showToast("✅ تم إرسال طلبك بنجاح");
         closeModal();
         amtField.value = '';
         txField.value = '';
     }).catch(err => {
-        webApp.showAlert("❌ خطأ: " + err.message);
+        showToast("❌ خطأ: " + err.message, "error");
     }).finally(() => {
         btn.disabled = false;
         btn.innerText = "🚀 إرسال الطلب للمراجعة";
     });
 }
 
-// 6. دوال الواجهة (التنقل والنوافذ)
+// --- [ 5. دوال الواجهة والتنقل ] ---
+
 function openTab(tab, el) {
-    // 1. إخفاء جميع الأقسام
     document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-    
-    // 2. إزالة حالة النشاط من جميع أزرار القائمة
     document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
 
-    // 3. إظهار القسم المطلوب (تأكد أن الـ ID في الـ HTML يبدأ بـ -sec)
     const target = document.getElementById('sec-' + tab);
-    if (target) {
-        target.style.display = 'block';
-    }
-
-    // 4. إضافة حالة النشاط للزر الحالي
+    if (target) target.style.display = 'block';
     if (el) el.classList.add('active');
 
-    // 5. تحديث البيانات فورياً بناءً على القسم
-    const user = webApp.initDataUnsafe.user;
-    if (user) {
-        if (tab === 'promo' || tab === 'home') {
-            startBalanceMonitor(user.id); // تحديث الرصيد فوراً
-        }
-        if (tab === 'channels' && typeof updatePublisherStats === 'function') {
-            updatePublisherStats(user.id);
-        }
-    }
-
-    // 6. إضافة لمسة اهتزاز خفيفة (خاص بتطبيق تليجرام)
-    if (webApp.HapticFeedback) {
-        webApp.HapticFeedback.impactOccurred('light');
-    }
+    if (webApp.HapticFeedback) webApp.HapticFeedback.impactOccurred('light');
 }
-    
+
+function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+
 function copyWalletAddress() {
     navigator.clipboard.writeText("TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV");
-    webApp.showAlert("✅ تم نسخ عنوان المحفظة");
+    showToast("✅ تم نسخ العنوان");
 }
 
-// 7. تشغيل المحرك الرئيسي عند فتح الصفحة
+// --- [ 6. تشغيل التطبيق ] ---
+
 function startApp() {
     webApp.ready();
     webApp.expand();
-    
     const user = webApp.initDataUnsafe.user;
     if (user) {
-        // تشغيل مراقبة الرصيد فوراً (هذا سيحل مشكلة ظهور 0)
         startBalanceMonitor(user.id);
-
-        // التحقق إذا كان المستخدم هو المدير
         if (user.id === ADMIN_ID) {
-            const adminTab = document.querySelector('[onclick*="admin"]');
-            if (adminTab) adminTab.style.display = 'flex';
-            startAdminMonitor(); // تشغيل مراقبة الطلبات للأدمن فقط
+            startAdminMonitor();
         }
     }
 }
 
-// تنفيذ التشغيل
 window.onload = startApp;
+
+window.addEventListener('offline', () => showToast("🔴 انقطع الاتصال بالإنترنت!", "error"));
+window.addEventListener('online', () => showToast("🟢 عاد الاتصال بالإنترنت", "success"));
 </script>
+    
