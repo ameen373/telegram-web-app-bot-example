@@ -114,34 +114,84 @@ body {
     box-sizing: border-box;
 }
 
-/* نظام المودال الاحترافي - يمنع التداخل */
-..
-        .modal {
+/* 1. إصلاح شامل للمودال (النافذة المنبثقة) */
+.modal {
     display: none;
     position: fixed;
+    inset: 0;
     z-index: 10000;
-    left: 0; top: 0;
-    width: 100%; 
-    height: 100%;
-    background-color: rgba(0,0,0,0.85);
-    backdrop-filter: blur(8px);
-    
-    /* الحل هنا */
-    overflow-y: auto; /* تفعيل التمرير العمودي */
-    display: flex;
-    align-items: flex-start; /* يبدأ المحتوى من الأعلى وليس الوسط */
-    padding-top: 20px;
-    padding-bottom: 150px; /* مساحة كبيرة جداً في الأسفل لضمان تخطي القائمة السفلية */
+    background: rgba(15, 23, 42, 0.95); /* لون داكن فخم */
+    backdrop-filter: blur(10px);
+    overflow-y: auto !important; /* تفعيل التمرير العمودي ضروري جداً */
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 0 150px 0; /* مساحة سفلية ضخمة لضمان تخطي الناف بار */
+    align-items: flex-start;
 }
 
+/* 2. محتوى النافذة بتصميم الـ Glassmorphism */
 .modal-content {
-    background: #1e293b; /* لون الخلفية الداكن ليتناسب مع صورتك */
+    background: linear-gradient(145deg, #1e293b, #0f172a);
     width: 90%;
-    margin: 0 auto;
-    border-radius: 20px;
-    padding: 20px;
-    border: 1px solid #334155;
-    /* احذف أي ارتفاع ثابت height إذا كان موجوداً */
+    max-width: 480px;
+    margin: auto;
+    border-radius: 25px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* 3. تصميم أزرار الاختيار (المشاهدات، النقرات، الثابت) */
+.target-goal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.goal-item {
+    background: rgba(30, 41, 59, 0.6);
+    border: 2px solid transparent;
+    padding: 12px 5px;
+    border-radius: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.goal-item.active {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+    transform: scale(1.05);
+}
+
+.goal-item span { font-size: 22px; display: block; margin-bottom: 4px; }
+.goal-item p { font-size: 10px; font-weight: bold; color: #fff; margin: 0; }
+
+/* 4. تصميم المدخلات (Select & Input) */
+.input-premium {
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    padding: 10px 15px !important;
+    width: 100%;
+    margin-bottom: 12px;
+    font-size: 14px;
+    outline: none;
+}
+
+.input-premium:focus {
+    border-color: #38bdf8 !important;
+}
+
+/* 5. صناديق التنبيه الصغيرة */
+.ad-mode-section {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .target-goal-grid {
@@ -422,20 +472,50 @@ body {
             </select>
         </div>
 
-        <label class="label-small">🎯 استهداف الاهتمامات:</label>
+      <label class="label-small">🎯 استهداف الاهتمامات:</label>
 <select id="adv-interests" class="input-premium" style="margin-bottom: 15px;">
     <option value="all">كل الاهتمامات (عام) 🌍</option>
-    <option value="sports">الرياضة ⚽</option>
-    <option value="beauty">الجمال والأناقة ✨</option>
-    <option value="cooking">الطبخ والحلويات 🍳</option>
-    <option value="movies">الأفلام والمسلسلات 🎬</option>
     <option value="crypto">العملات المشفره 🪙</option>
-    <option value="gaming">الألعاب والترفيه 🎮</option>
-    <option value="coding">التطبيقات والبرمجة 💻</option>
+    <option value="movies">الأفلام والمسلسلات 🎬</option>
     <option value="tech">التكنولوجيا والتقنية 📱</option>
-    <option value="fun">الترفيه والضحك 😂</option>
-    <option value="news">الأخبار والعالم 🗞️</option>
+    <option value="coding">التطبيقات والبرمجة 💻</option>
+    <option value="gaming">الألعاب والترفيه 🎮</option>
 </select>
+
+<label class="label-small">💳 اختر نظام المحاسبة (مستقل):</label>
+<div class="target-goal-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px;">
+    <div id="tab-views" class="goal-item active" onclick="switchAdMode('views')" style="background: rgba(30, 41, 59, 0.5); border: 2px solid transparent; padding: 10px; border-radius: 15px; text-align: center; cursor: pointer;">
+        <span style="display: block; font-size: 20px;">👁️</span>
+        <p style="font-size: 10px; margin: 5px 0; color: #fff;">مشاهدات</p>
+    </div>
+    <div id="tab-clicks" class="goal-item" onclick="switchAdMode('clicks')" style="background: rgba(30, 41, 59, 0.5); border: 2px solid transparent; padding: 10px; border-radius: 15px; text-align: center; cursor: pointer;">
+        <span style="display: block; font-size: 20px;">🖱️</span>
+        <p style="font-size: 10px; margin: 5px 0; color: #fff;">نقرات</p>
+    </div>
+    <div id="tab-fixed" class="goal-item" onclick="switchAdMode('fixed')" style="background: rgba(30, 41, 59, 0.5); border: 2px solid transparent; padding: 10px; border-radius: 15px; text-align: center; cursor: pointer;">
+        <span style="display: block; font-size: 20px;">🕒</span>
+        <p style="font-size: 10px; margin: 5px 0; color: #fff;">ثابت 1/24</p>
+    </div>
+</div>
+
+<input type="hidden" id="current-ad-mode" value="views">
+
+<div id="section-views" class="ad-mode-section" style="background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 12px; margin-bottom: 15px; border-right: 3px solid #2ecc71;">
+    <small style="color: #2ecc71;">✅ سيتم المحاسبة مقابل كل 1000 مشاهدة (CPV).</small>
+</div>
+
+<div id="section-clicks" class="ad-mode-section" style="display: none; background: rgba(56, 189, 248, 0.1); padding: 10px; border-radius: 12px; margin-bottom: 15px; border-right: 3px solid #38bdf8;">
+    <small style="color: #38bdf8;">✅ سيتم الخصم عند الضغط على الرابط فقط (CPC).</small>
+</div>
+
+<div id="section-fixed" class="ad-mode-section" style="display: none;">
+    <label class="label-small">⏳ نظام التثبيت (بأسلوب Telega):</label>
+    <select id="adv-post-type" class="input-premium">
+        <option value="1/24">🥇 نظام 1/24 (ساعة تثبيت / 24س بقاء)</option>
+        <option value="1/48">🥈 نظام 1/48 (ساعة تثبيت / 48س بقاء)</option>
+        <option value="week">📅 نظام الأسبوع (ساعتين تثبيت / 7 أيام)</option>
+    </select>
+</div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom: 10px;">
             <div>
@@ -535,21 +615,36 @@ body {
             <option value="all">كل دول المنطقة</option>
         </select>
 
-<label class="label-small">🎯 تصنيف محتوى القناة:</label>
-<select id="ch-category" class="input-premium" style="margin-bottom: 15px;">
-    <option value="all">عام 🌍</option>
-    <option value="sports">الرياضة ⚽</option>
-    <option value="beauty">الجمال والأناقة ✨</option>
-    <option value="cooking">الطبخ والحلويات 🍳</option>
-    <option value="movies">الأفلام والمسلسلات 🎬</option>
-    <option value="crypto">العملات المشفره 🪙</option>
-    <option value="gaming">الألعاب والترفيه 🎮</option>
-    <option value="coding">التطبيقات والبرمجة 💻</option>
-    <option value="tech">التكنولوجيا والتقنية 📱</option>
-    <option value="fun">الترفيه والضحك 😂</option>
-    <option value="news">الأخبار والعالم 🗞️</option>
-</select>
-        
+<div class="card" style="background: #1e293b; padding: 15px; border-radius: 20px; margin-top: 15px; border: 1px dashed #334155;">
+    <h4 style="color: #38bdf8; font-size: 13px; margin-bottom: 12px;">🛠️ إعدادات استقبال الإعلانات:</h4>
+
+    <label class="label-small">🎯 تخصص محتوى القناة:</label>
+    <select id="pub-ch-category" class="input-premium">
+        <option value="all">عام 🌍</option>
+        <option value="crypto">العملات المشفره 🪙</option>
+        <option value="movies">الأفلام والمسلسلات 🎬</option>
+        <option value="tech">التكنولوجيا والتقنية 📱</option>
+        <option value="coding">التطبيقات والبرمجة 💻</option>
+    </select>
+
+    <label class="label-small">🌍 الجمهور الغالب في القناة:</label>
+    <select id="pub-ch-region" class="input-premium">
+        <option value="global">عالمي (كل المناطق)</option>
+        <option value="mena">الشرق الأوسط وشمال أفريقيا</option>
+        <option value="gcc">دول الخليج العربي</option>
+        <option value="eu">أوروبا وأمريكا</option>
+    </select>
+
+    <label class="label-small">💳 أنواع الإعلانات التي تقبلها:</label>
+    <div style="display: flex; gap: 8px; margin-top: 5px;">
+        <label style="font-size: 10px; color: #fff; background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; flex: 1; text-align: center;">
+            <input type="checkbox" id="pub-accept-fixed" checked> ثابت 1/24
+        </label>
+        <label style="font-size: 10px; color: #fff; background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; flex: 1; text-align: center;">
+            <input type="checkbox" id="pub-accept-performance"> أداء (نقرات/مشاهدات)
+        </label>
+    </div>
+</div>
         <div style="background:rgba(0,0,0,0.6); padding:15px; border-radius:15px; margin: 15px 0; font-size:13px; border:1px solid #444;">
             <p style="margin-bottom:10px; color: #fff;">⏰ <b>منشور (24h):</b> 
                                <input type="number" id="price-24h" placeholder="0" style="width:60px; background:none; border:1px solid #f1c40f; color:white; border-radius:5px; text-align: center;"> $ 
@@ -757,53 +852,63 @@ function updateAdPreview() {
 
 // 2. دالة الإطلاق المدمجة (المطورة: جغرافيا + اهتمامات)
 function processNewCampaign() {
-    const user = webApp.initDataUnsafe.user;
-    if (!user) return tg.showAlert("❌ خطأ في بيانات المستخدم");
+    const user = window.Telegram.WebApp.initDataUnsafe.user;
+    if (!user) return window.Telegram.WebApp.showAlert("❌ خطأ في بيانات المستخدم");
 
+    // سحب القيم من الأنظمة الجديدة التي أضفناها
+    const selectedMode = document.getElementById('current-ad-mode').value; // (views, clicks, fixed)
+    const postType = document.getElementById('adv-post-type').value; // (1/24, 1/48, etc)
     const budgetInput = document.getElementById('adv-daily-budget');
-    
-    // سحب البيانات مع إضافة "الاهتمامات"
+
     const data = {
+        // البيانات الأساسية
         text: document.getElementById('adv-text-manual').value,
         media: document.getElementById('adv-media-url').value,
         link: document.getElementById('adv-link-smart').value,
+        
+        // الاستهداف (المنطقة + الاهتمامات)
         targetContinent: document.getElementById('adv-continent').value,
         targetCountry: document.getElementById('adv-country').value,
-        category: document.getElementById('adv-interests').value, // الميزة الجديدة
+        category: document.getElementById('adv-interests').value, 
+        
+        // نظام المحاسبة المطور (الميزة الجديدة)
+        billing_type: selectedMode, 
+        strategy_detail: selectedMode === 'fixed' ? postType : 'Performance-based',
+        
         startTime: document.getElementById('adv-start-time').value,
         daily_budget: budgetInput ? parseFloat(budgetInput.value) : 0,
+        
+        // بيانات الهوية والحالة
         owner: user.id,
-        userName: user.first_name,
+        userName: user.first_name || 'User',
         status: 'pending',
         views: 0,
         clicks: 0,
         created_at: Date.now()
     };
 
-    // التحقق من صحة البيانات
-    if(!data.text && !data.media) return tg.showAlert("⚠️ المحتوى فارغ! أضف نصاً أو صورة.");
-    if(!data.targetContinent) return tg.showAlert("🌍 يرجى اختيار منطقة الاستهداف.");
-    if(!data.category) return tg.showAlert("🎯 يرجى اختيار اهتمامات الجمهور.");
-    if(!data.daily_budget || data.daily_budget <= 0) return tg.showAlert("💵 يرجى تحديد ميزانية صحيحة.");
+    // التحقق القوي من البيانات قبل الإرسال
+    if(!data.text && !data.media) return window.Telegram.WebApp.showAlert("⚠️ المحتوى فارغ! أضف نصاً أو صورة.");
+    if(!data.category || data.category === "") return window.Telegram.WebApp.showAlert("🎯 يرجى تحديد اهتمامات الجمهور.");
+    if(!data.daily_budget || data.daily_budget <= 0) return window.Telegram.WebApp.showAlert("💵 الميزانية غير صحيحة.");
 
-    tg.showConfirm("هل أنت متأكد من إطلاق هذه الحملة؟ سيتم مراجعتها من قبل الإدارة.", (ok) => {
+    // رسالة تأكيد احترافية
+    window.Telegram.WebApp.showConfirm(`تأكيد إطلاق الحملة بنظام [${selectedMode === 'fixed' ? 'منشور ثابت' : selectedMode}]؟`, (ok) => {
         if (ok) {
-            tg.showProgress();
+            // استخدام Haptic Feedback لإعطاء إحساس بالفخامة
+            if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            
             db.ref('campaigns').push(data).then(() => {
-                tg.hideProgress();
-                tg.showAlert("🚀 تم إطلاق الحملة بنجاح! ستظهر في لوحة التحكم بعد المراجعة.");
+                window.Telegram.WebApp.showAlert("🚀 تم إرسال حملتك بنجاح! سيقوم نظام الرصد بمراجعتها وتفعيلها فوراً.");
                 closeModal();
-                // تفريغ الحقول بعد النجاح
-                document.getElementById('adv-text-manual').value = '';
-                document.getElementById('adv-media-url').value = '';
+                // تفريغ الحقول لضمان عدم التكرار
+                if(document.getElementById('adv-text-manual')) document.getElementById('adv-text-manual').value = '';
             }).catch((e) => {
-                tg.hideProgress();
-                tg.showAlert("❌ خطأ: " + e.message);
+                window.Telegram.WebApp.showAlert("❌ خطأ في الإرسال: " + e.message);
             });
         }
     });
 }
-
     function getInterestName(cat) {
     const categories = {
         'all': 'عام 🌍', 'sports': 'رياضة ⚽', 'beauty': 'جمال ✨',
@@ -997,6 +1102,31 @@ function adminAction(type) {
             document.getElementById('adm-val').value = ''; // تصفير المبلغ بعد التنفيذ
         })
         .catch(err => webApp.showAlert("❌ خطأ: " + err.message));
+    }
+}
+
+function switchAdMode(mode) {
+    // 1. إخفاء جميع الأقسام
+    document.querySelectorAll('.ad-mode-section').forEach(sec => sec.style.display = 'none');
+    document.querySelectorAll('.goal-item').forEach(item => {
+        item.style.borderColor = 'transparent';
+        item.style.background = 'rgba(30, 41, 59, 0.5)';
+    });
+
+    // 2. إظهار القسم المختار
+    document.getElementById('section-' + mode).style.display = 'block';
+    
+    // 3. تمييز الزر المختار (التلوين)
+    const activeTab = document.getElementById('tab-' + mode);
+    activeTab.style.borderColor = '#38bdf8';
+    activeTab.style.background = 'rgba(56, 189, 248, 0.1)';
+
+    // 4. حفظ الوضع في الحقل المخفي
+    document.getElementById('current-ad-mode').value = mode;
+    
+    // هزة خفيفة (تفاعل تليجرام)
+    if (window.Telegram?.WebApp?.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.selectionChanged();
     }
 }
     
