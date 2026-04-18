@@ -405,6 +405,21 @@ body {
             </select>
         </div>
 
+        <label class="label-small">🎯 استهداف الاهتمامات:</label>
+<select id="adv-interests" class="input-premium" style="margin-bottom: 15px;">
+    <option value="all">كل الاهتمامات (عام) 🌍</option>
+    <option value="sports">الرياضة ⚽</option>
+    <option value="beauty">الجمال والأناقة ✨</option>
+    <option value="cooking">الطبخ والحلويات 🍳</option>
+    <option value="movies">الأفلام والمسلسلات 🎬</option>
+    <option value="crypto">العملات المشفره 🪙</option>
+    <option value="gaming">الألعاب والترفيه 🎮</option>
+    <option value="coding">التطبيقات والبرمجة 💻</option>
+    <option value="tech">التكنولوجيا والتقنية 📱</option>
+    <option value="fun">الترفيه والضحك 😂</option>
+    <option value="news">الأخبار والعالم 🗞️</option>
+</select>
+
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom: 10px;">
             <div>
                 <label class="label-small">💰 الميزانية ($):</label>
@@ -708,48 +723,65 @@ function updateAdPreview() {
     }
 }
 
-// 2. دالة الإطلاق المدمجة (مع الاستهداف وقاعدة البيانات)
+// 2. دالة الإطلاق المدمجة (المطورة: جغرافيا + اهتمامات)
 function processNewCampaign() {
+    const user = webApp.initDataUnsafe.user;
+    if (!user) return tg.showAlert("❌ خطأ في بيانات المستخدم");
+
     const budgetInput = document.getElementById('adv-daily-budget');
+    
+    // سحب البيانات مع إضافة "الاهتمامات"
     const data = {
         text: document.getElementById('adv-text-manual').value,
         media: document.getElementById('adv-media-url').value,
         link: document.getElementById('adv-link-smart').value,
         targetContinent: document.getElementById('adv-continent').value,
         targetCountry: document.getElementById('adv-country').value,
+        category: document.getElementById('adv-interests').value, // الميزة الجديدة
         startTime: document.getElementById('adv-start-time').value,
-        retarget: document.getElementById('adv-retarget') ? document.getElementById('adv-retarget').checked : false,
-        daily_budget: budgetInput ? budgetInput.value : 0,
-        owner: typeof user !== 'undefined' ? user.id : 'unknown',
+        daily_budget: budgetInput ? parseFloat(budgetInput.value) : 0,
+        owner: user.id,
+        userName: user.first_name,
         status: 'pending',
+        views: 0,
+        clicks: 0,
         created_at: Date.now()
     };
 
     // التحقق من صحة البيانات
     if(!data.text && !data.media) return tg.showAlert("⚠️ المحتوى فارغ! أضف نصاً أو صورة.");
     if(!data.targetContinent) return tg.showAlert("🌍 يرجى اختيار منطقة الاستهداف.");
+    if(!data.category) return tg.showAlert("🎯 يرجى اختيار اهتمامات الجمهور.");
     if(!data.daily_budget || data.daily_budget <= 0) return tg.showAlert("💵 يرجى تحديد ميزانية صحيحة.");
 
     tg.showConfirm("هل أنت متأكد من إطلاق هذه الحملة؟ سيتم مراجعتها من قبل الإدارة.", (ok) => {
         if (ok) {
             tg.showProgress();
-            // الربط مع Firebase
-            if (typeof db !== 'undefined') {
-                db.ref('campaigns').push(data).then(() => {
-                    tg.hideProgress();
-                    tg.showAlert("🚀 تم إطلاق الحملة بنجاح! ستظهر في لوحة التحكم بعد المراجعة.");
-                    closeModal();
-                }).catch((e) => {
-                    tg.hideProgress();
-                    tg.showAlert("❌ خطأ: " + e.message);
-                });
-            } else {
+            db.ref('campaigns').push(data).then(() => {
                 tg.hideProgress();
-                tg.showAlert("⚠️ قاعدة البيانات غير متصلة.");
-            }
+                tg.showAlert("🚀 تم إطلاق الحملة بنجاح! ستظهر في لوحة التحكم بعد المراجعة.");
+                closeModal();
+                // تفريغ الحقول بعد النجاح
+                document.getElementById('adv-text-manual').value = '';
+                document.getElementById('adv-media-url').value = '';
+            }).catch((e) => {
+                tg.hideProgress();
+                tg.showAlert("❌ خطأ: " + e.message);
+            });
         }
     });
 }
+
+    function getInterestName(cat) {
+    const categories = {
+        'all': 'عام 🌍', 'sports': 'رياضة ⚽', 'beauty': 'جمال ✨',
+        'cooking': 'طبخ 🍳', 'movies': 'أفلام 🎬', 'crypto': 'عملات 🪙',
+        'gaming': 'ألعاب 🎮', 'coding': 'برمجة 💻', 'tech': 'تقنية 📱',
+        'fun': 'ترفيه 😂', 'news': 'أخبار 🗞️'
+    };
+    return categories[cat] || 'عام 🌍';
+    }
+    
 
 // 3. حاسبة النتائج المتوقعة
 function estimateCampaign() {
@@ -1086,48 +1118,50 @@ function startTransactionMonitor(userId) {
     });
 }
     // 2. دالة الإحصائيات المباشرة - ضرورية لتحديث الرسوم البيانية والأرقام
-function updateRealTimeStats(userId) {
-    console.log("تحديث الإحصائيات اللحظية للمستخدم: " + userId);
+
+    function updateRealTimeStats(userId) {
+    console.log("تحديث إحصائيات المعلن للمستخدم: " + userId);
     
     db.ref('stats/' + userId).on('value', (snap) => {
         if (!snap.exists()) return;
         const data = snap.val();
 
-        // تحديث إجمالي المشاهدات مع أنيميشن (عداد)
-        // نستخدم lastViews لكي يبدأ العداد من الرقم القديم إلى الجديد بسلاسة
-        animateValue('stat-views', window.lastViews || 0, data.totalViews || 0, 1000);
+        // 1. تحديث المشاهدات (تطابق id="adv-views")
+        animateValue('adv-views', window.lastViews || 0, data.totalViews || 0, 1000);
         
-        // تحديث إجمالي النقرات
-        animateValue('stat-clicks', window.lastClicks || 0, data.totalClicks || 0, 1000);
+        // 2. تحديث النقرات (تطابق id="adv-clicks")
+        animateValue('adv-clicks', window.lastClicks || 0, data.totalClicks || 0, 1000);
 
-        // تخزين القيم الحالية لتكون هي القيم "القديمة" في التحديث القادم
-        window.lastViews = data.totalViews || 0;
-        window.lastClicks = data.totalClicks || 0;
+        // 3. حساب وتحديث نسبة التفاعل (تطابق id="adv-ctr")
+        if (data.totalViews > 0) {
+            const ctr = ((data.totalClicks / data.totalViews) * 100).toFixed(2);
+            const ctrElement = document.getElementById('adv-ctr');
+            if (ctrElement) ctrElement.innerText = ctr + '%';
+        }
 
-        // تحديث أعمدة الرسم البياني (الأداء الأسبوعي)
-        if (data.weeklyProgress && Array.isArray(data.weeklyProgress)) {
+        // تحديث الأعمدة في حال وجودها في قسم آخر
+        if (data.weeklyProgress) {
             data.weeklyProgress.forEach((val, index) => {
                 const bar = document.getElementById('bar-' + (index + 1));
-                if (bar) {
-                    // جعل الطول متناسباً (مثلاً الحد الأقصى 100%)
-                    bar.style.height = val + '%';
-                    // إضافة تلميح يظهر عند تمرير الماوس بالرقم
-                    bar.title = "أداء اليوم: " + val + "%";
-                }
+                if (bar) bar.style.height = val + '%'; 
             });
         }
+
+        // حفظ القيم الحالية للأنيميشن القادم
+        window.lastViews = data.totalViews || 0;
+        window.lastClicks = data.totalClicks || 0;
     });
-}
+    }
 
     function startCampaignsMonitor(userId) {
     db.ref('campaigns').orderByChild('owner').equalTo(userId).on('value', (snap) => {
         const dashboard = document.getElementById('active-campaigns-dashboard');
         if (!dashboard) return;
 
-        dashboard.innerHTML = ''; // مسح المحتوى القديم
+        dashboard.innerHTML = ''; // مسح المحتوى القديم لبدء التحديث اللحظي
 
         if (!snap.exists()) {
-            dashboard.innerHTML = '<div style="opacity:0.5; font-size:11px; padding:20px;">لا توجد حملات جارية حالياً..</div>';
+            dashboard.innerHTML = '<div style="opacity:0.5; font-size:11px; padding:20px; text-align:center;">لا توجد حملات جارية حالياً..</div>';
             return;
         }
 
@@ -1135,8 +1169,9 @@ function updateRealTimeStats(userId) {
             const camp = child.val();
             const statusInfo = getStatusStyle(camp.status);
             
+            // دمج التصميم الجديد مع بيانات الاهتمامات والجغرافيا
             dashboard.innerHTML += `
-                <div class="card" style="background: #0f172a; border: 1px solid #334155; padding: 12px; margin-bottom: 10px; text-align: right; border-radius: 15px;">
+                <div class="card" style="background: #0f172a; border: 1px solid #334155; padding: 12px; margin-bottom: 10px; text-align: right; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                         <span style="background: ${statusInfo.bg}; color: ${statusInfo.color}; padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: bold;">
                             ${statusInfo.text}
@@ -1146,22 +1181,34 @@ function updateRealTimeStats(userId) {
                         </b>
                     </div>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; background: #1e293b; padding: 8px; border-radius: 10px;">
                         <div style="color: #94a3b8;">💰 الميزانية: <span style="color: #fff;">$${camp.daily_budget}</span></div>
-                        <div style="color: #94a3b8;">🌍 المنطقة: <span style="color: #fff;">${camp.targetContinent}</span></div>
+                        <div style="color: #94a3b8;">🌍 المنطقة: <span style="color: #fff;">${camp.targetContinent || 'عام'}</span></div>
+                        <div style="color: #94a3b8;">🎯 الاهتمام: <span style="color: #0fbcf9;">${getInterestName(camp.category)}</span></div>
+                        <div style="color: #94a3b8;">📍 الدولة: <span style="color: #fff;">${camp.targetCountry || 'الكل'}</span></div>
                     </div>
                     
                     ${camp.status === 'active' ? `
-                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #1e293b; display: flex; justify-content: space-around;">
-                        <div style="text-align: center;"><small style="color: #64748b; display: block;">مشاهدة</small><b style="color: #0984e3;">${camp.views || 0}</b></div>
-                        <div style="text-align: center;"><small style="color: #64748b; display: block;">نقرة</small><b style="color: #e84393;">${camp.clicks || 0}</b></div>
+                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #334155; display: flex; justify-content: space-around;">
+                        <div style="text-align: center;">
+                            <small style="color: #64748b; display: block; font-size: 9px;">مشاهدة</small>
+                            <b style="color: #0984e3; font-size: 14px;">${camp.views || 0}</b>
+                        </div>
+                        <div style="text-align: center;">
+                            <small style="color: #64748b; display: block; font-size: 9px;">نقرة</small>
+                            <b style="color: #e84393; font-size: 14px;">${camp.clicks || 0}</b>
+                        </div>
+                        <div style="text-align: center;">
+                            <small style="color: #64748b; display: block; font-size: 9px;">تفاعل CTR</small>
+                            <b style="color: #2ecc71; font-size: 14px;">${camp.views > 0 ? ((camp.clicks / camp.views) * 100).toFixed(1) : 0}%</b>
+                        </div>
                     </div>
                     ` : ''}
                 </div>
             `;
         });
     });
-}
+    }
 
 // دالة مساعدة لتحديد شكل الحالة
 function getStatusStyle(status) {
