@@ -115,17 +115,35 @@ body {
 }
 
 /* نظام المودال الاحترافي - يمنع التداخل */
-.modal {
-    display: none; /* مخفي افتراضياً لمنع التداخل في الأقسام الأخرى */
+..modal {
+    display: none; 
     position: fixed;
     z-index: 10000;
     left: 0; top: 0;
     width: 100%; height: 100%;
     background-color: rgba(0,0,0,0.85);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
+    
+    /* التعديل المهم هنا */
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* يبدأ من الأعلى للسماح بالتمرير */
+    overflow-y: auto; /* يسمح بالتمرير العمودي للمودال بالكامل */
+    padding: 20px 0; /* مسافة بسيطة من الأعلى والأسفل */
+    -webkit-overflow-scrolling: touch; /* سلاسة فائقة لمستخدمي الآيفون */
 }
+
+/* أضف هذا الجزء أيضاً لضمان استقرار محتوى النافذة */
+.modal-content {
+    background: var(--card);
+    width: 90%;
+    max-width: 400px;
+    margin: auto; /* يوسط النافذة إذا كان المحتوى قصيراً */
+    border-radius: 20px;
+    padding: 20px;
+    position: relative;
+    /* تأكد من عدم وجود ارتفاع ثابت هنا */
+}
+        
 
 .target-goal-grid {
     display: grid;
@@ -834,24 +852,39 @@ function rerunCampaign(pastData) {
 
 // --- 1. دالة فتح النوافذ المنبثقة المطورة (الفتح الذكي) ---
 function openModal(id) {
-    // إغلاق أي نافذة مفتوحة أولاً لضمان سلاسة العرض
+    // 1. إغلاق أي نافذة مفتوحة أولاً لمنع التداخل
     const allModals = document.querySelectorAll('.modal');
     allModals.forEach(m => m.style.display = 'none');
 
     const modal = document.getElementById(id);
     if (!modal) return;
     
-    // إظهار النافذة بتأثير الـ Flex لتوسيط المحتوى
+    // 2. إظهار النافذة
     modal.style.display = 'flex';
     
-    // تشغيل الأنظمة الفرعية بناءً على نوع النافذة
+    // 3. [حل مشكلة السحب] منع تليجرام من إغلاق التطبيق عند سحب النافذة
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.disableVerticalSwipe();
+    }
+
+    // 4. تشغيل الأنظمة الفرعية بناءً على نوع النافذة
     if (id === 'modal-smart-campaign') {
-        // تشغيل نظام القارات والدول فوراً
         if (typeof setupGeoDropdowns === "function") {
             setupGeoDropdowns('adv-continent', 'adv-country');
         }
     }
 }
+
+// وتأكد أن دالة الإغلاق تعيد تفعيل السحب مرة أخرى
+function closeModal() {
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+    
+    // إعادة تفعيل ميزة السحب بعد إغلاق النافذة ليعود التطبيق لطبيعته
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.enableVerticalSwipe();
+    }
+}
+    
 
 // --- 3. دالة إغلاق النوافذ ---
 function closeModal() { 
