@@ -1041,23 +1041,33 @@ function startBalanceMonitor(userId) {
 
 // --- [ تابع لقسم 3: دوال المراقبة الأساسية ] ---
 
-// 1. دالة سجل العمليات (أضفها هنا)
+// 1. دالة سجل العمليات - مطورة لمنع التكرار
 function startTransactionMonitor(userId) {
-    db.ref('transactions/' + userId).orderByChild('timestamp').limitToLast(10).on('value', (snap) => {
+    const transRef = db.ref('transactions/' + userId);
+    transRef.off(); // فصل أي مراقب قديم لمنع تكرار البيانات
+    
+    transRef.orderByChild('timestamp').limitToLast(10).on('value', (snap) => {
         const list = document.getElementById('trans-history-list');
         if (!list) return;
+        
         list.innerHTML = '';
         if (!snap.exists()) {
             list.innerHTML = '<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">لا توجد عمليات مسجلة بعد 📋</p>';
             return;
         }
+
         let transactions = [];
-        snap.forEach(child => { transactions.unshift({ id: child.key, ...child.val() }); });
+        snap.forEach(child => { 
+            transactions.unshift({ id: child.key, ...child.val() }); 
+        });
+
         transactions.forEach(tx => {
             const isDeposit = tx.type === 'deposit';
+            // تحديد اللون بناءً على الحالة (مقبول، معلق، مرفوض)
             const statusColor = tx.status === 'approved' ? '#2ecc71' : (tx.status === 'pending' ? '#f1c40f' : '#e74c3c');
+            
             list.innerHTML += `
-                <div style="background: #0f172a; padding: 12px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border-right: 3px solid ${statusColor}; margin-bottom: 8px;">
+                <div style="background: #0f172a; padding: 12px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid ${statusColor}; margin-bottom: 8px; transition: 0.3s;">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="font-size: 18px;">${isDeposit ? '💰' : '📢'}</span>
                         <div style="text-align: right;">
@@ -1066,26 +1076,42 @@ function startTransactionMonitor(userId) {
                         </div>
                     </div>
                     <div style="text-align: left;">
-                        <b style="color: ${isDeposit ? '#2ecc71' : '#fff'}; display: block;">${isDeposit ? '+' : '-'}$${parseFloat(tx.amount).toFixed(2)}</b>
+                        <b style="color: ${isDeposit ? '#2ecc71' : '#fff'}; display: block;">${isDeposit ? '+' : '-'}$${parseFloat(tx.amount || 0).toFixed(2)}</b>
+                        <small style="color: ${statusColor}; font-size: 9px;">${tx.status === 'approved' ? 'مكتمل' : (tx.status === 'pending' ? 'قيد الانتظار' : 'مرفوض')}</small>
                     </div>
                 </div>`;
         });
     });
 }
-
-// 2. دالة الإحصائيات المباشرة (أضفها هنا أيضاً)
+    // 2. دالة الإحصائيات المباشرة - ضرورية لتحديث الرسوم البيانية والأرقام
 function updateRealTimeStats(userId) {
+    console.log("تحديث الإحصائيات اللحظية للمستخدم: " + userId);
+    
     db.ref('stats/' + userId).on('value', (snap) => {
         if (!snap.exists()) return;
         const data = snap.val();
+
+        // تحديث إجمالي المشاهدات مع أنيميشن (عداد)
+        // نستخدم lastViews لكي يبدأ العداد من الرقم القديم إلى الجديد بسلاسة
         animateValue('stat-views', window.lastViews || 0, data.totalViews || 0, 1000);
+        
+        // تحديث إجمالي النقرات
         animateValue('stat-clicks', window.lastClicks || 0, data.totalClicks || 0, 1000);
-        window.lastViews = data.totalViews;
-        window.lastClicks = data.totalClicks;
-        if (data.weeklyProgress) {
+
+        // تخزين القيم الحالية لتكون هي القيم "القديمة" في التحديث القادم
+        window.lastViews = data.totalViews || 0;
+        window.lastClicks = data.totalClicks || 0;
+
+        // تحديث أعمدة الرسم البياني (الأداء الأسبوعي)
+        if (data.weeklyProgress && Array.isArray(data.weeklyProgress)) {
             data.weeklyProgress.forEach((val, index) => {
                 const bar = document.getElementById('bar-' + (index + 1));
-                if (bar) bar.style.height = val + '%'; 
+                if (bar) {
+                    // جعل الطول متناسباً (مثلاً الحد الأقصى 100%)
+                    bar.style.height = val + '%';
+                    // إضافة تلميح يظهر عند تمرير الماوس بالرقم
+                    bar.title = "أداء اليوم: " + val + "%";
+                }
             });
         }
     });
@@ -1120,17 +1146,36 @@ function startAdminMonitor() {
     });
 }
 
-// --- [ 4. دوال العمليات (إيداع/قرار) ] ---
+// 2. تحديث دالة اتخاذ القرار لتشمل سجل الرفض
 function handleDecision(reqId, userId, amount, action) {
+    const requestRef = db.ref('deposit_requests/' + reqId);
+    
     if (action === 'approve') {
-        db.ref('deposit_requests/' + reqId).update({ status: 'approved' }).then(() => {
+        requestRef.update({ status: 'approved' }).then(() => {
+            // إضافة الرصيد
             db.ref('users/' + userId + '/balance').transaction(curr => (parseFloat(curr) || 0) + parseFloat(amount));
-            db.ref('transactions/' + userId).push({ type: 'deposit', title: 'شحن رصيد USDT', amount: amount, status: 'approved', timestamp: Date.now() });
-            showToast("✅ تمت الموافقة وتحديث الرصيد والسجل");
+            // إضافة سجل عملية ناجحة
+            db.ref('transactions/' + userId).push({
+                type: 'deposit',
+                title: 'شحن رصيد USDT',
+                amount: amount,
+                status: 'approved',
+                timestamp: Date.now()
+            });
+            showToast("✅ تمت الموافقة وتحديث الرصيد");
         });
     } else {
-        db.ref('deposit_requests/' + reqId).update({ status: 'rejected' });
-        showToast("❌ تم رفض الطلب", "error");
+        requestRef.update({ status: 'rejected' }).then(() => {
+            // سجل عملية مرفوضة لكي يراها المستخدم في سجله
+            db.ref('transactions/' + userId).push({
+                type: 'deposit',
+                title: 'طلب شحن مرفوض',
+                amount: amount,
+                status: 'rejected',
+                timestamp: Date.now()
+            });
+            showToast("❌ تم رفض الطلب وتسجيله", "error");
+        });
     }
 }
 
