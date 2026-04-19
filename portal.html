@@ -322,8 +322,93 @@ body {
 #btn-deposit-glow {
     animation: pulse-green 2s infinite;
 }
-</style>
-    
+
+    /* تنسيقات واجهة سحب الأرباح الماركة */
+.withdraw-section {
+    padding: 15px;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.withdraw-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 25px;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.balance-badge {
+    background: rgba(15, 23, 42, 0.5);
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
+    border-left: 4px solid #2ecc71;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.fee-container {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.btn-withdraw {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-withdraw:active {
+    transform: scale(0.98);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+        
         
     </style>
 </head>
@@ -668,6 +753,56 @@ body {
 
     </div> 
 
+    <div id="sec-withdraw" class="section withdraw-section" style="display: none;">
+    
+    <div style="margin-bottom: 15px;">
+        <button onclick="openTab('sec-channels')" style="background: none; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+            <span>⬅️</span> العودة للقنوات
+        </button>
+    </div>
+
+    <div class="withdraw-card">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 40px; margin-bottom: 10px;">💎</div>
+            <h2 style="margin: 0; font-size: 18px;">سحب الرصيد (USDT)</h2>
+        </div>
+
+        <div class="balance-badge">
+            <small>الرصيد القابل للسحب</small>
+            <div id="display-balance" style="font-size: 26px; font-weight: bold; color: #2ecc71;">$85.00</div>
+        </div>
+
+        <div class="input-group">
+            <label>المبلغ المطلوب (أقل حد 30$)</label>
+            <input type="number" id="withdraw-amount" class="custom-input" oninput="updateUI()" placeholder="0.00">
+        </div>
+
+        <div class="fee-container">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span>عمولة ثابتة:</span>
+                <span style="color: #e74c3c;">- 3.00$</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-weight: bold; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+                <span>الصافي المستلم:</span>
+                <span id="net-amount" style="color: #f1c40f;">0.00$</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>عنوان محفظة USDT TRC20</label>
+            <input type="text" id="wallet-address" class="custom-input" placeholder="T...">
+        </div>
+
+        <button id="submit-btn" class="btn-withdraw" onclick="processWithdraw()">
+            إرسال طلب السحب
+        </button>
+
+        <p style="text-align: center; font-size: 11px; color: #64748b; margin-top: 15px;">
+            🕒 المعالجة اليدوية خلال 24-48 ساعة
+        </p>
+    </div>
+    </div>
+
     <h4 style="color:#888; font-size:14px; margin-top: 30px;">📺 قنواتك المسجلة:</h4>
     <div id="my-elite-channels" style="min-height: 50px;"></div>
 </div>
@@ -987,12 +1122,6 @@ function closeModal() {
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.enableVerticalSwipe();
     }
-}
-    
-
-// --- 3. دالة إغلاق النوافذ ---
-function closeModal() { 
-    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); 
 }
 
 // --- 4. دالة لوحة الناشر (إضافة قناة) ---
@@ -1499,16 +1628,58 @@ function processDepositSubmission() {
         btn.innerText = "🚀 إرسال الطلب للمراجعة";
     });
 }
+    // بيانات المستخدم (تأتي من البوت)
+let currentBalance = 85.00; 
+
+// دالة تحديث الواجهة عند الكتابة
+function updateUI() {
+    const amountInput = document.getElementById('withdraw-amount');
+    const netDisplay = document.getElementById('net-amount');
+    const amount = parseFloat(amountInput.value) || 0;
+
+    if (amount >= 30) {
+        netDisplay.innerText = (amount - 3).toFixed(2) + "$";
+    } else {
+        netDisplay.innerText = "0.00$";
+    }
+}
+
+// دالة معالجة الطلب
+async function processWithdraw() {
+    const amount = parseFloat(document.getElementById('withdraw-amount').value);
+    const wallet = document.getElementById('wallet-address').value;
+
+    if (amount < 30 || isNaN(amount)) {
+        showToast("الحد الأدنى للسحب هو 30$");
+        return;
+    }
+    
+    if (!wallet.startsWith('T') || wallet.length < 20) {
+        showToast("يرجى التأكد من عنوان المحفظة (TRC20)");
+        return;
+    }
+
+    // هنا يتم إرسال البيانات للبوت
+    console.log("إرسال طلب سحب:", { amount, wallet });
+    // أضف كود Telegram.WebApp.sendData هنا
+}
+    
 
 // --- [ 5. دوال الواجهة والتنقل ] ---
 function openTab(tab, el) {
-    // إخفاء جميع الأقسام وإلغاء تفعيل الأزرار
+    // 1. إخفاء جميع الأقسام وإلغاء تفعيل الأزرار
     document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
     document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
     
-    // إظهار القسم المطلوب وتفعيل الزر
+    // 2. تحديد وإظهار القسم المطلوب وتفعيل الزر
+    // ملاحظة: القسم الجديد سيكون id الخاص به "sec-withdraw"
     const target = document.getElementById('sec-' + tab);
-    if (target) target.style.display = 'block';
+    if (target) {
+        target.style.display = 'block';
+        // إضافة أنيميشن بسيط عند الظهور (اختياري)
+        target.style.animation = 'fadeIn 0.3s ease';
+    }
+    
     if (el) el.classList.add('active');
 
     const user = webApp.initDataUnsafe.user;
@@ -1520,16 +1691,21 @@ function openTab(tab, el) {
         if (tab === 'promo') {
             startCampaignsMonitor(user.id);
         }
+        // تحديث الرصيد عند فتح قسم السحب لضمان دقة الأرقام
+        if (tab === 'withdraw') {
+            // هنا نستدعي دالة تحديث الرصيد إذا كانت موجودة لديك
+            if (typeof updatePublisherStats === "function") {
+                updatePublisherStats(user.id);
+            }
+        }
     }
 
-    // إضافة اهتزاز بسيط عند النقر (لأجهزة الموبايل)
+    // 3. إضافة اهتزاز بسيط عند النقر (لأجهزة الموبايل)
     if (webApp.HapticFeedback) {
         webApp.HapticFeedback.impactOccurred('light');
     }
 }
     
-function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-
 function copyWalletAddress() {
     navigator.clipboard.writeText("TSiS4tDnUwa5YptcYatRZ8ykPeMwmALLSV");
     showToast("✅ تم نسخ العنوان");
