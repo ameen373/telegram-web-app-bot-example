@@ -304,7 +304,7 @@ app.get('/api/user/data', authMiddleware, async (req, res, next) => {
   try {
     const userId = req.user._id;
 
-    // Strict 100% User Isolated Parallel Queries
+    // Strict 100% User Isolated Parallel Queries using user's explicit ObjectId
     const [rawLinks, withdraws, announcements, ads, deposits] = await Promise.all([
       Link.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
       Withdraw.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
@@ -746,6 +746,8 @@ app.post('/api/impression', validateTraffic, clickLimiter, async (req, res, next
 });
 
 // --- Strict Link Management Engine (100% Data Isolated Routes) ---
+
+// Create Link
 app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, next) => {
   try {
     let { title, targetUrl } = req.body;
@@ -785,6 +787,27 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
       link,
       shortUrl: `https://${CONFIG.APP_DOMAIN}/r/${shortCode}`
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Fetch Links Alias (Unified Endpoint For Privacy & Front-End Compatibility)
+app.get('/api/links', authMiddleware, async (req, res, next) => {
+  try {
+    // 100% Guaranteed Strict Isolation
+    const rawLinks = await Link.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
+    const links = rawLinks.map(link => {
+      const totalViews = link.views || 0;
+      const validImp = link.validImpressions || 0;
+      const ctr = totalViews > 0 ? ((validImp / totalViews) * 100).toFixed(1) : "0.0";
+      return { 
+        ...link, 
+        ctr,
+        shortUrl: `https://${CONFIG.APP_DOMAIN}/r/${link.shortCode}`
+      };
+    });
+    res.json({ success: true, links });
   } catch (err) {
     next(err);
   }
