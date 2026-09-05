@@ -246,6 +246,18 @@ linkSchema.index({ userId: 1, createdAt: -1 });
 linkSchema.index({ userId: 1, isActive: 1, createdAt: -1 });
 linkSchema.index({ userId: 1, shortCode: 1 });
 
+/**
+ * STATIC METHOD: Enforce Isolated Fetching
+ * تضمن هذه الدالة عدم إمكانية جلب أي روابط بدون دمج userId الخص بالمستخدم بشكل إجباري
+ */
+linkSchema.statics.getUserIsolatedLinks = function(userId, query = {}, options = {}) {
+  if (!userId) {
+    throw new Error("Security Violation: userId is required to fetch links.");
+  }
+  const safeQuery = { ...query, userId: userId };
+  return this.find(safeQuery, null, options).sort({ createdAt: -1 });
+};
+
 // --------------------------------------------------
 // 4. Traffic & Impressions Model
 // --------------------------------------------------
