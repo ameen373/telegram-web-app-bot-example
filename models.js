@@ -363,17 +363,10 @@ const linkSchema = new mongoose.Schema({
     trim: true 
   },
   userId: { 
-    type: mongoose.Schema.Types.Mixed, 
-    required: false, 
-    default: null,
-    index: true,
-    validate: {
-      validator: function(v) {
-        if (v === null || v === undefined) return true;
-        return mongoose.Types.ObjectId.isValid(v) || typeof v === 'string' || typeof v === 'number';
-      },
-      message: 'userId must be a valid ObjectId, String, or Number'
-    }
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User',
+    required: [true, 'User ID is required for tenant isolation'], 
+    index: true
   },
   telegramId: {
     type: String,
@@ -456,12 +449,12 @@ const impressionSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: [true, 'User ID is required for tenant isolation'],
     index: true
   },
   telegramId: {
     type: String,
-    required: true,
+    required: [true, 'Telegram ID is required for tenant isolation'],
     trim: true,
     index: true
   },
@@ -552,12 +545,12 @@ const clickSessionSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: [true, 'User ID is required for tenant isolation'],
     index: true
   },
   telegramId: {
     type: String,
-    required: true,
+    required: [true, 'Telegram ID is required for tenant isolation'],
     trim: true,
     index: true
   },
@@ -623,7 +616,7 @@ const withdrawSchema = new mongoose.Schema({
   },
   telegramId: {
     type: String,
-    required: [true, 'Telegram ID is required'],
+    required: [true, 'Telegram ID is required for tenant isolation'],
     trim: true,
     index: true
   },
@@ -708,7 +701,7 @@ const earningsHoldSchema = new mongoose.Schema({
   },
   telegramId: {
     type: String,
-    required: [true, 'Telegram ID is required'],
+    required: [true, 'Telegram ID is required for tenant isolation'],
     trim: true,
     index: true
   },
