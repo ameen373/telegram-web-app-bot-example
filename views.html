@@ -870,7 +870,10 @@
       if (options.body && typeof options.body === 'string') {
         try {
           const bodyObj = JSON.parse(options.body);
-          if (currentTgId) bodyObj.telegramId = currentTgId;
+          if (currentTgId) {
+            bodyObj.telegramId = currentTgId;
+            bodyObj.userId = currentTgId;
+          }
           if (initDataStr) bodyObj.initData = initDataStr;
           options.body = JSON.stringify(bodyObj);
         } catch(e) {}
@@ -889,6 +892,7 @@
         const urlObj = new URL(targetUrl);
         if (currentTgId && !urlObj.searchParams.has('telegramId')) {
           urlObj.searchParams.set('telegramId', currentTgId);
+          urlObj.searchParams.set('userId', currentTgId);
         }
         if (initDataStr && !urlObj.searchParams.has('initData')) {
           urlObj.searchParams.set('initData', initDataStr);
@@ -1070,6 +1074,7 @@
           method: 'POST',
           body: JSON.stringify({ 
             telegramId: currentUserTelegramId,
+            userId: currentUserTelegramId,
             initData: tg?.initData || '',
             referrerId: startParam, 
             telegramUserInfo: tg?.initDataUnsafe?.user || {} 
@@ -1203,6 +1208,25 @@
       }
     }
 
+    function createLinkHTML(l) {
+      const shortUrl = l.link || l.shortUrl || `${API_BASE}/r/${l.shortCode}`;
+      const statusColor = l.isActive !== false ? 'var(--success)' : 'var(--danger)';
+      const statusText = l.isActive !== false ? (currentLang === 'ar' ? 'نشط' : 'Active') : (currentLang === 'ar' ? 'معطل' : 'Disabled');
+      return `
+      <div class="link-item" style="border-left: 4px solid ${statusColor};">
+        <div class="link-header">
+          <b>${escapeHTML(l.title || (currentLang === 'ar' ? 'رابط بدون عنوان' : 'Untitled Link'))}</b>
+          <span style="font-size: 10px; color: ${statusColor}; font-weight: bold;">${statusText}</span>
+        </div>
+        <div style="color:var(--text-muted); font-size:11px; margin-bottom:6px; word-break: break-all;">${escapeHTML(shortUrl)}</div>
+        <div>Views: <b>${l.views || 0}</b> | Valid: <b style="color:var(--success);">${l.validImpressions || 0}</b></div>
+        <div class="link-actions">
+          <button class="btn-small" onclick="copyToClipboard('${escapeHTML(shortUrl)}')">Copy</button>
+          <button class="btn-small ${l.isActive !== false ? 'btn-danger' : 'btn-warning'}" onclick="toggleLinkStatus('${l._id || l.id}')">${l.isActive !== false ? (currentLang === 'ar' ? 'تعطيل' : 'Disable') : (currentLang === 'ar' ? 'تفعيل' : 'Enable')}</button>
+        </div>
+      </div>`;
+    }
+
     function renderUserLinks(linksArray) {
       const linksContainer = document.getElementById('links-list');
       if (!linksContainer) return;
@@ -1212,24 +1236,27 @@
         return;
       }
 
-      linksContainer.innerHTML = linksArray.map(l => {
-        const shortUrl = `${API_BASE}/r/${l.shortCode}`;
-        const statusColor = l.isActive ? 'var(--success)' : 'var(--danger)';
-        const statusText = l.isActive ? (currentLang === 'ar' ? 'نشط' : 'Active') : (currentLang === 'ar' ? 'معطل' : 'Disabled');
-        return `
-        <div class="link-item" style="border-left: 4px solid ${statusColor};">
-          <div class="link-header">
-            <b>${escapeHTML(l.title || (currentLang === 'ar' ? 'رابط بدون عنوان' : 'Untitled Link'))}</b>
-            <span style="font-size: 10px; color: ${statusColor}; font-weight: bold;">${statusText}</span>
-          </div>
-          <div style="color:var(--text-muted); font-size:11px; margin-bottom:6px; word-break: break-all;">${escapeHTML(shortUrl)}</div>
-          <div>Views: <b>${l.views || 0}</b> | Valid: <b style="color:var(--success);">${l.validImpressions || 0}</b></div>
-          <div class="link-actions">
-            <button class="btn-small" onclick="copyToClipboard('${escapeHTML(shortUrl)}')">Copy</button>
-            <button class="btn-small ${l.isActive ? 'btn-danger' : 'btn-warning'}" onclick="toggleLinkStatus('${l._id}')">${l.isActive ? (currentLang === 'ar' ? 'تعطيل' : 'Disable') : (currentLang === 'ar' ? 'تفعيل' : 'Enable')}</button>
-          </div>
-        </div>`;
-      }).join('');
+      linksContainer.innerHTML = linksArray.map(l => createLinkHTML(l)).join('');
+    }
+
+    function prependLinkToDOM(newLinkData) {
+      const linksContainer = document.getElementById('links-list');
+      if (!linksContainer) return;
+
+      // Clean default "No short links found" text if present
+      if (linksContainer.innerText.includes('No short links') || linksContainer.innerText.includes('لا توجد روابط')) {
+        linksContainer.innerHTML = '';
+      }
+
+      // Add to internal memory cache
+      rawUserLinksCache.unshift(newLinkData);
+
+      // Prepend element to DOM directly
+      const tempWrapper = document.createElement('div');
+      tempWrapper.innerHTML = createLinkHTML(newLinkData);
+      if (tempWrapper.firstElementChild) {
+        linksContainer.insertBefore(tempWrapper.firstElementChild, linksContainer.firstChild);
+      }
     }
 
     function filterUserLinks(query) {
@@ -1297,7 +1324,7 @@
       try {
         const res = await safeFetch('/api/ads', {
           method: 'POST',
-          body: JSON.stringify({ title, targetUrl, totalBudget })
+          body: JSON.stringify({ title, targetUrl, totalBudget, userId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1331,7 +1358,7 @@
       try {
         const res = await safeFetch('/api/deposit', {
           method: 'POST',
-          body: JSON.stringify({ amount, paymentMethod, txHash })
+          body: JSON.stringify({ amount, paymentMethod, txHash, userId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1360,7 +1387,7 @@
       try {
         const res = await safeFetch('/api/init-click', {
           method: 'POST',
-          body: JSON.stringify({ linkCode: shortCode })
+          body: JSON.stringify({ linkCode: shortCode, userId: currentUserTelegramId })
         });
         if (res) {
           const data = await res.json();
@@ -1418,7 +1445,7 @@
       try {
         const res = await safeFetch('/api/impression', {
           method: 'POST',
-          body: JSON.stringify({ linkCode: shortCode, sessionId: currentSessionId, duration })
+          body: JSON.stringify({ linkCode: shortCode, sessionId: currentSessionId, duration, userId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1449,7 +1476,12 @@
       try {
         const res = await safeFetch('/api/links', {
           method: 'POST',
-          body: JSON.stringify({ title, targetUrl })
+          body: JSON.stringify({ 
+            title, 
+            targetUrl,
+            userId: currentUserTelegramId,
+            initData: tg?.initData || ''
+          })
         });
         if (!res) return;
         const data = await res.json();
@@ -1459,7 +1491,23 @@
           showToast(i18n[currentLang].link_success_msg || "Link created successfully!");
           document.getElementById('link-title').value = '';
           document.getElementById('link-url').value = '';
-          loadUserData();
+          
+          // Add created link dynamically to DOM or reload user links
+          if (data.link || data.newLink || data.shortCode) {
+            const newLinkObj = data.link || data.newLink || {
+              title: title,
+              targetUrl: targetUrl,
+              shortCode: data.shortCode,
+              link: data.link || `${API_BASE}/r/${data.shortCode}`,
+              views: 0,
+              validImpressions: 0,
+              isActive: true,
+              ownerTelegramId: currentUserTelegramId
+            };
+            prependLinkToDOM(newLinkObj);
+          } else {
+            loadUserData();
+          }
         }
       } catch (e) {
         showToast(currentLang === 'ar' ? "حدث خطأ غير متوقع" : "An unexpected error occurred");
@@ -1481,7 +1529,7 @@
       try {
         const res = await safeFetch('/api/withdraw', {
           method: 'POST',
-          body: JSON.stringify({ amount, walletAddress })
+          body: JSON.stringify({ amount, walletAddress, userId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1508,7 +1556,7 @@
       try {
         const res = await safeFetch('/api/user/settings', {
           method: 'POST',
-          body: JSON.stringify({ defaultWallet })
+          body: JSON.stringify({ defaultWallet, userId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1608,7 +1656,7 @@
       try {
         const res = await safeFetch('/api/admin/deposit/action', {
           method: 'POST',
-          body: JSON.stringify({ depositId, action })
+          body: JSON.stringify({ depositId, action, userId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1633,7 +1681,7 @@
       try {
         const res = await safeFetch('/api/admin/withdraw/action', {
           method: 'POST',
-          body: JSON.stringify({ withdrawId, action, rejectReason })
+          body: JSON.stringify({ withdrawId, action, rejectReason, userId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1652,7 +1700,7 @@
       try {
         const res = await safeFetch('/api/admin/user/toggle-ban', {
           method: 'POST',
-          body: JSON.stringify({ userId })
+          body: JSON.stringify({ userId, adminId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1676,7 +1724,7 @@
       try {
         const res = await safeFetch('/api/admin/distribute-revenue', {
           method: 'POST',
-          body: JSON.stringify({ totalRevenue })
+          body: JSON.stringify({ totalRevenue, userId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
