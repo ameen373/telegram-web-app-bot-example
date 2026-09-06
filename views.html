@@ -124,7 +124,7 @@
       border-radius: 34px;
       display: flex;
       align-items: center;
-      justify-style: space-around;
+      justify-content: space-around;
       padding: 0 6px;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
       z-index: 9999;
@@ -846,7 +846,7 @@
 
     /**
      * UNIFIED SECURE FETCH WRAPPER
-     * Automatically injects telegramId & initData in headers & URL parameters
+     * Automatically injects telegramId & initData in headers, body, & URL parameters
      */
     async function safeFetch(endpoint, options = {}) {
       options.headers = options.headers || {};
@@ -1691,20 +1691,21 @@
       }
     }
 
-    // App Initialization Bootstrapper
+    // App Initialization Lifecycle
     window.addEventListener('DOMContentLoaded', () => {
       try {
         if (tg) {
           tg.ready();
           tg.expand();
+          if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.1')) {
+            tg.enableClosingConfirmation();
+          }
         }
-      } catch (e) {
-        console.warn("Telegram WebApp API initialization failed:", e);
-      }
-      
+      } catch (e) {}
+
       renderTelegramUser();
 
-      if (window.location.pathname.startsWith('/r/')) {
+      if (window.location.pathname.includes('/r/')) {
         document.getElementById('bridge-view').classList.remove('hidden');
         initBridge();
       } else {
