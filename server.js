@@ -1,7 +1,7 @@
 /**
- * Ultra-Enterprise Server Architecture (V3 - Strict Multi-Tenant Data Isolation)
- * Telegram Link Shortener & Mini App Engine
- * Complete Isolated Session System & Anti-Data-Leak Guard
+ * Ultra-Enterprise Server Architecture (V4 - Strict Multi-Tenant Isolation)
+ * Telegram Link Shortener & Mini App Engine (Telega.ads)
+ * Absolute Isolated Session System & Anti-Data-Leak Guard
  */
 
 require('dotenv').config();
@@ -36,9 +36,11 @@ app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(express.static(__dirname));
 
-// --- Force UTF-8 JSON Response Headers ---
+// --- Force UTF-8 JSON Response Headers & No-Cache Privacy Guard ---
 app.use('/api', (req, res, next) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Pragma', 'no-cache');
   next();
 });
 
@@ -208,7 +210,7 @@ const isPhishingOrMalicious = (url) => {
   return blacklistedKeywords.some(keyword => lowerUrl.includes(keyword));
 };
 
-// Strict Dual-Auth Middleware (Supports JWT & Direct Telegram InitData)
+// Strict Dual-Auth Middleware (Guarantees Request-Scoped User Authentication)
 const authMiddleware = async (req, res, next) => {
   try {
     let user = null;
@@ -228,18 +230,19 @@ const authMiddleware = async (req, res, next) => {
       const initData = req.headers['x-telegram-init-data'];
       const telegramUser = verifyTelegramData(initData);
       if (telegramUser) {
-        user = await User.findOne({ telegramId: String(telegramUser.id) }).lean();
+        user = await User.findByTelegramIdIsolated(String(telegramUser.id)).lean();
       }
     }
 
     if (!user) {
-      return res.status(401).json({ success: false, error: 'جلسة غي صالحة، يرجى إعادة تحميل التطبيق' });
+      return res.status(401).json({ success: false, error: 'جلسة غير صالحة، يرجى إعادة تحميل التطبيق' });
     }
 
     if (user.isBanned) {
       return res.status(403).json({ success: false, error: 'حسابك معطل بسبب مخالفة الشروط' });
     }
 
+    // Attach verified user exclusively to current request context
     req.user = user;
     next();
   } catch (err) {
@@ -322,13 +325,14 @@ app.post('/api/auth/login', async (req, res, next) => {
 app.get('/api/user/data', authMiddleware, async (req, res, next) => {
   try {
     const userId = req.user._id;
+    const telegramId = req.user.telegramId;
 
     const [rawLinks, withdraws, announcements, ads, deposits] = await Promise.all([
-      Link.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
-      Withdraw.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
-      Announcement.find({ $or: [{ targetUser: null }, { targetUser: userId }], isActive: true }).sort({ createdAt: -1 }).limit(5).lean(),
-      Ad.find({ advertiserId: userId }).sort({ createdAt: -1 }).lean(),
-      Deposit.find({ advertiserId: userId }).sort({ createdAt: -1 }).lean()
+      Link.getUserIsolatedLinks(userId).lean(),
+      Withdraw.getUserWithdrawalsIsolated(userId).lean(),
+      Announcement.getForUserIsolated(userId, telegramId).lean(),
+      Ad.findAdvertiserAdsIsolated(userId).lean(),
+      Deposit.getAdvertiserDepositsIsolated(userId).lean()
     ]);
 
     const links = rawLinks.map(link => {
@@ -407,6 +411,7 @@ app.post('/api/ads', authMiddleware, async (req, res, next) => {
 
     const ad = await Ad.create([{
       advertiserId: req.user._id,
+      advertiserTelegramId: req.user.telegramId,
       title: String(title).trim(),
       targetUrl: String(targetUrl).trim(),
       totalBudget: budget,
@@ -430,7 +435,7 @@ app.post('/api/ads', authMiddleware, async (req, res, next) => {
 
 app.get('/api/user/ads', authMiddleware, async (req, res, next) => {
   try {
-    const ads = await Ad.find({ advertiserId: req.user._id }).sort({ createdAt: -1 }).lean();
+    const ads = await Ad.findAdvertiserAdsIsolated(req.user._id).lean();
     res.json({ success: true, ads });
   } catch (err) {
     next(err);
@@ -443,7 +448,7 @@ app.post('/api/ads/toggle', authMiddleware, async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(adId)) return res.status(400).json({ success: false, error: 'معرف الإعلان غير صالح' });
 
     const ad = await Ad.findOne({ _id: adId, advertiserId: req.user._id });
-    if (!ad) return res.status(404).json({ success: false, error: 'الإعلان غير موجود' });
+    if (!ad) return res.status(404).json({ success: false, error: 'الإعلان غير موجود أو لا تملك صلاحية تعديله' });
 
     if (ad.status === 'completed') {
       return res.status(400).json({ success: false, error: 'لا يمكن تفعيل حملة مكتملة ونفاذ ميزانيتها' });
@@ -485,6 +490,7 @@ app.post('/api/deposit', authMiddleware, async (req, res, next) => {
 
     const deposit = await Deposit.create({
       advertiserId: req.user._id,
+      advertiserTelegramId: req.user.telegramId,
       amount: numAmount,
       network: cleanNetwork,
       txid: cleanTxid,
@@ -527,6 +533,12 @@ app.post('/api/withdraw', authMiddleware, async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'عنوان المحفظة غير صالح' });
     }
 
+    const activePending = await Withdraw.findOne({ userId: req.user._id, status: 'pending' }).session(session);
+    if (activePending) {
+      await session.abortTransaction();
+      return res.status(400).json({ success: false, error: 'لديك طلب سحب قيد الانتظار حالياً، يرجى الانتظار حتى معالجته' });
+    }
+
     const netAmount = numAmt - FEE;
 
     const updatedUser = await User.findOneAndUpdate(
@@ -542,6 +554,7 @@ app.post('/api/withdraw', authMiddleware, async (req, res, next) => {
 
     const withdrawRequest = await Withdraw.create([{
       userId: req.user._id,
+      telegramId: req.user.telegramId,
       amount: numAmt,
       fee: FEE,
       netAmount: netAmount,
@@ -574,18 +587,20 @@ app.post('/api/init-click', validateTraffic, async (req, res, next) => {
     if (!cleanCode) return res.status(400).json({ success: false, error: 'كود الرابط مطلوب' });
 
     let linkData = await safeRedisGet(`link:data:${cleanCode}`);
-    let linkId, linkOwnerId;
+    let linkId, linkOwnerId, linkOwnerTelegramId;
 
     if (linkData) {
       const parsed = JSON.parse(linkData);
       linkId = parsed.id;
       linkOwnerId = parsed.userId;
+      linkOwnerTelegramId = parsed.publisherTelegramId;
     } else {
-      const link = await Link.findOne({ shortCode: cleanCode, isActive: true }).select('_id userId').lean();
+      const link = await Link.findOne({ shortCode: cleanCode, isActive: true }).select('_id userId publisherTelegramId').lean();
       if (!link) return res.status(404).json({ success: false, error: 'الرابط غير موجود أو معطل' });
       linkId = link._id.toString();
       linkOwnerId = link.userId.toString();
-      await safeRedisSet(`link:data:${cleanCode}`, JSON.stringify({ id: linkId, userId: linkOwnerId }), 'EX', 3600);
+      linkOwnerTelegramId = link.publisherTelegramId;
+      await safeRedisSet(`link:data:${cleanCode}`, JSON.stringify({ id: linkId, userId: linkOwnerId, publisherTelegramId: linkOwnerTelegramId }), 'EX', 3600);
     }
 
     await ClickSession.deleteMany({ linkId, ip: req.ip });
@@ -612,6 +627,7 @@ app.post('/api/init-click', validateTraffic, async (req, res, next) => {
     const bridgeToken = crypto.randomBytes(16).toString('hex');
     const session = await ClickSession.create({ 
       linkId, 
+      publisherId: linkOwnerId,
       ip: req.ip, 
       bridgeToken,
       adSource,
@@ -703,6 +719,7 @@ app.post('/api/impression', validateTraffic, clickLimiter, async (req, res, next
     await Impression.create([{
       linkId: link._id,
       publisherId: link.userId._id,
+      publisherTelegramId: link.userId.telegramId,
       adSource: clickSession.adSource,
       adId: clickSession.adId,
       publisherEarnings: clickSession.adSource === 'internal' ? 0.00135 : 0,
@@ -747,6 +764,7 @@ app.post('/api/impression', validateTraffic, clickLimiter, async (req, res, next
         releaseDate.setDate(releaseDate.getDate() + 1);
         await EarningsHold.create([{
           userId: link.userId._id,
+          telegramId: link.userId.telegramId,
           amount: publisherShare,
           releaseAt: releaseDate
         }], { session: sessionDb });
@@ -788,9 +806,10 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
 
     const shortCode = crypto.randomBytes(3).toString('hex');
     
-    // Strict isolation: Save with explicitly authenticated user ID
+    // Strict isolation: Save with explicitly authenticated user ID & Telegram ID
     const link = await Link.create({
       userId: req.user._id,
+      publisherTelegramId: req.user.telegramId,
       title: title ? String(title).trim() : 'رابط بدون عنوان',
       targetUrl: cleanUrl,
       shortCode,
@@ -813,8 +832,7 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
 // Fetch Links Alias (Unified Endpoint For Privacy & Front-End Compatibility)
 app.get('/api/links', authMiddleware, async (req, res, next) => {
   try {
-    // Strict Isolated Fetching using req.user._id ONLY
-    const rawLinks = await Link.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
+    const rawLinks = await Link.getUserIsolatedLinks(req.user._id).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
       const validImp = link.validImpressions || 0;
@@ -834,8 +852,7 @@ app.get('/api/links', authMiddleware, async (req, res, next) => {
 // Strict Isolated User Links Fetching Endpoint
 app.get('/api/user/links', authMiddleware, async (req, res, next) => {
   try {
-    // Strict Isolated Fetching using req.user._id ONLY
-    const rawLinks = await Link.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
+    const rawLinks = await Link.getUserIsolatedLinks(req.user._id).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
       const validImp = link.validImpressions || 0;
@@ -1054,7 +1071,7 @@ app.post('/api/admin/distribute-revenue', authMiddleware, adminMiddleware, async
 
       if (link.userId) {
         await User.findByIdAndUpdate(link.userId._id, { $inc: { pendingBalance: earned } }, { session });
-        await EarningsHold.create([{ userId: link.userId._id, amount: earned, releaseAt: releaseDate }], { session });
+        await EarningsHold.create([{ userId: link.userId._id, telegramId: link.userId.telegramId, amount: earned, releaseAt: releaseDate }], { session });
       }
 
       link.validImpressions = 0;
