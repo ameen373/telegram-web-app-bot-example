@@ -262,6 +262,49 @@ const adminMiddleware = async (req, res, next) => {
   next();
 };
 
+// =========================================================================
+// --- API Endpoint: Check Admin Role (/api/check-admin) ---
+// =========================================================================
+app.all('/api/check-admin', async (req, res) => {
+  try {
+    let targetUserId = req.body?.userId || req.query?.userId;
+    let telegramIdToCheck = null;
+
+    // إذا كان الممرّر معرف MongoDB، نبحث عن المستخدم لجلب telegramId
+    if (targetUserId && mongoose.Types.ObjectId.isValid(targetUserId)) {
+      const u = await User.findById(targetUserId).lean();
+      if (u) telegramIdToCheck = String(u.telegramId).trim();
+    } else if (targetUserId) {
+      telegramIdToCheck = String(targetUserId).trim();
+    }
+
+    // إذا لم يتم تمرير userId محدد، نحاول التحقق من الجلسة الموثقة إن وجدت
+    if (!telegramIdToCheck) {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        try {
+          const token = authHeader.split(' ')[1];
+          const decoded = jwt.verify(token, CONFIG.JWT_SECRET);
+          telegramIdToCheck = String(decoded.telegramId).trim();
+        } catch (e) {}
+      }
+    }
+
+    if (!telegramIdToCheck) {
+      const initData = req.headers['x-telegram-init-data'];
+      const telegramUser = verifyTelegramData(initData);
+      if (telegramUser) {
+        telegramIdToCheck = String(telegramUser.id).trim();
+      }
+    }
+
+    const isAdmin = Boolean(telegramIdToCheck && telegramIdToCheck === CONFIG.ADMIN_ID);
+    return res.json({ success: true, isAdmin });
+  } catch (err) {
+    return res.json({ success: true, isAdmin: false });
+  }
+});
+
 // --- Authentication & Isolated User Login ---
 app.post('/api/auth/login', async (req, res, next) => {
   try {
@@ -967,7 +1010,7 @@ app.post('/api/user/settings', authMiddleware, async (req, res, next) => {
   }
 });
 
-// --- Admin Panel Routes ---
+// --- Admin Panel Routes (Protected strictly with authMiddleware & adminMiddleware) ---
 app.get('/api/admin/dashboard-data', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
     const [withdraws, deposits, users, stats, totalAds] = await Promise.all([
