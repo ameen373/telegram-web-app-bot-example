@@ -1099,7 +1099,7 @@
       }
     }
 
-    // Data Sync & Isolation Per Active User Session
+    // Data Sync & Strict Isolation Per Active User Session
     async function loadUserData() {
       try {
         const linksContainer = document.getElementById('links-list');
@@ -1159,8 +1159,9 @@
           }).join('');
         }
 
-        // Safe User Short Links Isolation & Filtering
+        // Strict User Short Links Isolation (Excludes any link without owner / ownerTelegramId)
         rawUserLinksCache = (data.links || []).filter(l => {
+          if (!l.ownerTelegramId && !l.owner) return false; // Reject links without owner ID
           if (l.ownerTelegramId && currentUserTelegramId) {
             return String(l.ownerTelegramId) === String(currentUserTelegramId);
           }
