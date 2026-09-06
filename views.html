@@ -11,10 +11,12 @@
 
   <style>
     :root {
-      --bg-main: #0f172a;
-      --card-bg: #1e293b;
+      --bg-main: #0b0f19;
+      --card-bg: #151d30;
+      --card-border: #23314e;
       --accent: #3b82f6;
       --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.35);
       --danger: #ef4444;
       --danger-hover: #dc2626;
       --success: #10b981;
@@ -23,8 +25,7 @@
       --warning-hover: #d97706;
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --border-color: #334155;
-      --nav-bg: rgba(15, 23, 42, 0.95);
+      --nav-bg: rgba(11, 15, 25, 0.85);
       --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
@@ -36,7 +37,7 @@
       color: var(--text); 
       margin: 0; 
       padding: 12px; 
-      padding-bottom: 95px;
+      padding-bottom: 100px;
       direction: ltr;
       user-select: none;
       -webkit-user-select: none;
@@ -47,39 +48,43 @@
     
     .card { 
       background: var(--card-bg); 
-      border-radius: 16px; 
-      padding: 18px; 
-      margin-bottom: 14px; 
-      border: 1px solid var(--border-color); 
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35); 
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      border-radius: 20px; 
+      padding: 20px; 
+      margin-bottom: 16px; 
+      border: 1px solid var(--card-border); 
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37); 
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* Header Profile Card */
     .user-profile-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      background: rgba(30, 41, 59, 0.7);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-radius: 16px;
-      margin-bottom: 14px;
-      border: 1px solid var(--border-color);
+      gap: 14px;
+      padding: 14px 18px;
+      background: rgba(21, 29, 48, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     }
     
     .user-avatar-img {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
     
     .user-avatar-placeholder {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), #1d4ed8);
       color: #fff;
@@ -87,40 +92,41 @@
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 20px;
-      box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
+      font-size: 22px;
+      box-shadow: 0 4px 16px var(--accent-glow);
     }
 
     .user-badge {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 10px;
       font-size: 10px;
-      font-weight: 700;
-      border-radius: 10px;
-      background: rgba(59, 130, 246, 0.2);
+      font-weight: 800;
+      border-radius: 12px;
+      background: rgba(59, 130, 246, 0.15);
       color: var(--accent);
       border: 1px solid var(--accent);
+      letter-spacing: 0.5px;
     }
 
     /* Floating Dock Navigation */
     .tg-nav-dock {
       position: fixed;
-      bottom: 12px;
+      bottom: 16px;
       left: 50%;
       transform: translateX(-50%);
-      width: 96%;
+      width: 94%;
       max-width: 480px;
-      height: 64px;
+      height: 68px;
       background: var(--nav-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 32px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 34px;
       display: flex;
       align-items: center;
       justify-content: space-around;
-      padding: 0 4px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      padding: 0 6px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
       z-index: 9999;
     }
 
@@ -130,131 +136,137 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
+      gap: 3px;
       background: transparent;
       border: none;
       color: var(--text-muted);
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
-      padding: 6px 0;
-      border-radius: 20px;
-      transition: all 0.2s ease-in-out;
+      padding: 8px 0;
+      border-radius: 22px;
+      transition: all 0.25s ease-in-out;
       margin: 0;
     }
 
-    .nav-btn svg { width: 20px; height: 20px; fill: currentColor; transition: transform 0.2s; }
-    .nav-btn.active { color: var(--accent); background: rgba(59, 130, 246, 0.15); }
-    .nav-btn.active svg { transform: scale(1.15); }
+    .nav-btn svg { width: 22px; height: 22px; fill: currentColor; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .nav-btn.active { color: var(--accent); background: rgba(59, 130, 246, 0.18); }
+    .nav-btn.active svg { transform: scale(1.2); }
 
-    /* Inputs, Buttons & UI Controls */
+    /* Inputs, Buttons & Controls */
     input, button, select { 
       width: 100%; 
-      padding: 12px 14px; 
-      margin-top: 8px; 
-      border-radius: 12px; 
-      border: 1px solid var(--border-color); 
-      background: #0f172a; 
+      padding: 13px 16px; 
+      margin-top: 10px; 
+      border-radius: 14px; 
+      border: 1px solid var(--card-border); 
+      background: #0b0f19; 
       color: var(--text); 
       font-size: 14px; 
       font-family: inherit;
-      transition: border-color 0.2s, background-color 0.2s;
+      transition: all 0.2s ease;
     }
     
-    input:focus, select:focus { border-color: var(--accent); }
-    input:read-only { background: #080c14; color: var(--text-muted); cursor: not-allowed; }
+    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    input:read-only { background: #070a12; color: var(--text-muted); cursor: not-allowed; }
     
     button { 
       background: var(--accent); 
       font-weight: 700; 
       cursor: pointer; 
       border: none; 
-      transition: background 0.2s, transform 0.1s, opacity 0.2s; 
+      transition: all 0.2s ease; 
       color: #fff; 
       display: inline-flex; 
       align-items: center; 
       justify-content: center; 
       gap: 8px; 
+      box-shadow: 0 4px 14px var(--accent-glow);
     }
     
     button:hover { background: var(--accent-hover); }
-    button:active { transform: scale(0.98); }
-    button:disabled { background: #334155 !important; cursor: not-allowed; opacity: 0.6; }
+    button:active { transform: scale(0.97); }
+    button:disabled { background: #1e293b !important; cursor: not-allowed; opacity: 0.5; box-shadow: none; }
     
-    .btn-danger { background: var(--danger); }
+    .btn-danger { background: var(--danger); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3); }
     .btn-danger:hover { background: var(--danger-hover); }
-    .btn-warning { background: var(--warning); color: #000; }
+    .btn-warning { background: var(--warning); color: #000; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3); }
     .btn-warning:hover { background: var(--warning-hover); }
-    .btn-success { background: var(--success); color: #fff; }
+    .btn-success { background: var(--success); color: #fff; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
     .btn-success:hover { background: var(--success-hover); }
-    .btn-small { padding: 6px 12px; font-size: 11px; width: auto; margin: 0 2px; border-radius: 8px; }
+    .btn-small { padding: 7px 14px; font-size: 12px; width: auto; margin: 0 2px; border-radius: 10px; box-shadow: none; }
 
     /* Wallet Action Navigation Switcher */
-    .wallet-actions-nav { display: flex; gap: 10px; margin-bottom: 14px; }
+    .wallet-actions-nav { display: flex; gap: 10px; margin-bottom: 16px; }
     .wallet-action-btn {
-      flex: 1; padding: 10px; font-size: 13px; background: #0d1527;
-      color: var(--text-muted); border: 1px solid var(--border-color);
-      border-radius: 12px; margin: 0;
+      flex: 1; padding: 12px; font-size: 13px; background: #0f172a;
+      color: var(--text-muted); border: 1px solid var(--card-border);
+      border-radius: 14px; margin: 0; box-shadow: none;
     }
-    .wallet-action-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .wallet-action-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 14px var(--accent-glow); }
 
     /* Crypto & Transaction Components */
-    .address-card { background: #0d1527; border: 1px dashed var(--border-color); border-radius: 12px; padding: 12px; margin-top: 10px; }
-    .address-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+    .address-card { background: #0f172a; border: 1px dashed var(--card-border); border-radius: 14px; padding: 14px; margin-top: 12px; }
+    .address-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
     .address-text {
-      font-family: monospace; font-size: 11px; color: var(--warning); word-break: break-all;
-      background: #050811; padding: 8px 10px; border-radius: 8px; flex: 1; border: 1px solid #1e293b;
+      font-family: 'Courier New', Courier, monospace; font-size: 11px; color: var(--warning); word-break: break-all;
+      background: #070a12; padding: 10px 12px; border-radius: 10px; flex: 1; border: 1px solid #1e293b;
     }
 
     .fee-breakdown {
-      background: #0d1527; border: 1px solid var(--border-color); border-radius: 10px;
-      padding: 10px 14px; margin-top: 10px; font-size: 12px; display: flex; justify-content: space-between;
+      background: #0f172a; border: 1px solid var(--card-border); border-radius: 12px;
+      padding: 12px 16px; margin-top: 12px; font-size: 12px; display: flex; justify-content: space-between;
     }
 
     /* Modal Overlay UI */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-      z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 16px;
+      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 18px;
     }
     .modal-content {
-      background: var(--card-bg); border: 1px solid var(--border-color);
-      border-radius: 20px; padding: 22px; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 24px; padding: 24px; max-width: 460px; width: 100%; max-height: 85vh; overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     }
 
     /* Grid & Item Component Layouts */
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-    .stat-box { background: #0d1527; padding: 14px; border-radius: 14px; border: 1px solid var(--border-color); text-align: center; }
-    .stat-box small { color: var(--text-muted); font-size: 11px; display: block; margin-bottom: 4px; }
-    .stat-box h3 { margin: 0; font-size: 18px; color: var(--text); font-weight: 800; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .stat-box { background: #0f172a; padding: 16px; border-radius: 16px; border: 1px solid var(--card-border); text-align: center; }
+    .stat-box small { color: var(--text-muted); font-size: 11px; display: block; margin-bottom: 6px; font-weight: 600; }
+    .stat-box h3 { margin: 0; font-size: 20px; color: var(--text); font-weight: 800; }
 
-    .link-item, .ad-item { background: #0d1527; padding: 12px 14px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border-color); font-size: 13px; }
-    .link-header, .ad-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .link-actions, .ad-actions { display: flex; justify-content: flex-end; margin-top: 10px; gap: 6px; }
+    .link-item, .ad-item { 
+      background: #0f172a; padding: 14px 16px; border-radius: 16px; margin-bottom: 12px; 
+      border: 1px solid var(--card-border); font-size: 13px; transition: transform 0.2s;
+    }
+    .link-item:hover, .ad-item:hover { transform: translateY(-2px); }
+    .link-header, .ad-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .link-actions, .ad-actions { display: flex; justify-content: flex-end; margin-top: 12px; gap: 8px; }
 
     .hidden { display: none !important; }
 
     /* Loaders & Animated UI */
     .spinner {
-      width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
+      width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
       border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     #toast { 
-      visibility: hidden; min-width: 240px; background-color: var(--card-bg); 
-      color: #fff; text-align: center; border-radius: 12px; padding: 12px 16px; 
-      position: fixed; z-index: 10001; left: 50%; bottom: 85px; transform: translateX(-50%); 
-      border: 1px solid var(--accent); font-size: 13px; opacity: 0; transition: opacity 0.3s, visibility 0.3s; 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6); font-weight: 600;
+      visibility: hidden; min-width: 260px; background-color: var(--card-bg); 
+      color: #fff; text-align: center; border-radius: 14px; padding: 14px 20px; 
+      position: fixed; z-index: 10001; left: 50%; bottom: 95px; transform: translateX(-50%) translateY(20px); 
+      border: 1px solid var(--accent); font-size: 13px; opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7); font-weight: 600;
     }
-    #toast.show { visibility: visible; opacity: 1; }
+    #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    details { background: #0d1527; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 8px; }
+    details { background: #0f172a; padding: 14px; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 10px; }
     summary { font-weight: bold; cursor: pointer; }
     
-    .tab-pane { animation: fadeIn 0.25s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .tab-pane { animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -266,43 +278,43 @@
     <!-- Modal: Deposit Instructions Guide -->
     <div id="instructions-modal" class="modal-overlay hidden">
       <div class="modal-content">
-        <h3 style="margin-top: 0; color: var(--accent); font-size: 17px;" data-i18n="guide_modal_title">Deposit & TxID Guide</h3>
-        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 12px 0;">
-        <ol style="font-size: 12px; color: var(--text); padding-left: 18px; padding-right: 18px; line-height: 1.7;">
+        <h3 style="margin-top: 0; color: var(--accent); font-size: 18px;" data-i18n="guide_modal_title">Deposit & TxID Guide</h3>
+        <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 14px 0;">
+        <ol style="font-size: 12px; color: var(--text); padding-left: 18px; padding-right: 18px; line-height: 1.8;">
           <li><b data-i18n="guide_step1_b">Select Network:</b> <span data-i18n="guide_step1_t">Choose USDT (TRC20 or BEP20) to reveal your dedicated deposit address and copy it.</span></li>
           <li><b data-i18n="guide_step2_b">Transfer Funds:</b> <span data-i18n="guide_step2_t">Open your exchange or wallet app (Binance, Trust Wallet, OKX) and transfer USDT.</span></li>
           <li><b data-i18n="guide_step3_b">Copy Transaction Hash (TxID):</b> <span data-i18n="guide_step3_t">After confirmation, copy the transaction Hash/TxID.</span>
-            <div style="background: #050811; padding: 8px; border-radius: 8px; margin: 6px 0; border: 1px solid var(--border-color); text-align: center;">
+            <div style="background: #070a12; padding: 10px; border-radius: 10px; margin: 8px 0; border: 1px solid var(--card-border); text-align: center;">
               <small style="color: var(--text-muted);" data-i18n="example_txid">Example TxID format:</small><br>
               <code style="color: var(--success); font-size: 11px; word-break: break-all;">4a8f92b8d01...e83120c91</code>
             </div>
           </li>
           <li><b data-i18n="guide_step4_b">Submit Request:</b> <span data-i18n="guide_step4_t">Return here, enter the exact deposited amount and TxID, then submit.</span></li>
         </ol>
-        <button class="btn-danger" style="margin-top: 14px;" onclick="toggleInstructionsModal(false)" data-i18n="close">Close</button>
+        <button class="btn-danger" style="margin-top: 16px;" onclick="toggleInstructionsModal(false)" data-i18n="close">Close</button>
       </div>
     </div>
 
     <!-- Bridge View Page (Short Link Landing Bridge) -->
     <div id="bridge-view" class="card hidden tab-pane">
-      <h2 style="text-align: center; margin-bottom: 6px; font-size: 20px;" data-i18n="bridge_title">Preparing your link...</h2>
+      <h2 style="text-align: center; margin-bottom: 6px; font-size: 22px;" data-i18n="bridge_title">Preparing your link...</h2>
       <p style="text-align: center; color: var(--text-muted); font-size: 12px; margin: 0;" data-i18n="bridge_desc">Please wait while we prepare your destination link</p>
       
-      <div id="ad-container" style="min-height: 220px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 16px 0; border: 1px dashed var(--border-color); overflow: hidden; padding: 12px; text-align: center;">
+      <div id="ad-container" style="min-height: 230px; background: #000; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 18px 0; border: 1px dashed var(--card-border); overflow: hidden; padding: 14px; text-align: center;">
         <span style="color: var(--text-muted); font-size: 12px;" data-i18n="ad_loading">Loading advertisement...</span>
       </div>
 
-      <p style="text-align: center; font-size: 14px;"><span data-i18n="timer_text">Button unlocks in:</span> <b id="timer" style="color: var(--accent); font-size: 18px;">5</b> <span data-i18n="seconds">seconds</span></p>
+      <p style="text-align: center; font-size: 14px;"><span data-i18n="timer_text">Button unlocks in:</span> <b id="timer" style="color: var(--accent); font-size: 20px;">5</b> <span data-i18n="seconds">seconds</span></p>
       <button id="go-btn" disabled onclick="completeImpression()">
         <span id="go-btn-text" data-i18n="go_button">Continue to Destination</span>
       </button>
 
-      <div style="margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--border-color); text-align: center; font-size: 11px; color: var(--text-muted);">
-        <p style="margin: 0 0 6px 0;">
+      <div style="margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--card-border); text-align: center; font-size: 11px; color: var(--text-muted);">
+        <p style="margin: 0 0 8px 0;">
           All rights reserved for <a href="https://t.me/Ads_telegabot" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; font-weight: bold;">Telega.ads</a>
         </p>
-        <div style="margin-top: 8px;">
-          <a href="https://t.me/ttelega_ads" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; background: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent); border-radius: 20px; color: var(--accent); text-decoration: none; font-weight: bold;" data-i18n="official_channel">
+        <div>
+          <a href="https://t.me/ttelega_ads" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent); border-radius: 20px; color: var(--accent); text-decoration: none; font-weight: bold;" data-i18n="official_channel">
             📢 Official Channel
           </a>
         </div>
@@ -316,31 +328,31 @@
       <div class="user-profile-header">
         <div id="user-avatar-container"></div>
         <div style="flex: 1; overflow: hidden;">
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <span id="user-display-name" style="font-weight: bold; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">...</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="user-display-name" style="font-weight: 800; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">...</span>
             <span id="user-premium-badge" class="user-badge hidden">★ Premium</span>
           </div>
           <div id="user-display-handle" style="font-size: 12px; color: var(--text-muted);">@user</div>
-          <div id="user-tg-id" style="font-size: 10px; color: var(--text-muted); margin-top: 1px;">ID: -</div>
+          <div id="user-tg-id" style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">ID: -</div>
         </div>
       </div>
 
       <!-- Tab 1: Dashboard -->
       <div id="tab-content-dashboard" class="tab-pane">
-        <div class="card" style="border-color: var(--accent); background: rgba(30, 41, 59, 0.9);">
+        <div class="card" style="border-color: var(--accent); background: rgba(21, 29, 48, 0.95);">
           <h4 style="margin: 0 0 6px 0; color: var(--accent); font-size: 14px;" data-i18n="about_title">ℹ️ About & Terms of Use</h4>
-          <p style="margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;" data-i18n="about_desc">
+          <p style="margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.6;" data-i18n="about_desc">
             This platform allows you to shorten links safely and manage promotion campaigns efficiently. By using our service, you agree to our traffic quality and safety guidelines.
           </p>
         </div>
 
         <div id="announcement-box" class="card hidden" style="border-color: var(--warning);">
           <h4 id="anc-title" style="margin: 0 0 6px 0; color: var(--warning);"></h4>
-          <p id="anc-content" style="margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;"></p>
+          <p id="anc-content" style="margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.6;"></p>
         </div>
 
         <div class="card">
-          <h3 style="font-size: 15px; margin-top:0;" data-i18n="create_link_title">Shorten New Link</h3>
+          <h3 style="font-size: 16px; margin-top:0;" data-i18n="create_link_title">Shorten New Link</h3>
           <input type="text" id="link-title" data-i18n-ph="ph_link_title" placeholder="Title (Optional)">
           <input type="url" id="link-url" data-i18n-ph="ph_link_url" placeholder="Original URL (https://...)">
           <button id="btn-create-link" onclick="handleShortenClick()">
@@ -349,7 +361,10 @@
         </div>
 
         <div class="card">
-          <h3 style="font-size: 15px; margin-top:0;" data-i18n="my_links_title">Your Links</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 16px; margin:0;" data-i18n="my_links_title">Your Links</h3>
+            <input type="text" id="search-links-input" placeholder="Search..." oninput="filterUserLinks(this.value)" style="width: 110px; padding: 6px 10px; margin:0; font-size: 11px;">
+          </div>
           <div id="links-list" style="color: var(--text-muted); font-size: 12px;" data-i18n="loading">Loading...</div>
         </div>
       </div>
@@ -376,11 +391,11 @@
         <!-- Wallet View: Deposit -->
         <div id="wallet-view-deposit" class="card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <h3 style="font-size: 15px; margin:0;" data-i18n="deposit_funds_title">Deposit Funds (USDT)</h3>
+            <h3 style="font-size: 16px; margin:0;" data-i18n="deposit_funds_title">Deposit Funds (USDT)</h3>
             <button class="btn-small btn-warning" style="width: auto;" onclick="toggleInstructionsModal(true)" data-i18n="btn_deposit_guide">❓ Deposit Guide</button>
           </div>
           
-          <h4 style="font-size: 13px; margin: 10px 0 4px 0;" data-i18n="select_network_label">Select Network:</h4>
+          <h4 style="font-size: 13px; margin: 12px 0 4px 0;" data-i18n="select_network_label">Select Network:</h4>
           <select id="deposit-network" onchange="handleNetworkChange(this.value)">
             <option value="" data-i18n="opt_select_network">-- Select Payment Network --</option>
             <option value="USDT_TRC20">USDT (TRC20 Network)</option>
@@ -403,18 +418,18 @@
             </div>
           </div>
 
-          <h4 style="font-size: 13px; margin: 14px 0 6px 0;" data-i18n="submit_proof_label">Submit Deposit Proof:</h4>
+          <h4 style="font-size: 13px; margin: 16px 0 6px 0;" data-i18n="submit_proof_label">Submit Deposit Proof:</h4>
           <input type="number" id="deposit-amount" data-i18n-ph="ph_deposit_amount" placeholder="Amount ($)" min="1" step="any">
           <input type="text" id="deposit-txhash" data-i18n-ph="ph_deposit_txid" placeholder="Transaction TxID / Hash">
           
-          <button id="btn-request-deposit" class="btn-success" style="margin-top: 12px;" onclick="requestDeposit()">
+          <button id="btn-request-deposit" class="btn-success" style="margin-top: 14px;" onclick="requestDeposit()">
             <span data-i18n="btn_submit_deposit">Submit Deposit Request</span>
           </button>
         </div>
 
         <!-- Wallet View: Withdraw -->
         <div id="wallet-view-withdraw" class="card hidden">
-          <h3 style="font-size: 15px; margin-top:0;" data-i18n="withdraw_request_title">Withdraw Earnings</h3>
+          <h3 style="font-size: 16px; margin-top:0;" data-i18n="withdraw_request_title">Withdraw Earnings</h3>
           
           <div style="margin-bottom: 12px;">
             <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;" data-i18n="wallet_addr_label">Withdrawal Wallet (USDT TRC20)</label>
@@ -433,11 +448,11 @@
             <span><span data-i18n="lbl_net">Net</span>: <b id="calc-net" style="color: var(--success);">$0.00</b></span>
           </div>
 
-          <button id="btn-request-withdraw" style="margin-top: 14px;" onclick="requestWithdrawal()">
+          <button id="btn-request-withdraw" style="margin-top: 16px;" onclick="requestWithdrawal()">
             <span data-i18n="btn_submit_withdraw">Request Withdrawal</span>
           </button>
 
-          <h4 style="font-size: 13px; margin: 18px 0 8px 0; border-top: 1px solid var(--border-color); padding-top: 12px;" data-i18n="withdraw_history">Withdrawal History</h4>
+          <h4 style="font-size: 13px; margin: 20px 0 10px 0; border-top: 1px solid var(--card-border); padding-top: 14px;" data-i18n="withdraw_history">Withdrawal History</h4>
           <div id="withdraws-list" style="font-size: 12px; color: var(--text-muted);" data-i18n="loading">Loading...</div>
         </div>
       </div>
@@ -445,7 +460,7 @@
       <!-- Tab 3: Self-Serve Ads -->
       <div id="tab-content-ads" class="tab-pane hidden">
         <div class="card">
-          <h3 style="font-size: 15px; margin-top:0;" data-i18n="create_ad_title">Create New Ad Campaign</h3>
+          <h3 style="font-size: 16px; margin-top:0;" data-i18n="create_ad_title">Create New Ad Campaign</h3>
           <p style="font-size: 11px; color: var(--text-muted); margin-top:-4px;" data-i18n="ad_rate_desc">Ad Rate: $1.50 per 1,000 real impressions (CPM)</p>
           
           <input type="text" id="ad-title" data-i18n-ph="ph_ad_title" placeholder="Ad Title">
@@ -458,7 +473,7 @@
         </div>
 
         <div class="card">
-          <h3 style="font-size: 15px; margin-top:0;" data-i18n="my_ads_title">Your Ad Campaigns</h3>
+          <h3 style="font-size: 16px; margin-top:0;" data-i18n="my_ads_title">Your Ad Campaigns</h3>
           <div id="ads-list" style="color: var(--text-muted); font-size: 12px;" data-i18n="loading">Loading...</div>
         </div>
       </div>
@@ -467,12 +482,12 @@
       <div id="tab-content-referral" class="tab-pane hidden">
         <div class="card">
           <h3 style="margin-top:0;" data-i18n="ref_title">Referral System (10%)</h3>
-          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;" data-i18n="ref_desc">Invite your friends and instantly earn 10% of their total revenues.</p>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;" data-i18n="ref_desc">Invite your friends and instantly earn 10% of their total revenues.</p>
           <input type="text" id="ref-link" readonly onclick="copyToClipboard(this.value)">
-          <button class="btn-success" style="margin-top: 10px;" onclick="shareReferralLink()">
+          <button class="btn-success" style="margin-top: 12px;" onclick="shareReferralLink()">
             <span data-i18n="btn_share_ref">Share Link via Telegram</span>
           </button>
-          <div class="stat-box" style="margin-top:14px;">
+          <div class="stat-box" style="margin-top:16px;">
             <small data-i18n="total_ref_earnings">Total Referral Earnings</small>
             <h3 id="ref-earnings" style="color:var(--success);">$0.00</h3>
           </div>
@@ -482,7 +497,7 @@
       <!-- Tab 5: Settings & FAQ -->
       <div id="tab-content-settings" class="tab-pane hidden">
         <div class="card">
-          <h3 style="margin-top:0; font-size: 15px;" data-i18n="lang_settings_title">Language / تغيير اللغة</h3>
+          <h3 style="margin-top:0; font-size: 16px;" data-i18n="lang_settings_title">Language / تغيير اللغة</h3>
           <select id="language-select" onchange="changeAppLanguage(this.value)">
             <option value="en">English (الإنجليزية)</option>
             <option value="ar">العربية (Arabic)</option>
@@ -490,19 +505,19 @@
         </div>
 
         <div class="card">
-          <h3 style="margin-top:0; font-size: 15px;" data-i18n="faq_title">FAQ & Support</h3>
+          <h3 style="margin-top:0; font-size: 16px;" data-i18n="faq_title">FAQ & Support</h3>
           <details>
             <summary data-i18n="faq_q1">How are earnings calculated?</summary>
-            <p style="color: var(--text-muted); font-size: 12px; margin-top: 6px;" data-i18n="faq_a1">Earnings depend on ad revenue and are distributed proportionally based on verified visits.</p>
+            <p style="color: var(--text-muted); font-size: 12px; margin-top: 8px;" data-i18n="faq_a1">Earnings depend on ad revenue and are distributed proportionally based on verified visits.</p>
           </details>
           <details>
             <summary data-i18n="faq_q2">What is the 1-day pending period?</summary>
-            <p style="color: var(--text-muted); font-size: 12px; margin-top: 6px;" data-i18n="faq_a2">It is a hold period to review traffic sources and prevent fraud before transferring earnings to available balance within 24 hours.</p>
+            <p style="color: var(--text-muted); font-size: 12px; margin-top: 8px;" data-i18n="faq_a2">It is a hold period to review traffic sources and prevent fraud before transferring earnings to available balance within 24 hours.</p>
           </details>
           
-          <div style="margin-top: 16px; padding: 12px; background: #0d1527; border-radius: 12px; border: 1px solid var(--border-color); font-size: 12px; text-align: center;">
+          <div style="margin-top: 18px; padding: 14px; background: #0f172a; border-radius: 14px; border: 1px solid var(--card-border); font-size: 12px; text-align: center;">
             <span data-i18n="support_text">Contact technical support on Telegram:</span>
-            <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
               <a href="https://t.me/Ads_telegabot" target="_blank" rel="noopener" style="flex: 1; text-decoration: none;">
                 <button class="btn-small" style="width: 100%; background: var(--accent);">🤖 Bot</button>
               </a>
@@ -519,7 +534,7 @@
 
       <!-- Tab 6: Admin Dashboard Panel -->
       <div id="tab-content-admin" class="tab-pane hidden">
-        <div class="stats-grid" style="margin-bottom: 15px;">
+        <div class="stats-grid" style="margin-bottom: 16px;">
           <div class="stat-box"><small>Total Platform Users</small><h3 id="admin-total-users">0</h3></div>
           <div class="stat-box"><small>Total Pending Balances</small><h3 id="admin-total-pending" style="color: var(--warning);">$0.00</h3></div>
         </div>
@@ -527,7 +542,7 @@
         <div class="card">
           <h4 style="margin-top:0;">Revenue Pool Distribution</h4>
           <input type="number" id="revenue-amount" placeholder="Total Revenue Amount ($)" step="any">
-          <button id="btn-distribute-rev" onclick="distributeRevenue()" style="margin-top: 10px;">Distribute Revenue Pool</button>
+          <button id="btn-distribute-rev" onclick="distributeRevenue()" style="margin-top: 12px;">Distribute Revenue Pool</button>
         </div>
 
         <div class="card">
@@ -593,10 +608,11 @@
     let bridgeStartTime = Date.now();
     let isUserAdmin = false;
     let currentLang = localStorage.getItem('appLang') || 'en';
-    let currentUserTelegramId = null; // Session security check
+    let currentUserTelegramId = null;
+    let rawUserLinksCache = []; // Internal cache for quick filtering
     const tg = window.Telegram?.WebApp;
 
-    // Comprehensive Translation Dictionary
+    // Translation Dictionary
     const i18n = {
       en: {
         nav_home: "Home",
@@ -762,7 +778,7 @@
       }
     };
 
-    // Core Helpers
+    // Helper Functions
     function escapeHTML(str) {
       if (!str) return '';
       return String(str)
@@ -828,21 +844,24 @@
       }
     }
 
-    // Unified Secure Network Wrapper (Guarantees Identification Headers Sent to Backend)
+    /**
+     * UNIFIED SECURE FETCH WRAPPER
+     * Guarantees sending user identification tokens & Telegram Mini App initData headers to backend
+     */
     async function safeFetch(endpoint, options = {}) {
       options.headers = options.headers || {};
       
-      // 1. Send Bearer Token if logged in
+      // 1. Send Bearer Token if user is authenticated
       if (authToken) {
         options.headers['Authorization'] = `Bearer ${authToken}`;
       }
       
-      // 2. Send Telegram Mini App initData
+      // 2. Send Telegram WebApp initData string
       if (tg && tg.initData) {
         options.headers['x-telegram-init-data'] = tg.initData;
       }
 
-      // 3. Ensure JSON Content-Type for POST/PUT methods if body present
+      // 3. Ensure JSON Content-Type for requests with body
       if (options.body && typeof options.body === 'string' && !options.headers['Content-Type']) {
         options.headers['Content-Type'] = 'application/json';
       }
@@ -853,7 +872,7 @@
       try {
         let response = await fetch(targetUrl, options);
         
-        // Auto-reauthenticate on expired token
+        // Auto-reauthenticate on expired token (HTTP 401)
         if (response && response.status === 401 && !options._isRetry) {
           options._isRetry = true;
           const reAuth = await authLogin();
@@ -921,7 +940,7 @@
       } else {
         currentUserTelegramId = 'DEMO_USER_DEV';
         nameElem.innerText = 'Demo Partner';
-        handleElem.innerText = '@demo_partner';
+ handleElem.innerText = '@demo_partner';
         idElem.innerText = 'ID: 88888888';
         avatarContainer.innerHTML = `<div class="user-avatar-placeholder">D</div>`;
         if (!localStorage.getItem('appLang')) {
@@ -1022,7 +1041,7 @@
         const res = await safeFetch('/api/auth/login', {
           method: 'POST',
           body: JSON.stringify({ 
-            initData: tg?.initData || '', // Pass raw initData string
+            initData: tg?.initData || '',
             referrerId: startParam, 
             telegramUserInfo: tg?.initDataUnsafe?.user || {} 
           })
@@ -1051,10 +1070,9 @@
       }
     }
 
-    // Data Loaders & Synchronizers - Strictly Isolated Per User Session
+    // Data Sync & Isolation Per Active User Session
     async function loadUserData() {
       try {
-        // Clear containers immediately to avoid cross-user data leakage
         const linksContainer = document.getElementById('links-list');
         const adsContainer = document.getElementById('ads-list');
         const withdrawsContainer = document.getElementById('withdraws-list');
@@ -1101,49 +1119,28 @@
             else if (w.status === 'Rejected') { statusColor = 'var(--danger)'; statusText = currentLang === 'ar' ? 'مرفوض' : 'Rejected'; }
 
             return `
-            <div style="background: #0d1527; padding: 10px; margin-bottom: 6px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <div style="background: #0f172a; padding: 12px; margin-bottom: 8px; border-radius: 12px; border: 1px solid var(--card-border);">
               <div style="display: flex; justify-content: space-between;">
                 <span>Amount: <b>$${parseFloat(w.amount || 0).toFixed(2)}</b></span>
                 <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span>
               </div>
-              <div style="color: var(--text-muted); font-size: 11px; margin-top: 4px; word-break: break-all;">Wallet: ${escapeHTML(w.walletAddress)}</div>
-              ${w.rejectReason ? `<div style="color: var(--danger); font-size: 11px; margin-top: 2px;">Reason: ${escapeHTML(w.rejectReason)}</div>` : ''}
+              <div style="color: var(--text-muted); font-size: 11px; margin-top: 6px; word-break: break-all;">Wallet: ${escapeHTML(w.walletAddress)}</div>
+              ${w.rejectReason ? `<div style="color: var(--danger); font-size: 11px; margin-top: 4px;">Reason: ${escapeHTML(w.rejectReason)}</div>` : ''}
             </div>`;
           }).join('');
         }
 
-        // Filter and Render Short Links safely for this specific user
-        const userLinks = (data.links || []).filter(l => {
+        // Safe User Short Links Isolation & Filtering
+        rawUserLinksCache = (data.links || []).filter(l => {
           if (l.ownerTelegramId && currentUserTelegramId) {
             return String(l.ownerTelegramId) === String(currentUserTelegramId);
           }
           return true;
         });
 
-        if (userLinks.length === 0) {
-          linksContainer.innerHTML = currentLang === 'ar' ? 'لا توجد روابط مُختصرة حالياً.' : 'No short links created yet.';
-        } else {
-          linksContainer.innerHTML = userLinks.map(l => {
-            const shortUrl = `${API_BASE}/r/${l.shortCode}`;
-            const statusColor = l.isActive ? 'var(--success)' : 'var(--danger)';
-            const statusText = l.isActive ? (currentLang === 'ar' ? 'نشط' : 'Active') : (currentLang === 'ar' ? 'معطل' : 'Disabled');
-            return `
-            <div class="link-item" style="border-left: 3px solid ${statusColor}; border-right: 3px solid ${statusColor};">
-              <div class="link-header">
-                <b>${escapeHTML(l.title || (currentLang === 'ar' ? 'رابط بدون عنوان' : 'Untitled Link'))}</b>
-                <span style="font-size: 10px; color: ${statusColor}; font-weight: bold;">${statusText}</span>
-              </div>
-              <div style="color:var(--text-muted); font-size:11px; margin-bottom:4px; word-break: break-all;">${escapeHTML(shortUrl)}</div>
-              <div>Views: <b>${l.views || 0}</b> | Valid: <b style="color:var(--success);">${l.validImpressions || 0}</b></div>
-              <div class="link-actions">
-                <button class="btn-small" onclick="copyToClipboard('${escapeHTML(shortUrl)}')">Copy</button>
-                <button class="btn-small ${l.isActive ? 'btn-danger' : 'btn-warning'}" onclick="toggleLinkStatus('${l._id}')">${l.isActive ? (currentLang === 'ar' ? 'تعطيل' : 'Disable') : (currentLang === 'ar' ? 'تفعيل' : 'Enable')}</button>
-              </div>
-            </div>`;
-          }).join('');
-        }
+        renderUserLinks(rawUserLinksCache);
 
-        // Filter and Render Ads safely for this specific advertiser
+        // Safe User Ads Isolation
         const userAds = (data.ads || []).filter(ad => {
           if (ad.advertiserTelegramId && currentUserTelegramId) {
             return String(ad.advertiserTelegramId) === String(currentUserTelegramId);
@@ -1157,12 +1154,12 @@
           adsContainer.innerHTML = userAds.map(ad => {
             let statusColor = ad.status === 'active' ? 'var(--success)' : (ad.status === 'paused' ? 'var(--warning)' : 'var(--text-muted)');
             return `
-            <div class="ad-item" style="border-left: 3px solid ${statusColor};">
+            <div class="ad-item" style="border-left: 4px solid ${statusColor};">
               <div class="ad-header">
                 <b>${escapeHTML(ad.title)}</b>
                 <span style="font-size: 10px; color: ${statusColor}; font-weight: bold;">${escapeHTML(ad.status.toUpperCase())}</span>
               </div>
-              <div style="color:var(--text-muted); font-size:11px; margin-bottom:4px; word-break: break-all;">${escapeHTML(ad.targetUrl)}</div>
+              <div style="color:var(--text-muted); font-size:11px; margin-bottom:6px; word-break: break-all;">${escapeHTML(ad.targetUrl)}</div>
               <div>Remaining Budget: <b style="color:var(--success);">$${(ad.remainingBudget || 0).toFixed(2)}</b> / $${parseFloat(ad.totalBudget || 0).toFixed(2)} | Views: <b>${ad.impressionsCount || 0}</b></div>
               <div class="ad-actions">
                 ${ad.status !== 'completed' ? `<button class="btn-small ${ad.status === 'active' ? 'btn-warning' : 'btn-success'}" onclick="toggleAdStatus('${ad._id}')">${ad.status === 'active' ? (currentLang === 'ar' ? 'إيقاف مؤقت' : 'Pause') : (currentLang === 'ar' ? 'تفعيل' : 'Activate')}</button>` : ''}
@@ -1174,6 +1171,49 @@
       } catch (err) {
         console.error("Error loading user data:", err);
       }
+    }
+
+    function renderUserLinks(linksArray) {
+      const linksContainer = document.getElementById('links-list');
+      if (!linksContainer) return;
+
+      if (!linksArray || linksArray.length === 0) {
+        linksContainer.innerHTML = currentLang === 'ar' ? 'لا توجد روابط مُختصرة مطابقة.' : 'No short links found.';
+        return;
+      }
+
+      linksContainer.innerHTML = linksArray.map(l => {
+        const shortUrl = `${API_BASE}/r/${l.shortCode}`;
+        const statusColor = l.isActive ? 'var(--success)' : 'var(--danger)';
+        const statusText = l.isActive ? (currentLang === 'ar' ? 'نشط' : 'Active') : (currentLang === 'ar' ? 'معطل' : 'Disabled');
+        return `
+        <div class="link-item" style="border-left: 4px solid ${statusColor};">
+          <div class="link-header">
+            <b>${escapeHTML(l.title || (currentLang === 'ar' ? 'رابط بدون عنوان' : 'Untitled Link'))}</b>
+            <span style="font-size: 10px; color: ${statusColor}; font-weight: bold;">${statusText}</span>
+          </div>
+          <div style="color:var(--text-muted); font-size:11px; margin-bottom:6px; word-break: break-all;">${escapeHTML(shortUrl)}</div>
+          <div>Views: <b>${l.views || 0}</b> | Valid: <b style="color:var(--success);">${l.validImpressions || 0}</b></div>
+          <div class="link-actions">
+            <button class="btn-small" onclick="copyToClipboard('${escapeHTML(shortUrl)}')">Copy</button>
+            <button class="btn-small ${l.isActive ? 'btn-danger' : 'btn-warning'}" onclick="toggleLinkStatus('${l._id}')">${l.isActive ? (currentLang === 'ar' ? 'تعطيل' : 'Disable') : (currentLang === 'ar' ? 'تفعيل' : 'Enable')}</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function filterUserLinks(query) {
+      if (!query || !query.trim()) {
+        renderUserLinks(rawUserLinksCache);
+        return;
+      }
+      const q = query.toLowerCase().trim();
+      const filtered = rawUserLinksCache.filter(l => 
+        (l.title && l.title.toLowerCase().includes(q)) || 
+        (l.shortCode && l.shortCode.toLowerCase().includes(q)) ||
+        (l.originalUrl && l.originalUrl.toLowerCase().includes(q))
+      );
+      renderUserLinks(filtered);
     }
 
     async function toggleLinkStatus(linkId) {
@@ -1327,10 +1367,10 @@
 
     function renderInternalAd(adData) {
       document.getElementById('ad-container').innerHTML = `
-        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--accent); border-radius: 12px; padding: 18px; width: 100%; text-align: center;">
-          <span style="font-size: 10px; color: var(--accent); background: rgba(59,130,246,0.2); padding: 2px 8px; border-radius: 6px; font-weight: bold;">Sponsored Ad</span>
-          <h3 style="margin: 10px 0; font-size: 16px; color: var(--text);">${escapeHTML(adData.title)}</h3>
-          <a href="${escapeHTML(adData.targetUrl)}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: 6px; padding: 8px 18px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 12px;">Visit Ad ↗</a>
+        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--accent); border-radius: 14px; padding: 20px; width: 100%; text-align: center;">
+          <span style="font-size: 10px; color: var(--accent); background: rgba(59,130,246,0.2); padding: 3px 10px; border-radius: 8px; font-weight: bold;">Sponsored Ad</span>
+          <h3 style="margin: 12px 0; font-size: 17px; color: var(--text);">${escapeHTML(adData.title)}</h3>
+          <a href="${escapeHTML(adData.targetUrl)}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: 6px; padding: 10px 20px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 13px;">Visit Ad ↗</a>
         </div>
       `;
     }
@@ -1485,11 +1525,11 @@
         if (!data.deposits || data.deposits.length === 0) dList.innerHTML = 'No pending deposit requests.';
         else {
           dList.innerHTML = data.deposits.map(d => `
-            <div style="background:#0d1527; padding:10px; margin-bottom:6px; border-radius:8px; border: 1px solid var(--border-color);">
+            <div style="background:#0f172a; padding:12px; margin-bottom:8px; border-radius:12px; border: 1px solid var(--card-border);">
               User: <b>${escapeHTML(d.advertiserId?.username || d.advertiserId?.telegramId || 'Unknown')}</b><br>
               Amount: <b style="color:var(--success);">$${parseFloat(d.amount || 0).toFixed(2)}</b> | Network: <code>${escapeHTML(d.paymentMethod)}</code><br>
               TxID: <code style="color: var(--warning); word-break: break-all;">${escapeHTML(d.txHash || 'N/A')}</code><br>
-              <div style="margin-top: 8px; display: flex; gap: 6px;">
+              <div style="margin-top: 10px; display: flex; gap: 8px;">
                 <button class="btn-small btn-success" onclick="handleAdminDeposit('${d._id}', 'Completed')">Approve</button>
                 <button class="btn-small btn-danger" onclick="handleAdminDeposit('${d._id}', 'Rejected')">Reject</button>
               </div>
@@ -1501,11 +1541,11 @@
         if (!data.withdraws || data.withdraws.length === 0) wList.innerHTML = 'No pending withdrawal requests.';
         else {
           wList.innerHTML = data.withdraws.map(w => `
-            <div style="background:#0d1527; padding:10px; margin-bottom:6px; border-radius:8px; border: 1px solid var(--border-color);">
+            <div style="background:#0f172a; padding:12px; margin-bottom:8px; border-radius:12px; border: 1px solid var(--card-border);">
               User: <b>${escapeHTML(w.userId?.username || w.userId?.telegramId || 'Unknown')}</b><br>
               Amount: <b style="color:var(--success);">$${parseFloat(w.amount || 0).toFixed(2)}</b><br>
               Wallet: <code style="word-break: break-all;">${escapeHTML(w.walletAddress)}</code><br>
-              <div style="margin-top: 8px; display: flex; gap: 6px;">
+              <div style="margin-top: 10px; display: flex; gap: 8px;">
                 <button class="btn-small btn-success" onclick="handleAdminWithdraw('${w._id}', 'Completed')">Approve</button>
                 <button class="btn-small btn-danger" onclick="handleAdminWithdraw('${w._id}', 'Rejected')">Reject</button>
               </div>
@@ -1517,7 +1557,7 @@
         if (!data.users || data.users.length === 0) uList.innerHTML = 'No users found.';
         else {
           uList.innerHTML = data.users.map(u => `
-            <div style="background:#0d1527; padding:10px; margin-bottom:6px; border-radius:8px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid ${u.isBanned ? 'var(--danger)' : 'var(--success)'};">
+            <div style="background:#0f172a; padding:12px; margin-bottom:8px; border-radius:12px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid ${u.isBanned ? 'var(--danger)' : 'var(--success)'};">
               <div>
                 <b>${escapeHTML(u.username || 'Unknown')}</b> (${escapeHTML(String(u.telegramId || ''))})<br>
                 <span style="color: var(--text-muted);">Available: $${(u.availableBalance || 0).toFixed(2)}</span>
