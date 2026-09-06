@@ -604,11 +604,10 @@
       ? 'http://localhost:3000' 
       : window.location.origin;
 
-    let authToken = localStorage.getItem('authToken');
     let currentSessionId = null;
     let bridgeStartTime = Date.now();
     let isUserAdmin = false;
-    let currentLang = localStorage.getItem('appLang') || 'en';
+    let currentLang = 'en';
     let currentUserTelegramId = null;
     let rawUserLinksCache = [];
     const tg = window.Telegram?.WebApp;
@@ -846,7 +845,7 @@
     }
 
     /**
-     * UNIFIED SECURE FETCH WRAPPER FOR MONGODB & SERVER SYNC
+     * UNIFIED SECURE FETCH WRAPPER FOR DIRECT SERVER SYNC
      */
     async function safeFetch(endpoint, options = {}) {
       options.headers = options.headers || {};
@@ -855,9 +854,6 @@
       const currentTgId = tgUser?.id ? String(tgUser.id) : (currentUserTelegramId || '');
       const initDataStr = tg?.initData || '';
 
-      if (authToken) {
-        options.headers['Authorization'] = `Bearer ${authToken}`;
-      }
       if (initDataStr) {
         options.headers['x-telegram-init-data'] = initDataStr;
       }
@@ -897,18 +893,7 @@
       } catch(e) {}
 
       try {
-        let response = await fetch(targetUrl, options);
-        
-        if (response && response.status === 401 && !options._isRetry) {
-          options._isRetry = true;
-          const reAuth = await authLogin();
-          if (reAuth) {
-            if (authToken) options.headers['Authorization'] = `Bearer ${authToken}`;
-            if (initDataStr) options.headers['x-telegram-init-data'] = initDataStr;
-            if (currentTgId) options.headers['x-telegram-id'] = currentTgId;
-            response = await fetch(targetUrl, options);
-          }
-        }
+        const response = await fetch(targetUrl, options);
         return response;
       } catch (err) {
         console.error("Fetch Network Error:", err);
@@ -956,10 +941,7 @@
           avatarContainer.innerHTML = `<div class="user-avatar-placeholder">${escapeHTML(letter)}</div>`;
         }
 
-        const savedLang = localStorage.getItem('appLang');
-        if (savedLang && i18n[savedLang]) {
-          currentLang = savedLang;
-        } else if (u.language_code && i18n[u.language_code]) {
+        if (u.language_code && i18n[u.language_code]) {
           currentLang = u.language_code === 'ar' ? 'ar' : 'en';
         } else {
           currentLang = 'en';
@@ -970,9 +952,7 @@
         handleElem.innerText = '@demo_partner';
         idElem.innerText = 'ID: 88888888';
         avatarContainer.innerHTML = `<div class="user-avatar-placeholder">D</div>`;
-        if (!localStorage.getItem('appLang')) {
-          currentLang = 'en';
-        }
+        currentLang = 'en';
       }
 
       applyLanguage(currentLang);
@@ -980,7 +960,6 @@
 
     function changeAppLanguage(lang) {
       currentLang = i18n[lang] ? lang : 'en';
-      localStorage.setItem('appLang', currentLang);
       applyLanguage(currentLang);
       loadUserData();
     }
@@ -1061,7 +1040,7 @@
       }
     }
 
-    // Check Admin Privilege (HTTP POST to MongoDB)
+    // Check Admin Privilege (HTTP POST)
     async function checkAdminStatus() {
       const userId = tg?.initDataUnsafe?.user?.id || currentUserTelegramId;
       if (!userId) return;
@@ -1104,11 +1083,7 @@
         });
         if (!res) return false;
         const data = await res.json();
-        if (data && data.token) {
-          authToken = data.token;
-          localStorage.setItem('authToken', authToken);
-          return true;
-        }
+        return true;
       } catch (e) {
         console.error("Auth error:", e);
         showToast(currentLang === 'ar' ? "فشل الاتصال بمركز المصادقة" : "Authentication connection failed");
@@ -1118,7 +1093,7 @@
 
     async function initializeApp() {
       try {
-        if (!authToken) await authLogin();
+        await authLogin();
         await checkAdminStatus();
         await loadUserData();
       } catch (err) {
@@ -1126,7 +1101,7 @@
       }
     }
 
-    // Data Fetching directly from MongoDB (GET)
+    // Direct Data Fetching from Server (GET)
     async function loadUserData() {
       try {
         const linksContainer = document.getElementById('links-list');
@@ -1567,7 +1542,7 @@
       }
     }
 
-    // Save User Settings to Server / MongoDB (HTTP PUT)
+    // Save User Settings to Server (HTTP PUT)
     async function saveSettings() {
       const defaultWallet = document.getElementById('default-wallet').value;
       if (!defaultWallet || defaultWallet.trim().length < 5) {
