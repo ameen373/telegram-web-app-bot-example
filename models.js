@@ -1,6 +1,6 @@
 /**
- * Ultra-Enterprise Models Architecture (V5.4 - Complete Field Alignment & Absolute Data Safety)
- * Platform: Telega.ads Advertising & Shortener Network
+ * Ultra-Enterprise Models Architecture (V6.0 - Next-Gen Hybrid Architecture)
+ * Platform: Telega.ads Advertising & Shortener Network Engine
  * Security: Zero-Data-Leakage Enforcement, Dynamic Context Scoping, Dual-ID Ownership Bindings
  */
 
@@ -39,6 +39,15 @@ const enforceTenantKey = (tenantKey, keyName = 'userId') => {
   if (!tenantKey) {
     throw new Error(`Security Violation [Tenant Isolation]: Access denied. Missing strictly required parameter: ${keyName}`);
   }
+};
+
+// Wallet Address RegEx Pattern Validator
+const validateWalletAddress = (v) => {
+  if (!v || v === '') return true;
+  const isTron = /^T[A-Za-z1-9]{33}$/.test(v);
+  const isEvm = /^0x[a-fA-F0-9]{40}$/.test(v);
+  const isTon = /^[a-zA-Z0-9_-]{48}$/.test(v) || /^0:[a-fA-F0-9]{64}$/.test(v);
+  return isTron || isEvm || isTon;
 };
 
 // --------------------------------------------------
@@ -112,12 +121,20 @@ const userSchema = new mongoose.Schema({
   defaultWallet: { 
     type: String, 
     default: '', 
-    trim: true
+    trim: true,
+    validate: {
+      validator: validateWalletAddress,
+      message: 'Invalid wallet address format (Must be USDT TRC20, BEP20/ERC20, or TON)'
+    }
   },
   withdrawalWallet: {
     type: String,
     default: '',
-    trim: true
+    trim: true,
+    validate: {
+      validator: validateWalletAddress,
+      message: 'Invalid withdrawal wallet address format'
+    }
   },
   statsSummary: {
     totalLinksCreated: { type: Number, default: 0, min: 0 },
@@ -284,7 +301,13 @@ const adSchema = new mongoose.Schema({
   targetUrl: { 
     type: String, 
     required: [true, 'Target URL is required'], 
-    trim: true
+    trim: true,
+    validate: {
+      validator: function(v) {
+        return /^(https?:\/\/)?([\w.-]+)+[\w\-_~:/?#[\]@!$&'()*+,;=.]+$/i.test(v);
+      },
+      message: 'Please enter a valid target URL'
+    }
   },
   totalBudget: { 
     type: Number, 
@@ -348,6 +371,7 @@ adSchema.pre('validate', function(next) {
   next();
 });
 
+adSchema.index({ status: 1, remainingBudget: 1, createdAt: -1 });
 adSchema.index({ userId: 1, status: 1, createdAt: -1 });
 
 adSchema.statics.findAdvertiserAdsIsolated = function(userId, filter = {}) {
@@ -398,7 +422,13 @@ const linkSchema = new mongoose.Schema({
   targetUrl: { 
     type: String, 
     required: [true, 'Target URL is required'], 
-    trim: true 
+    trim: true,
+    validate: {
+      validator: function(v) {
+        return /^(https?:\/\/)?([\w.-]+)+[\w\-_~:/?#[\]@!$&'()*+,;=.]+$/i.test(v);
+      },
+      message: 'Please enter a valid target URL'
+    }
   },
   isActive: { 
     type: Boolean, 
@@ -430,6 +460,7 @@ linkSchema.pre('validate', function(next) {
 
 linkSchema.index({ userId: 1, createdAt: -1 });
 linkSchema.index({ userId: 1, isActive: 1, createdAt: -1 });
+linkSchema.index({ validImpressions: -1 });
 
 linkSchema.statics.getUserIsolatedLinks = function(userId, query = {}, options = {}) {
   enforceTenantKey(userId, 'userId');
@@ -528,6 +559,8 @@ impressionSchema.pre('validate', function(next) {
   next();
 });
 
+impressionSchema.index({ linkId: 1, createdAt: -1 });
+impressionSchema.index({ ip: 1, createdAt: -1 });
 impressionSchema.index({ userId: 1, createdAt: -1 });
 
 impressionSchema.statics.getPublisherImpressionsIsolated = function(userId, extraFilter = {}) {
@@ -606,7 +639,7 @@ clickSessionSchema.pre('validate', function(next) {
 });
 
 clickSessionSchema.index({ linkId: 1, ip: 1 });
-clickSessionSchema.index({ bridgeToken: 1 });
+clickSessionSchema.index({ bridgeToken: 1 }, { unique: true });
 
 // --------------------------------------------------
 // 8. Withdraw Request Model (Withdrawals)
@@ -650,7 +683,11 @@ const withdrawSchema = new mongoose.Schema({
   walletAddress: { 
     type: String, 
     required: [true, 'Wallet address is required'], 
-    trim: true 
+    trim: true,
+    validate: {
+      validator: validateWalletAddress,
+      message: 'Invalid withdrawal wallet address format'
+    }
   },
   status: { 
     type: String, 
@@ -684,6 +721,7 @@ withdrawSchema.pre('validate', function(next) {
 });
 
 withdrawSchema.index({ userId: 1, status: 1, createdAt: -1 });
+withdrawSchema.index({ status: 1, createdAt: -1 });
 
 withdrawSchema.index(
   { userId: 1, status: 'pending' }, 
@@ -732,6 +770,7 @@ const earningsHoldSchema = new mongoose.Schema({
   }
 }, globalSchemaOptions);
 
+earningsHoldSchema.index({ isReleased: 1, releaseAt: 1 });
 earningsHoldSchema.index({ userId: 1, isReleased: 1, releaseAt: 1 });
 
 earningsHoldSchema.statics.getUserHoldsIsolated = function(userId) {
@@ -814,6 +853,7 @@ depositSchema.pre('validate', function(next) {
 });
 
 depositSchema.index({ userId: 1, status: 1, createdAt: -1 });
+depositSchema.index({ advertiserId: 1, status: 1 });
 
 depositSchema.statics.getAdvertiserDepositsIsolated = function(userId) {
   enforceTenantKey(userId, 'userId');
@@ -854,7 +894,7 @@ announcementSchema.statics.getForUserIsolated = function(userId, telegramId) {
   }).sort({ createdAt: -1 });
 };
 
-// Exporting Optimized Safe Models
+// Model exports with fallback check against overwriting existing models
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 const Wallet = mongoose.models.Wallet || mongoose.model('Wallet', walletSchema);
 const Transaction = mongoose.models.Transaction || mongoose.model('Transaction', transactionSchema);
