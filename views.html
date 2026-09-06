@@ -828,10 +828,15 @@
       }
     }
 
+    // Unified Secure Network Wrapper (Ensures Valid Authentication Headers)
     async function safeFetch(endpoint, options = {}) {
       options.headers = options.headers || {};
+      
       if (authToken) {
         options.headers['Authorization'] = `Bearer ${authToken}`;
+      }
+      if (tg?.initData) {
+        options.headers['x-telegram-init-data'] = tg.initData;
       }
       
       const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
@@ -1004,10 +1009,7 @@
       try {
         const res = await safeFetch('/api/auth/login', {
           method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            ...(tg?.initData ? {'x-telegram-init-data': tg.initData} : {'x-demo-user-id': 'DEMO_USER_DEV'}) 
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ referrerId: startParam, telegramUserInfo: tg?.initDataUnsafe?.user || {} })
         });
         if (!res) return false;
