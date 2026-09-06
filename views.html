@@ -124,7 +124,7 @@
       border-radius: 34px;
       display: flex;
       align-items: center;
-      justify-content: space-around;
+      justify-style: space-around;
       padding: 0 6px;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
       z-index: 9999;
@@ -846,29 +846,56 @@
 
     /**
      * UNIFIED SECURE FETCH WRAPPER
-     * Guarantees sending user identification tokens & Telegram Mini App initData headers to backend
+     * Automatically injects telegramId & initData in headers & URL parameters
      */
     async function safeFetch(endpoint, options = {}) {
       options.headers = options.headers || {};
       
-      // 1. Send Bearer Token if user is authenticated
+      const tgUser = tg?.initDataUnsafe?.user;
+      const currentTgId = tgUser?.id ? String(tgUser.id) : (currentUserTelegramId || '');
+      const initDataStr = tg?.initData || '';
+
+      // 1. Injected Identification Headers
       if (authToken) {
         options.headers['Authorization'] = `Bearer ${authToken}`;
       }
-      
-      // 2. Send Telegram WebApp initData string
-      if (tg && tg.initData) {
-        options.headers['x-telegram-init-data'] = tg.initData;
+      if (initDataStr) {
+        options.headers['x-telegram-init-data'] = initDataStr;
+      }
+      if (currentTgId) {
+        options.headers['x-telegram-id'] = currentTgId;
       }
 
-      // 3. Ensure JSON Content-Type for requests with body
-      if (options.body && typeof options.body === 'string' && !options.headers['Content-Type']) {
+      // 2. Inject telegramId and initData into JSON payload if present
+      if (options.body && typeof options.body === 'string') {
+        try {
+          const bodyObj = JSON.parse(options.body);
+          bodyObj.telegramId = currentTgId;
+          bodyObj.initData = initDataStr;
+          options.body = JSON.stringify(bodyObj);
+        } catch(e) {}
+      }
+
+      // 3. Ensure JSON Content-Type
+      if (options.body && !options.headers['Content-Type']) {
         options.headers['Content-Type'] = 'application/json';
       }
       
-      const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-      const targetUrl = endpoint.startsWith('http') ? endpoint : `${API_BASE}${cleanEndpoint}`;
-      
+      // 4. Inject Query Params for GET or endpoints
+      let cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+      let targetUrl = endpoint.startsWith('http') ? endpoint : `${API_BASE}${cleanEndpoint}`;
+
+      try {
+        const urlObj = new URL(targetUrl);
+        if (currentTgId && !urlObj.searchParams.has('telegramId')) {
+          urlObj.searchParams.set('telegramId', currentTgId);
+        }
+        if (initDataStr && !urlObj.searchParams.has('initData')) {
+          urlObj.searchParams.set('initData', initDataStr);
+        }
+        targetUrl = urlObj.toString();
+      } catch(e) {}
+
       try {
         let response = await fetch(targetUrl, options);
         
@@ -878,7 +905,8 @@
           const reAuth = await authLogin();
           if (reAuth) {
             if (authToken) options.headers['Authorization'] = `Bearer ${authToken}`;
-            if (tg?.initData) options.headers['x-telegram-init-data'] = tg.initData;
+            if (initDataStr) options.headers['x-telegram-init-data'] = initDataStr;
+            if (currentTgId) options.headers['x-telegram-id'] = currentTgId;
             response = await fetch(targetUrl, options);
           }
         }
@@ -940,7 +968,7 @@
       } else {
         currentUserTelegramId = 'DEMO_USER_DEV';
         nameElem.innerText = 'Demo Partner';
- handleElem.innerText = '@demo_partner';
+        handleElem.innerText = '@demo_partner';
         idElem.innerText = 'ID: 88888888';
         avatarContainer.innerHTML = `<div class="user-avatar-placeholder">D</div>`;
         if (!localStorage.getItem('appLang')) {
@@ -1041,6 +1069,7 @@
         const res = await safeFetch('/api/auth/login', {
           method: 'POST',
           body: JSON.stringify({ 
+            telegramId: currentUserTelegramId,
             initData: tg?.initData || '',
             referrerId: startParam, 
             telegramUserInfo: tg?.initDataUnsafe?.user || {} 
@@ -1081,7 +1110,7 @@
         if (adsContainer) adsContainer.innerHTML = i18n[currentLang]?.loading || 'Loading...';
         if (withdrawsContainer) withdrawsContainer.innerHTML = i18n[currentLang]?.loading || 'Loading...';
 
-        const res = await safeFetch('/api/user/data');
+        const res = await safeFetch(`/api/user/data?telegramId=${currentUserTelegramId}`);
         if (!res) return;
         const data = await res.json();
         if (!data || !data.user) return;
@@ -1221,7 +1250,7 @@
       try {
         const res = await safeFetch('/api/links/toggle', {
           method: 'POST',
-          body: JSON.stringify({ linkId })
+          body: JSON.stringify({ linkId, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1240,7 +1269,7 @@
       try {
         const res = await safeFetch('/api/ads/toggle', {
           method: 'POST',
-          body: JSON.stringify({ adId })
+          body: JSON.stringify({ adId, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1267,7 +1296,7 @@
       try {
         const res = await safeFetch('/api/ads', {
           method: 'POST',
-          body: JSON.stringify({ title, targetUrl, totalBudget })
+          body: JSON.stringify({ title, targetUrl, totalBudget, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1301,7 +1330,7 @@
       try {
         const res = await safeFetch('/api/deposit', {
           method: 'POST',
-          body: JSON.stringify({ amount, paymentMethod, txHash })
+          body: JSON.stringify({ amount, paymentMethod, txHash, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1330,7 +1359,7 @@
       try {
         const res = await safeFetch('/api/init-click', {
           method: 'POST',
-          body: JSON.stringify({ linkCode: shortCode })
+          body: JSON.stringify({ linkCode: shortCode, telegramId: currentUserTelegramId })
         });
         if (res) {
           const data = await res.json();
@@ -1388,7 +1417,7 @@
       try {
         const res = await safeFetch('/api/impression', {
           method: 'POST',
-          body: JSON.stringify({ linkCode: shortCode, sessionId: currentSessionId, duration })
+          body: JSON.stringify({ linkCode: shortCode, sessionId: currentSessionId, duration, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1419,7 +1448,7 @@
       try {
         const res = await safeFetch('/api/links', {
           method: 'POST',
-          body: JSON.stringify({ title, targetUrl })
+          body: JSON.stringify({ title, targetUrl, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1451,7 +1480,7 @@
       try {
         const res = await safeFetch('/api/withdraw', {
           method: 'POST',
-          body: JSON.stringify({ amount, walletAddress })
+          body: JSON.stringify({ amount, walletAddress, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1478,7 +1507,7 @@
       try {
         const res = await safeFetch('/api/user/settings', {
           method: 'POST',
-          body: JSON.stringify({ defaultWallet })
+          body: JSON.stringify({ defaultWallet, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1578,7 +1607,7 @@
       try {
         const res = await safeFetch('/api/admin/deposit/action', {
           method: 'POST',
-          body: JSON.stringify({ depositId, action })
+          body: JSON.stringify({ depositId, action, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1603,7 +1632,7 @@
       try {
         const res = await safeFetch('/api/admin/withdraw/action', {
           method: 'POST',
-          body: JSON.stringify({ withdrawId, action, rejectReason })
+          body: JSON.stringify({ withdrawId, action, rejectReason, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1622,7 +1651,7 @@
       try {
         const res = await safeFetch('/api/admin/user/toggle-ban', {
           method: 'POST',
-          body: JSON.stringify({ userId })
+          body: JSON.stringify({ userId, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
@@ -1646,7 +1675,7 @@
       try {
         const res = await safeFetch('/api/admin/distribute-revenue', {
           method: 'POST',
-          body: JSON.stringify({ totalRevenue })
+          body: JSON.stringify({ totalRevenue, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
