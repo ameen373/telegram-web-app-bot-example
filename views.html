@@ -779,6 +779,65 @@
       }
     };
 
+    // Auto-Save State Engine
+    const AUTO_SAVE_ENDPOINT = '/api/user/sync-state';
+    let pendingChanges = {};
+    let saveTimeout = null;
+
+    function queueStateChange(key, value) {
+      pendingChanges[key] = value;
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(sendPendingState, 1000);
+    }
+
+    function sendPendingState(isSync = false) {
+      if (Object.keys(pendingChanges).length === 0) return;
+
+      const payload = {
+        userId: currentUserTelegramId,
+        timestamp: Date.now(),
+        changes: { ...pendingChanges }
+      };
+
+      const url = `${API_BASE}${AUTO_SAVE_ENDPOINT}?telegramId=${currentUserTelegramId || ''}`;
+
+      if (isSync && navigator.sendBeacon) {
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        navigator.sendBeacon(url, blob);
+      } else {
+        safeFetch(AUTO_SAVE_ENDPOINT, {
+          method: 'POST',
+          keepalive: true,
+          body: JSON.stringify(payload)
+        }).catch(err => console.error("Auto-save sync error:", err));
+      }
+
+      pendingChanges = {};
+    }
+
+    function setupAutoSaveTrackers() {
+      document.querySelectorAll('input, select, textarea').forEach(element => {
+        element.addEventListener('change', (e) => {
+          if (e.target.id) {
+            queueStateChange(e.target.id, e.target.value);
+          }
+        });
+      });
+
+      const handleUnload = () => {
+        sendPendingState(true);
+      };
+
+      window.addEventListener('beforeunload', handleUnload);
+      window.addEventListener('pagehide', handleUnload);
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          sendPendingState(true);
+        }
+      });
+    }
+
     // Helper Functions
     function escapeHTML(str) {
       if (!str) return '';
@@ -820,6 +879,8 @@
 
       document.getElementById('wallet-view-deposit').classList.toggle('hidden', view !== 'deposit');
       document.getElementById('wallet-view-withdraw').classList.toggle('hidden', view !== 'withdraw');
+      
+      queueStateChange('lastWalletView', view);
     }
 
     function toggleInstructionsModal(show) {
@@ -981,6 +1042,7 @@
     function changeAppLanguage(lang) {
       currentLang = i18n[lang] ? lang : 'en';
       localStorage.setItem('appLang', currentLang);
+      queueStateChange('appLang', currentLang);
       applyLanguage(currentLang);
       loadUserData();
     }
@@ -1300,6 +1362,7 @@
         else {
           showToast(data.isActive ? (currentLang === 'ar' ? "تم تفعيل الرابط" : "Link activated") : (currentLang === 'ar' ? "تم تعطيل الرابط" : "Link disabled"));
           loadUserData();
+          queueStateChange(`link_${linkId}_isActive`, data.isActive);
         }
       } catch (e) {
         showToast(currentLang === 'ar' ? "خطأ أثناء تغيير حالة الرابط" : "Error toggling link status");
@@ -1319,6 +1382,7 @@
         else {
           showToast(currentLang === 'ar' ? "تم تحديث حالة الحملة الإعلانية" : "Ad status updated");
           loadUserData();
+          queueStateChange(`ad_${adId}_status`, data.status);
         }
       } catch (e) {
         showToast(currentLang === 'ar' ? "خطأ أثناء تعديل حالة الإعلان" : "Error toggling ad status");
@@ -1577,6 +1641,7 @@
         else {
           showToast(currentLang === 'ar' ? "تم حفظ المحفظة بنجاح" : "Wallet saved successfully");
           loadUserData();
+          queueStateChange('defaultWallet', defaultWallet);
         }
       } catch (e) {
         showToast(currentLang === 'ar' ? "خطأ أثناء حفظ الإعدادات" : "Error saving settings");
@@ -1599,6 +1664,8 @@
       if (tabId === 'admin') {
         loadAdminData();
       }
+
+      queueStateChange('activeTab', tabId);
     }
 
     // Admin Operations
@@ -1767,6 +1834,7 @@
       } catch (e) {}
 
       renderTelegramUser();
+      setupAutoSaveTrackers();
 
       if (window.location.pathname.includes('/r/')) {
         document.getElementById('bridge-view').classList.remove('hidden');
