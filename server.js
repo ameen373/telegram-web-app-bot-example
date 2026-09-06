@@ -1,5 +1,5 @@
 /**
- * Ultra-Enterprise Server Architecture (V5 - Ultimate Multi-Tenant Isolation & Anti-Data-Leak Guard)
+ * Ultra-Enterprise Server Architecture (V6 - Absolute Multi-Tenant Security & High-Performance Core)
  * Telegram Link Shortener & Mini App Engine (Telega.ads)
  * Absolute Isolated Session System & Financial Security Core
  */
@@ -246,7 +246,7 @@ const authMiddleware = async (req, res, next) => {
 
     // Attach verified user exclusively to current request context
     req.user = user;
-    req.user.id = user._id.toString(); // Normalized ObjectId string/reference
+    req.user.id = user._id.toString(); // Normalized ObjectId string
     next();
   } catch (err) {
     res.status(401).json({ success: false, error: 'انتهت الجلسة، يرجى إعادة التسجيل' });
@@ -324,10 +324,10 @@ app.post('/api/auth/login', async (req, res, next) => {
   }
 });
 
-// --- Isolated User Data Gateway (Wallet, Links, Withdrawals, Ads Isolation) ---
+// --- Isolated User Data Gateway ---
 app.get('/api/user/data', authMiddleware, async (req, res, next) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user && (req.user._id || req.user.id);
 
     if (!userId) {
       return res.json({
@@ -392,7 +392,7 @@ app.get('/api/user/data', authMiddleware, async (req, res, next) => {
   }
 });
 
-// --- Self-Serve Ad Campaign APIs (Strict User Isolation) ---
+// --- Self-Serve Ad Campaign APIs ---
 app.post('/api/ads', authMiddleware, async (req, res, next) => {
   const session = await mongoose.startSession();
   try {
@@ -454,7 +454,6 @@ app.post('/api/ads', authMiddleware, async (req, res, next) => {
 
 app.get('/api/user/ads', authMiddleware, async (req, res, next) => {
   try {
-    // Isolated Campaigns Lookup Only
     const ads = await Ad.find({ $or: [{ userId: req.user._id }, { advertiserId: req.user._id }] }).sort({ createdAt: -1 }).lean();
     res.json({ success: true, ads });
   } catch (err) {
@@ -467,7 +466,6 @@ app.post('/api/ads/toggle', authMiddleware, async (req, res, next) => {
     const { adId } = req.body;
     if (!mongoose.Types.ObjectId.isValid(adId)) return res.status(400).json({ success: false, error: 'معرف الإعلان غير صالح' });
 
-    // Enforce Strict Data Isolation Strategy: Querying ONLY ads matching req.user._id
     const ad = await Ad.findOne({ _id: adId, $or: [{ userId: req.user._id }, { advertiserId: req.user._id }] });
     if (!ad) return res.status(404).json({ success: false, error: 'الإعلان غير موجود أو لا تملك صلاحية تعديله' });
 
@@ -484,7 +482,7 @@ app.post('/api/ads/toggle', authMiddleware, async (req, res, next) => {
   }
 });
 
-// --- Deposit & Withdraw Routes (Strict User Isolation) ---
+// --- Deposit & Withdraw Routes ---
 app.post('/api/deposit', authMiddleware, async (req, res, next) => {
   try {
     const { amount, network, txid } = req.body;
@@ -555,7 +553,6 @@ app.post('/api/withdraw', authMiddleware, async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'عنوان المحفظة غير صالح' });
     }
 
-    // Isolated Pending Withdrawal Guard per userId
     const activePending = await Withdraw.findOne({ userId: req.user._id, status: 'pending' }).session(session);
     if (activePending) {
       await session.abortTransaction();
@@ -564,7 +561,6 @@ app.post('/api/withdraw', authMiddleware, async (req, res, next) => {
 
     const netAmount = numAmt - FEE;
 
-    // Strict isolated user balance update
     const updatedUser = await User.findOneAndUpdate(
       { _id: req.user._id, availableBalance: { $gte: numAmt } },
       { $inc: { availableBalance: -numAmt }, defaultWallet: cleanWallet },
@@ -809,17 +805,17 @@ app.post('/api/impression', validateTraffic, clickLimiter, async (req, res, next
 });
 
 // =========================================================================
-// --- Strict Link Management Engine (100% Data Isolated Routes) ---
+// --- Strict Link Management Engine (100% Isolated Routes Guard) ---
 // =========================================================================
 
-// Create Link
+// Create Link Engine
 app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, next) => {
   try {
     let { title, targetUrl } = req.body;
     const cleanUrl = String(targetUrl || '').trim();
     const userId = req.user && (req.user._id || req.user.id);
 
-    // 1. Reject creation if userId is missing or undefined
+    // 1. GUARANTEED REFUSAL: Reject creation if userId is missing or undefined
     if (!userId) {
       return res.status(401).json({ success: false, error: 'غير مصرح: معرف المستخدم مفقود' });
     }
@@ -841,7 +837,7 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
 
     const shortCode = crypto.randomBytes(3).toString('hex');
     
-    // 2. Strict Isolation: Store mandatory userId inside the new Link
+    // 2. GUARANTEED STORAGE: Store mandatory userId inside the created Link
     const link = await Link.create({
       userId: userId,
       publisherTelegramId: req.user.telegramId,
@@ -851,7 +847,6 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
       isActive: true
     });
 
-    // Update user stats summary
     await User.findByIdAndUpdate(userId, { $inc: { 'statsSummary.totalLinksCreated': 1 } });
 
     res.json({ 
@@ -864,17 +859,17 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
   }
 });
 
-// Fetch Links Endpoint
+// Fetch Links Main Endpoint
 app.get('/api/links', authMiddleware, async (req, res, next) => {
   try {
     const userId = req.user && (req.user._id || req.user.id);
 
-    // 1. Guard check: If userId is undefined/missing, NEVER execute Link.find({}), return [] immediately.
+    // 1. ABSOLUTE GUARD: If userId is undefined/missing, NEVER execute Link.find({}), return [] immediately.
     if (!userId) {
       return res.json({ success: true, links: [] });
     }
 
-    // 2. Strict Isolated Query: Fetch EXCLUSIVELY by { userId: userId }
+    // 2. ABSOLUTE ISOLATION: Fetch EXCLUSIVELY by { userId: userId }
     const rawLinks = await Link.find({ userId: userId }).sort({ createdAt: -1 }).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
@@ -892,17 +887,17 @@ app.get('/api/links', authMiddleware, async (req, res, next) => {
   }
 });
 
-// Strict Isolated User Links Fetching Endpoint Alias
+// Fetch Links Alias Endpoint
 app.get('/api/user/links', authMiddleware, async (req, res, next) => {
   try {
     const userId = req.user && (req.user._id || req.user.id);
 
-    // Guard check: If userId is undefined/missing, NEVER execute Link.find({}), return [] immediately.
+    // 1. ABSOLUTE GUARD: If userId is undefined/missing, NEVER execute Link.find({}), return [] immediately.
     if (!userId) {
       return res.json({ success: true, links: [] });
     }
 
-    // Strict Isolated Query: Fetch EXCLUSIVELY by { userId: userId }
+    // 2. ABSOLUTE ISOLATION: Fetch EXCLUSIVELY by { userId: userId }
     const rawLinks = await Link.find({ userId: userId }).sort({ createdAt: -1 }).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
@@ -928,7 +923,6 @@ app.post('/api/links/toggle', authMiddleware, async (req, res, next) => {
     if (!userId) return res.status(401).json({ success: false, error: 'معرف المستخدم مفقود' });
     if (!mongoose.Types.ObjectId.isValid(linkId)) return res.status(400).json({ success: false, error: 'معرف الرابط غير صالح' });
 
-    // Enforce Cross-Tenant Isolation Condition: Query requires { _id: linkId, userId: userId }
     const link = await Link.findOne({ _id: linkId, userId: userId });
     if (!link) return res.status(404).json({ success: false, error: 'الرابط غير موجود أو لا تملك صلاحيات التعديل عليه' });
 
@@ -957,7 +951,7 @@ app.post('/api/user/settings', authMiddleware, async (req, res, next) => {
   }
 });
 
-// --- Admin Panel Routes (Strict Global Privilege Check) ---
+// --- Admin Panel Routes ---
 app.get('/api/admin/dashboard-data', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
     const [withdraws, deposits, users, stats, totalAds] = await Promise.all([
@@ -1244,4 +1238,4 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Enterprise Server V5 Active on Port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Enterprise Server V6 Active on Port ${PORT}`));
