@@ -846,7 +846,7 @@
     }
 
     /**
-     * UNIFIED SECURE FETCH WRAPPER
+     * UNIFIED SECURE FETCH WRAPPER FOR MONGODB & SERVER SYNC
      */
     async function safeFetch(endpoint, options = {}) {
       options.headers = options.headers || {};
@@ -1061,7 +1061,7 @@
       }
     }
 
-    // Check Admin Privilege
+    // Check Admin Privilege (HTTP POST to MongoDB)
     async function checkAdminStatus() {
       const userId = tg?.initDataUnsafe?.user?.id || currentUserTelegramId;
       if (!userId) return;
@@ -1088,7 +1088,7 @@
       }
     }
 
-    // Authentication Engine
+    // Authentication Engine (HTTP POST)
     async function authLogin() {
       const startParam = tg?.initDataUnsafe?.start_param || null;
       try {
@@ -1126,7 +1126,7 @@
       }
     }
 
-    // Data Sync - GET Fetch
+    // Data Fetching directly from MongoDB (GET)
     async function loadUserData() {
       try {
         const linksContainer = document.getElementById('links-list');
@@ -1287,6 +1287,7 @@
       renderUserLinks(filtered);
     }
 
+    // Toggle Short Link State (HTTP POST)
     async function toggleLinkStatus(linkId) {
       triggerHaptic('light');
       try {
@@ -1306,6 +1307,7 @@
       }
     }
 
+    // Toggle Ad Campaign State (HTTP POST)
     async function toggleAdStatus(adId) {
       triggerHaptic('light');
       try {
@@ -1325,6 +1327,7 @@
       }
     }
 
+    // Create New Ad Campaign (HTTP POST)
     async function createAdCampaign() {
       const title = document.getElementById('ad-title').value;
       const targetUrl = document.getElementById('ad-target-url').value;
@@ -1357,6 +1360,7 @@
       }
     }
 
+    // Submit Deposit Request (HTTP POST)
     async function requestDeposit() {
       const amount = document.getElementById('deposit-amount').value;
       const paymentMethod = document.getElementById('deposit-network').value;
@@ -1392,7 +1396,7 @@
       }
     }
 
-    // Bridge Page Processing
+    // Bridge Page Processing (HTTP POST)
     async function initBridge() {
       const pathParts = window.location.pathname.split('/r/');
       const shortCode = pathParts[1];
@@ -1450,6 +1454,7 @@
       document.getElementById('ad-container').innerHTML = `<iframe src="https://adsterra.com/preview" width="100%" height="220" frameborder="0"></iframe>`;
     }
 
+    // Complete Click & Redirect Impression (HTTP POST)
     async function completeImpression() {
       triggerHaptic('medium');
       setButtonLoading('go-btn', true);
@@ -1475,6 +1480,7 @@
       }
     }
 
+    // Shorten New URL (HTTP POST)
     async function handleShortenClick() {
       const title = document.getElementById('link-title').value;
       const targetUrl = document.getElementById('link-url').value;
@@ -1529,6 +1535,7 @@
       }
     }
 
+    // Submit Withdrawal Request (HTTP POST)
     async function requestWithdrawal() {
       const amount = parseFloat(document.getElementById('withdraw-amount').value);
       const walletAddress = document.getElementById('default-wallet').value;
@@ -1560,6 +1567,7 @@
       }
     }
 
+    // Save User Settings to Server / MongoDB (HTTP PUT)
     async function saveSettings() {
       const defaultWallet = document.getElementById('default-wallet').value;
       if (!defaultWallet || defaultWallet.trim().length < 5) {
@@ -1575,7 +1583,7 @@
         const data = await res.json();
         if (data.error) showToast(data.error);
         else {
-          showToast(currentLang === 'ar' ? "تم حفظ المحفظة بنجاح" : "Wallet saved successfully");
+          showToast(currentLang === 'ar' ? "تم حفظ المحفظة بنجاح في قاعدة البيانات" : "Wallet saved successfully");
           loadUserData();
         }
       } catch (e) {
@@ -1601,7 +1609,7 @@
       }
     }
 
-    // Admin Operations
+    // Admin Operations (HTTP GET/POST)
     async function loadAdminData() {
       if (!isUserAdmin) return;
       try {
