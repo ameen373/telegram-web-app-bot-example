@@ -322,7 +322,7 @@
     </div>
 
     <!-- Main App Container View -->
-    <div id="app-view" class="hidden">
+    <div id="app-view">
       
       <!-- User Header Profile Card -->
       <div class="user-profile-header">
@@ -532,7 +532,7 @@
         </div>
       </div>
 
-      <!-- Tab 6: Admin Dashboard Panel -->
+      <!-- Tab 6: Admin Dashboard Panel (Hidden by default) -->
       <div id="tab-content-admin" class="tab-pane hidden">
         <div class="stats-grid" style="margin-bottom: 16px;">
           <div class="stat-box"><small>Total Platform Users</small><h3 id="admin-total-users">0</h3></div>
@@ -588,6 +588,7 @@
           <span data-i18n="nav_settings">Settings</span>
         </button>
 
+        <!-- Hidden by default with class "hidden" -->
         <button onclick="switchTab('admin')" class="nav-btn hidden" id="tab-btn-admin" style="color: var(--warning);">
           <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-5.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
           <span>Admin</span>
@@ -609,7 +610,7 @@
     let isUserAdmin = false;
     let currentLang = localStorage.getItem('appLang') || 'en';
     let currentUserTelegramId = null;
-    let rawUserLinksCache = []; // Internal cache for quick filtering
+    let rawUserLinksCache = [];
     const tg = window.Telegram?.WebApp;
 
     // Translation Dictionary
@@ -846,7 +847,6 @@
 
     /**
      * UNIFIED SECURE FETCH WRAPPER
-     * Automatically injects telegramId & initData in headers, body, & URL parameters
      */
     async function safeFetch(endpoint, options = {}) {
       options.headers = options.headers || {};
@@ -855,7 +855,6 @@
       const currentTgId = tgUser?.id ? String(tgUser.id) : (currentUserTelegramId || '');
       const initDataStr = tg?.initData || '';
 
-      // 1. Injected Identification Headers
       if (authToken) {
         options.headers['Authorization'] = `Bearer ${authToken}`;
       }
@@ -866,7 +865,6 @@
         options.headers['x-telegram-id'] = currentTgId;
       }
 
-      // 2. Inject telegramId and initData into JSON payload if present
       if (options.body && typeof options.body === 'string') {
         try {
           const bodyObj = JSON.parse(options.body);
@@ -879,12 +877,10 @@
         } catch(e) {}
       }
 
-      // 3. Ensure JSON Content-Type
       if (options.body && !options.headers['Content-Type']) {
         options.headers['Content-Type'] = 'application/json';
       }
       
-      // 4. Inject Query Params for GET or endpoints
       let cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
       let targetUrl = endpoint.startsWith('http') ? endpoint : `${API_BASE}${cleanEndpoint}`;
 
@@ -903,7 +899,6 @@
       try {
         let response = await fetch(targetUrl, options);
         
-        // Auto-reauthenticate on expired token (HTTP 401)
         if (response && response.status === 401 && !options._isRetry) {
           options._isRetry = true;
           const reAuth = await authLogin();
@@ -1066,6 +1061,33 @@
       }
     }
 
+    // Check Admin Privilege
+    async function checkAdminStatus() {
+      const userId = tg?.initDataUnsafe?.user?.id || currentUserTelegramId;
+      if (!userId) return;
+
+      try {
+        const res = await safeFetch('/api/check-admin', {
+          method: 'POST',
+          body: JSON.stringify({ userId })
+        });
+        if (res) {
+          const data = await res.json();
+          if (data && data.isAdmin === true) {
+            isUserAdmin = true;
+            const adminBtn = document.getElementById('tab-btn-admin');
+            if (adminBtn) adminBtn.classList.remove('hidden');
+          } else {
+            isUserAdmin = false;
+            const adminBtn = document.getElementById('tab-btn-admin');
+            if (adminBtn) adminBtn.classList.add('hidden');
+          }
+        }
+      } catch (e) {
+        console.error("Error checking admin status:", e);
+      }
+    }
+
     // Authentication Engine
     async function authLogin() {
       const startParam = tg?.initDataUnsafe?.start_param || null;
@@ -1085,7 +1107,6 @@
         if (data && data.token) {
           authToken = data.token;
           localStorage.setItem('authToken', authToken);
-          isUserAdmin = !!data.isAdmin;
           return true;
         }
       } catch (e) {
@@ -1098,13 +1119,14 @@
     async function initializeApp() {
       try {
         if (!authToken) await authLogin();
+        await checkAdminStatus();
         await loadUserData();
       } catch (err) {
         console.error("App init error:", err);
       }
     }
 
-    // Data Sync & Strict Isolation Per Active User Session
+    // Data Sync
     async function loadUserData() {
       try {
         const linksContainer = document.getElementById('links-list');
@@ -1119,9 +1141,6 @@
         if (!res) return;
         const data = await res.json();
         if (!data || !data.user) return;
-
-        isUserAdmin = !!data.isAdmin;
-        document.getElementById('tab-btn-admin').classList.toggle('hidden', !isUserAdmin);
 
         document.getElementById('pending-bal').innerText = `$${(data.user.pendingBalance || 0).toFixed(2)}`;
         document.getElementById('avail-bal').innerText = `$${(data.user.availableBalance || 0).toFixed(2)}`;
@@ -1164,9 +1183,8 @@
           }).join('');
         }
 
-        // Strict User Short Links Isolation (Excludes any link without owner / ownerTelegramId)
         rawUserLinksCache = (data.links || []).filter(l => {
-          if (!l.ownerTelegramId && !l.owner) return false; // Reject links without owner ID
+          if (!l.ownerTelegramId && !l.owner) return false;
           if (l.ownerTelegramId && currentUserTelegramId) {
             return String(l.ownerTelegramId) === String(currentUserTelegramId);
           }
@@ -1175,7 +1193,6 @@
 
         renderUserLinks(rawUserLinksCache);
 
-        // Safe User Ads Isolation
         const userAds = (data.ads || []).filter(ad => {
           if (ad.advertiserTelegramId && currentUserTelegramId) {
             return String(ad.advertiserTelegramId) === String(currentUserTelegramId);
@@ -1243,15 +1260,12 @@
       const linksContainer = document.getElementById('links-list');
       if (!linksContainer) return;
 
-      // Clean default "No short links found" text if present
       if (linksContainer.innerText.includes('No short links') || linksContainer.innerText.includes('لا توجد روابط')) {
         linksContainer.innerHTML = '';
       }
 
-      // Add to internal memory cache
       rawUserLinksCache.unshift(newLinkData);
 
-      // Prepend element to DOM directly
       const tempWrapper = document.createElement('div');
       tempWrapper.innerHTML = createLinkHTML(newLinkData);
       if (tempWrapper.firstElementChild) {
@@ -1492,7 +1506,6 @@
           document.getElementById('link-title').value = '';
           document.getElementById('link-url').value = '';
           
-          // Add created link dynamically to DOM or reload user links
           if (data.link || data.newLink || data.shortCode) {
             const newLinkObj = data.link || data.newLink || {
               title: title,
@@ -1590,6 +1603,7 @@
 
     // Admin Operations
     async function loadAdminData() {
+      if (!isUserAdmin) return;
       try {
         const res = await safeFetch('/api/admin/dashboard-data');
         if (!res) return;
@@ -1756,8 +1770,10 @@
 
       if (window.location.pathname.includes('/r/')) {
         document.getElementById('bridge-view').classList.remove('hidden');
+        document.getElementById('app-view').classList.add('hidden');
         initBridge();
       } else {
+        document.getElementById('bridge-view').classList.add('hidden');
         document.getElementById('app-view').classList.remove('hidden');
         initializeApp();
       }
