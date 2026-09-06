@@ -208,23 +208,42 @@ const isPhishingOrMalicious = (url) => {
   return blacklistedKeywords.some(keyword => lowerUrl.includes(keyword));
 };
 
-// Strict Isolated User Auth Middleware
+// Strict Dual-Auth Middleware (Supports JWT & Direct Telegram InitData)
 const authMiddleware = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return res.status(401).json({ success: false, error: 'رمز الدخول مفقود' });
-
-  const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(token, CONFIG.JWT_SECRET);
-    
-    // Strict isolation query by decoded User ID
-    const user = await User.findById(decoded.userId).lean();
-    if (!user || user.isBanned) return res.status(403).json({ success: false, error: 'حسابك معطل أو لا تملك صلاحية الوصول' });
-    
+    let user = null;
+
+    // Option 1: Bearer Token Authorization Header
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      try {
+        const decoded = jwt.verify(token, CONFIG.JWT_SECRET);
+        user = await User.findById(decoded.userId).lean();
+      } catch (err) {}
+    }
+
+    // Option 2: Fallback to Direct Telegram InitData Header if Token is missing/expired
+    if (!user) {
+      const initData = req.headers['x-telegram-init-data'];
+      const telegramUser = verifyTelegramData(initData);
+      if (telegramUser) {
+        user = await User.findOne({ telegramId: String(telegramUser.id) }).lean();
+      }
+    }
+
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'جلسة غي صالحة، يرجى إعادة تحميل التطبيق' });
+    }
+
+    if (user.isBanned) {
+      return res.status(403).json({ success: false, error: 'حسابك معطل بسبب مخالفة الشروط' });
+    }
+
     req.user = user;
     next();
   } catch (err) {
-    res.status(401).json({ success: false, error: 'انتهت الجلسة، يرجى إعادة تسجيل الدخول' });
+    res.status(401).json({ success: false, error: 'انتهت الجلسة، يرجى إعادة التسجيل' });
   }
 };
 
@@ -299,12 +318,11 @@ app.post('/api/auth/login', async (req, res, next) => {
   }
 });
 
-// --- Isolated User Data Gateway (100% User Specific Boundary) ---
+// --- Isolated User Data Gateway ---
 app.get('/api/user/data', authMiddleware, async (req, res, next) => {
   try {
     const userId = req.user._id;
 
-    // Strict 100% User Isolated Parallel Queries using user's explicit ObjectId
     const [rawLinks, withdraws, announcements, ads, deposits] = await Promise.all([
       Link.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
       Withdraw.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
@@ -795,7 +813,7 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
 // Fetch Links Alias (Unified Endpoint For Privacy & Front-End Compatibility)
 app.get('/api/links', authMiddleware, async (req, res, next) => {
   try {
-    // 100% Guaranteed Strict Isolation
+    // Strict Isolated Fetching using req.user._id ONLY
     const rawLinks = await Link.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
@@ -816,6 +834,7 @@ app.get('/api/links', authMiddleware, async (req, res, next) => {
 // Strict Isolated User Links Fetching Endpoint
 app.get('/api/user/links', authMiddleware, async (req, res, next) => {
   try {
+    // Strict Isolated Fetching using req.user._id ONLY
     const rawLinks = await Link.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
