@@ -1,5 +1,5 @@
 /**
- * Ultra-Enterprise Models Architecture (V5.3 - Complete Field Alignment & Absolute Data Safety)
+ * Ultra-Enterprise Models Architecture (V5.4 - Complete Field Alignment & Absolute Data Safety)
  * Platform: Telega.ads Advertising & Shortener Network
  * Security: Zero-Data-Leakage Enforcement, Dynamic Context Scoping, Dual-ID Ownership Bindings
  */
@@ -58,6 +58,16 @@ const userSchema = new mongoose.Schema({
     trim: true,
     lowercase: true 
   },
+  firstName: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  lastName: {
+    type: String,
+    default: '',
+    trim: true
+  },
   language: {
     type: String,
     default: 'ar',
@@ -102,17 +112,12 @@ const userSchema = new mongoose.Schema({
   defaultWallet: { 
     type: String, 
     default: '', 
-    trim: true,
-    validate: {
-      validator: function(v) {
-        if (!v || v === '') return true;
-        const isTron = /^T[A-Za-z1-9]{33}$/.test(v);
-        const isEvm = /^0x[a-fA-F0-9]{40}$/.test(v);
-        const isTon = /^[a-zA-Z0-9_-]{48}$/.test(v) || /^0:[a-fA-F0-9]{64}$/.test(v);
-        return isTron || isEvm || isTon;
-      },
-      message: 'Invalid wallet address format (Must be USDT TRC20, BEP20/ERC20, or TON)'
-    }
+    trim: true
+  },
+  withdrawalWallet: {
+    type: String,
+    default: '',
+    trim: true
   },
   statsSummary: {
     totalLinksCreated: { type: Number, default: 0, min: 0 },
@@ -271,16 +276,15 @@ const adSchema = new mongoose.Schema({
     trim: true, 
     maxlength: [100, 'Ad title must not exceed 100 characters'] 
   },
+  bannerUrl: {
+    type: String,
+    default: '',
+    trim: true
+  },
   targetUrl: { 
     type: String, 
     required: [true, 'Target URL is required'], 
-    trim: true,
-    validate: {
-      validator: function(v) {
-        return /^(https?:\/\/)?([\w.-]+)+[\w\-_~:/?#[\]@!$&'()*+,;=.]+$/i.test(v);
-      },
-      message: 'Please enter a valid target URL'
-    }
+    trim: true
   },
   totalBudget: { 
     type: Number, 
@@ -323,6 +327,11 @@ const adSchema = new mongoose.Schema({
     default: 0, 
     min: 0 
   },
+  clicksCount: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
   status: { 
     type: String, 
     enum: ['active', 'paused', 'completed'], 
@@ -356,6 +365,11 @@ const linkSchema = new mongoose.Schema({
     unique: true, 
     index: true,
     trim: true 
+  },
+  alias: {
+    type: String,
+    default: '',
+    trim: true
   },
   userId: { 
     type: mongoose.Schema.Types.ObjectId, 
@@ -574,6 +588,10 @@ const clickSessionSchema = new mongoose.Schema({
     required: true,
     trim: true 
   },
+  completed: {
+    type: Boolean,
+    default: false
+  },
   createdAt: { 
     type: Date, 
     default: Date.now, 
@@ -645,6 +663,11 @@ const withdrawSchema = new mongoose.Schema({
     type: String, 
     default: '', 
     trim: true 
+  },
+  adminNote: {
+    type: String,
+    default: '',
+    trim: true
   },
   note: { 
     type: String, 
@@ -771,6 +794,11 @@ const depositSchema = new mongoose.Schema({
     index: true
   },
   rejectReason: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  adminNote: {
     type: String,
     default: '',
     trim: true
