@@ -333,7 +333,6 @@ const adSchema = new mongoose.Schema({
   }
 }, globalSchemaOptions);
 
-// Ensure userId, advertiserId, telegramId, and advertiserTelegramId stay in sync before saving
 adSchema.pre('validate', function(next) {
   if (this.userId && !this.advertiserId) this.advertiserId = this.userId;
   if (this.advertiserId && !this.userId) this.userId = this.advertiserId;
@@ -364,10 +363,17 @@ const linkSchema = new mongoose.Schema({
     trim: true 
   },
   userId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: [true, 'Owner User ID is required for strict isolation'], 
-    index: true 
+    type: mongoose.Schema.Types.Mixed, 
+    required: false, 
+    default: null,
+    index: true,
+    validate: {
+      validator: function(v) {
+        if (v === null || v === undefined) return true;
+        return mongoose.Types.ObjectId.isValid(v) || typeof v === 'string' || typeof v === 'number';
+      },
+      message: 'userId must be a valid ObjectId, String, or Number'
+    }
   },
   telegramId: {
     type: String,
@@ -416,7 +422,7 @@ const linkSchema = new mongoose.Schema({
 
 linkSchema.pre('validate', function(next) {
   if (this.telegramId && !this.publisherTelegramId) this.publisherTelegramId = this.telegramId;
-  if (this.publisherTelegramId && !this.telegramId) this.telegramId = this.telegramId;
+  if (this.publisherTelegramId && !this.telegramId) this.telegramId = this.publisherTelegramId;
   next();
 });
 
@@ -519,7 +525,7 @@ impressionSchema.pre('validate', function(next) {
   if (this.publisherId && !this.userId) this.userId = this.publisherId;
   if (this.userId && !this.publisherId) this.publisherId = this.userId;
   if (this.telegramId && !this.publisherTelegramId) this.publisherTelegramId = this.telegramId;
-  if (this.publisherTelegramId && !this.telegramId) this.telegramId = this.telegramId;
+  if (this.publisherTelegramId && !this.telegramId) this.telegramId = this.publisherTelegramId;
   next();
 });
 
@@ -678,7 +684,6 @@ withdrawSchema.pre('validate', function(next) {
 withdrawSchema.index({ userId: 1, status: 1, createdAt: -1 });
 withdrawSchema.index({ telegramId: 1, status: 1, createdAt: -1 });
 
-// Prevention of double active pending withdraws per user
 withdrawSchema.index(
   { userId: 1, status: 'pending' }, 
   { unique: true, partialFilterExpression: { status: 'pending' } }
@@ -799,7 +804,7 @@ depositSchema.pre('validate', function(next) {
   if (this.userId && !this.advertiserId) this.advertiserId = this.userId;
   if (this.advertiserId && !this.userId) this.userId = this.advertiserId;
   if (this.telegramId && !this.advertiserTelegramId) this.advertiserTelegramId = this.telegramId;
-  if (this.advertiserTelegramId && !this.telegramId) this.telegramId = this.telegramId;
+  if (this.advertiserTelegramId && !this.telegramId) this.telegramId = this.advertiserTelegramId;
   next();
 });
 
