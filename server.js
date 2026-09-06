@@ -347,7 +347,7 @@ app.get('/api/user/data', authMiddleware, async (req, res, next) => {
 
     // استعلام معزول بصرامة اعتماداً على userId الخاص بالمستخدم الحالي
     const [rawLinks, withdraws, announcements, ads, deposits] = await Promise.all([
-      Link.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
+      Link.find({ $or: [{ userId: userId }, { userId: userId.toString() }] }).sort({ createdAt: -1 }).lean(),
       Withdraw.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
       Announcement.find({ $or: [{ isGlobal: true }, { targetUserId: userId }] }).sort({ createdAt: -1 }).lean(),
       Ad.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
@@ -847,8 +847,8 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => 
     const shortCode = crypto.randomBytes(3).toString('hex');
     const publisherTelegramId = req.user?.telegramId || null;
     
-    // إنشاء وحفظ الرابط مع userId الخاص بالمستخدم الحالي
-    const link = await Link.create({
+    // إنشاء كائن الرابط الجديد مع التأكد من ربط userId صراحة
+    const newLink = new Link({
       userId: userId,
       publisherTelegramId: publisherTelegramId,
       telegramId: publisherTelegramId,
@@ -858,14 +858,24 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => 
       isActive: true
     });
 
+    // حفظ الوثيقة في قاعدة البيانات
+    await newLink.save();
+
     if (mongoose.Types.ObjectId.isValid(userId)) {
       await User.findByIdAndUpdate(userId, { $inc: { 'statsSummary.totalLinksCreated': 1 } }).catch(() => {});
     }
 
+    const linkObj = newLink.toObject ? newLink.toObject() : newLink;
+    const shortUrl = `https://${CONFIG.APP_DOMAIN}/r/${shortCode}`;
+
+    // إرجاع كائن الرابط الجديد كاملاً بداخل الاستجابة
     return res.json({ 
       success: true, 
-      link,
-      shortUrl: `https://${CONFIG.APP_DOMAIN}/r/${shortCode}`
+      link: {
+        ...linkObj,
+        shortUrl
+      },
+      shortUrl
     });
   } catch (err) {
     console.error('❌ Error in POST /api/links:', err);
@@ -876,27 +886,34 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => 
   }
 });
 
+// Fetch Links Helper Function
+const getUserLinks = async (userId) => {
+  if (!userId) return [];
+
+  // فحص صيغة userId سواء كانت ObjectId أو String لضمان مطابقة المعرف تماماً
+  const rawLinks = await Link.find({
+    $or: [
+      { userId: userId },
+      { userId: userId.toString() }
+    ]
+  }).sort({ createdAt: -1 }).lean();
+
+  return rawLinks.map(link => {
+    const totalViews = link.views || 0;
+    const validImp = link.validImpressions || 0;
+    const ctr = totalViews > 0 ? ((validImp / totalViews) * 100).toFixed(1) : "0.0";
+    return { 
+      ...link, 
+      ctr,
+      shortUrl: `https://${CONFIG.APP_DOMAIN}/r/${link.shortCode}`
+    };
+  });
+};
+
 // Fetch Links Main Endpoint
 app.get('/api/links', authMiddleware, async (req, res, next) => {
   try {
-    const userId = req.userId;
-
-    if (!userId) {
-      return res.json({ success: true, links: [] });
-    }
-
-    // جلب الروابط حصرياً بواسطة { userId: userId }
-    const rawLinks = await Link.find({ userId: userId }).sort({ createdAt: -1 }).lean();
-    const links = rawLinks.map(link => {
-      const totalViews = link.views || 0;
-      const validImp = link.validImpressions || 0;
-      const ctr = totalViews > 0 ? ((validImp / totalViews) * 100).toFixed(1) : "0.0";
-      return { 
-        ...link, 
-        ctr,
-        shortUrl: `https://${CONFIG.APP_DOMAIN}/r/${link.shortCode}`
-      };
-    });
+    const links = await getUserLinks(req.userId);
     res.json({ success: true, links });
   } catch (err) {
     next(err);
@@ -906,23 +923,7 @@ app.get('/api/links', authMiddleware, async (req, res, next) => {
 // Fetch Links Alias Endpoint
 app.get('/api/user/links', authMiddleware, async (req, res, next) => {
   try {
-    const userId = req.userId;
-
-    if (!userId) {
-      return res.json({ success: true, links: [] });
-    }
-
-    const rawLinks = await Link.find({ userId: userId }).sort({ createdAt: -1 }).lean();
-    const links = rawLinks.map(link => {
-      const totalViews = link.views || 0;
-      const validImp = link.validImpressions || 0;
-      const ctr = totalViews > 0 ? ((validImp / totalViews) * 100).toFixed(1) : "0.0";
-      return { 
-        ...link, 
-        ctr,
-        shortUrl: `https://${CONFIG.APP_DOMAIN}/r/${link.shortCode}`
-      };
-    });
+    const links = await getUserLinks(req.userId);
     res.json({ success: true, links });
   } catch (err) {
     next(err);
@@ -938,7 +939,7 @@ app.post('/api/links/toggle', authMiddleware, async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(linkId)) return res.status(400).json({ success: false, error: 'معرف الرابط غير صالح' });
 
     // التأكد من الملكية بـ userId
-    const link = await Link.findOne({ _id: linkId, userId: userId });
+    const link = await Link.findOne({ _id: linkId, $or: [{ userId: userId }, { userId: userId.toString() }] });
     if (!link) return res.status(404).json({ success: false, error: 'الرابط غير موجود أو لا تملك صلاحيات التعديل عليه' });
 
     link.isActive = !link.isActive;
