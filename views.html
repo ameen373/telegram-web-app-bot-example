@@ -1436,6 +1436,7 @@
     async function handleShortenClick() {
       const title = document.getElementById('link-title').value;
       const targetUrl = document.getElementById('link-url').value;
+      const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
 
       if (!targetUrl) {
         showToast(currentLang === 'ar' ? "يرجى إدخال الرابط الأصلي بشكل صحيح" : "Please enter original URL");
@@ -1448,7 +1449,7 @@
       try {
         const res = await safeFetch('/api/links', {
           method: 'POST',
-          body: JSON.stringify({ title, targetUrl, telegramId: currentUserTelegramId })
+          body: JSON.stringify({ title, targetUrl, userId, telegramId: currentUserTelegramId })
         });
         if (!res) return;
         const data = await res.json();
