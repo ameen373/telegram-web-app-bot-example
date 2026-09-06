@@ -352,12 +352,12 @@ adSchema.statics.findAdvertiserAdsIsolated = function(userId, filter = {}) {
 };
 
 // --------------------------------------------------
-// 5. Shortened Link Model (Links)
+// 5. Shortened Link Model (Links - Isolated Multi-Tenant)
 // --------------------------------------------------
 const linkSchema = new mongoose.Schema({
   shortCode: { 
     type: String, 
-    required: true, 
+    required: [true, 'Short code is required'], 
     unique: true, 
     index: true,
     trim: true 
@@ -388,7 +388,7 @@ const linkSchema = new mongoose.Schema({
   },
   targetUrl: { 
     type: String, 
-    required: true, 
+    required: [true, 'Target URL is required'], 
     trim: true 
   },
   isActive: { 
