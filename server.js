@@ -847,10 +847,11 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => 
     const shortCode = crypto.randomBytes(3).toString('hex');
     const publisherTelegramId = req.user?.telegramId || null;
     
-    // إنشاء وحفظ الرابط مع userId
+    // إنشاء وحفظ الرابط مع userId الخاص بالمستخدم الحالي
     const link = await Link.create({
       userId: userId,
       publisherTelegramId: publisherTelegramId,
+      telegramId: publisherTelegramId,
       title: title ? String(title).trim() : 'رابط بدون عنوان',
       targetUrl: cleanUrl,
       shortCode,
