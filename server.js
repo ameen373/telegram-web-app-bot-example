@@ -328,15 +328,28 @@ app.post('/api/auth/login', async (req, res, next) => {
 app.get('/api/user/data', authMiddleware, async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const telegramId = req.user.telegramId;
+
+    if (!userId) {
+      return res.json({
+        success: true,
+        user: req.user,
+        language: req.user.language || CONFIG.DEFAULT_LANGUAGE,
+        links: [],
+        withdraws: [],
+        announcements: [],
+        ads: [],
+        deposits: [],
+        isAdmin: false
+      });
+    }
 
     // Strict Multi-Tenant Query Condition Execution
     const [rawLinks, withdraws, announcements, ads, deposits] = await Promise.all([
-      Link.find({ userId }).sort({ createdAt: -1 }).lean(),
-      Withdraw.find({ userId }).sort({ createdAt: -1 }).lean(),
+      Link.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
+      Withdraw.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
       Announcement.find({ $or: [{ isGlobal: true }, { targetUserId: userId }] }).sort({ createdAt: -1 }).lean(),
-      Ad.find({ $or: [{ userId }, { advertiserId: userId }] }).sort({ createdAt: -1 }).lean(),
-      Deposit.find({ $or: [{ userId }, { advertiserId: userId }] }).sort({ createdAt: -1 }).lean()
+      Ad.find({ $or: [{ userId: userId }, { advertiserId: userId }] }).sort({ createdAt: -1 }).lean(),
+      Deposit.find({ $or: [{ userId: userId }, { advertiserId: userId }] }).sort({ createdAt: -1 }).lean()
     ]);
 
     const links = rawLinks.map(link => {
@@ -804,6 +817,12 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
   try {
     let { title, targetUrl } = req.body;
     const cleanUrl = String(targetUrl || '').trim();
+    const userId = req.user && (req.user._id || req.user.id);
+
+    // 1. Reject creation if userId is missing or undefined
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'غير مصرح: معرف المستخدم مفقود' });
+    }
 
     if (!cleanUrl || !validUrl.isWebUri(cleanUrl)) {
       return res.status(400).json({ success: false, error: 'الرابط المستهدف غير صالح' });
@@ -822,9 +841,9 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
 
     const shortCode = crypto.randomBytes(3).toString('hex');
     
-    // Strict Isolation: Bind new Link exclusively to req.user._id
+    // 2. Strict Isolation: Store mandatory userId inside the new Link
     const link = await Link.create({
-      userId: req.user._id,
+      userId: userId,
       publisherTelegramId: req.user.telegramId,
       title: title ? String(title).trim() : 'رابط بدون عنوان',
       targetUrl: cleanUrl,
@@ -833,7 +852,7 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
     });
 
     // Update user stats summary
-    await User.findByIdAndUpdate(req.user._id, { $inc: { 'statsSummary.totalLinksCreated': 1 } });
+    await User.findByIdAndUpdate(userId, { $inc: { 'statsSummary.totalLinksCreated': 1 } });
 
     res.json({ 
       success: true, 
@@ -845,11 +864,18 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
   }
 });
 
-// Fetch Links Alias (Unified Endpoint For Privacy & Front-End Compatibility)
+// Fetch Links Endpoint
 app.get('/api/links', authMiddleware, async (req, res, next) => {
   try {
-    // Guarantees retrieving records belonging ONLY to authenticated user ID
-    const rawLinks = await Link.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
+    const userId = req.user && (req.user._id || req.user.id);
+
+    // 1. Guard check: If userId is undefined/missing, NEVER execute Link.find({}), return [] immediately.
+    if (!userId) {
+      return res.json({ success: true, links: [] });
+    }
+
+    // 2. Strict Isolated Query: Fetch EXCLUSIVELY by { userId: userId }
+    const rawLinks = await Link.find({ userId: userId }).sort({ createdAt: -1 }).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
       const validImp = link.validImpressions || 0;
@@ -866,10 +892,18 @@ app.get('/api/links', authMiddleware, async (req, res, next) => {
   }
 });
 
-// Strict Isolated User Links Fetching Endpoint
+// Strict Isolated User Links Fetching Endpoint Alias
 app.get('/api/user/links', authMiddleware, async (req, res, next) => {
   try {
-    const rawLinks = await Link.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
+    const userId = req.user && (req.user._id || req.user.id);
+
+    // Guard check: If userId is undefined/missing, NEVER execute Link.find({}), return [] immediately.
+    if (!userId) {
+      return res.json({ success: true, links: [] });
+    }
+
+    // Strict Isolated Query: Fetch EXCLUSIVELY by { userId: userId }
+    const rawLinks = await Link.find({ userId: userId }).sort({ createdAt: -1 }).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
       const validImp = link.validImpressions || 0;
@@ -889,10 +923,13 @@ app.get('/api/user/links', authMiddleware, async (req, res, next) => {
 app.post('/api/links/toggle', authMiddleware, async (req, res, next) => {
   try {
     const { linkId } = req.body;
+    const userId = req.user && (req.user._id || req.user.id);
+
+    if (!userId) return res.status(401).json({ success: false, error: 'معرف المستخدم مفقود' });
     if (!mongoose.Types.ObjectId.isValid(linkId)) return res.status(400).json({ success: false, error: 'معرف الرابط غير صالح' });
 
-    // Enforce Cross-Tenant Isolation Condition: Query requires { _id: linkId, userId: req.user._id }
-    const link = await Link.findOne({ _id: linkId, userId: req.user._id });
+    // Enforce Cross-Tenant Isolation Condition: Query requires { _id: linkId, userId: userId }
+    const link = await Link.findOne({ _id: linkId, userId: userId });
     if (!link) return res.status(404).json({ success: false, error: 'الرابط غير موجود أو لا تملك صلاحيات التعديل عليه' });
 
     link.isActive = !link.isActive;
