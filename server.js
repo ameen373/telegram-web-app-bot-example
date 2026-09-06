@@ -15,7 +15,6 @@ const jwt = require('jsonwebtoken');
 const morgan = require('morgan');
 const winston = require('winston');
 const validUrl = require('valid-url');
-const axios = require('axios');
 const Redis = require('ioredis');
 const cors = require('cors');
 
@@ -151,7 +150,6 @@ app.use(async (req, res, next) => {
           try {
             session.startTransaction();
             
-            // تحويل الأرباح من المبالغ المعلقة إلى الرصيد المتاح الحقيقي
             await User.findByIdAndUpdate(
               hold.userId,
               { 
@@ -227,12 +225,16 @@ async function safeRedisDel(key) {
 async function sendTelegramNotification(telegramId, message) {
   if (!CONFIG.BOT_TOKEN || !telegramId) return;
   try {
-    await axios.post(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
-      chat_id: telegramId,
-      text: message,
-      parse_mode: 'HTML',
-      disable_web_page_preview: true
-    }, { timeout: 4000 });
+    await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: telegramId,
+        text: message,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+      })
+    });
   } catch (err) {
     logger.error(`⚠️ Telegram Dispatch Failed [ID: ${telegramId}]: ${err.message}`);
   }
