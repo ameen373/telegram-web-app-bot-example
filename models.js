@@ -835,7 +835,7 @@ announcementSchema.statics.getForUserIsolated = function(userId, telegramId) {
   }).sort({ createdAt: -1 });
 };
 
-// Safe Exporting Pattern (Prevents Overwrite Model Error in Node/Express)
+// Exporting Optimized Safe Models
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 const Wallet = mongoose.models.Wallet || mongoose.model('Wallet', walletSchema);
 const Transaction = mongoose.models.Transaction || mongoose.model('Transaction', transactionSchema);
