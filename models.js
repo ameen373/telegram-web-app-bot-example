@@ -1,8 +1,7 @@
 /**
- * Ultra-Enterprise Models Architecture (V5.2 - Absolute Multi-Tenant Isolation & Zero Data-Leakage)
+ * Ultra-Enterprise Models Architecture (V5.3 - Complete Field Alignment & Absolute Data Safety)
  * Platform: Telega.ads Advertising & Shortener Network
  * Security: Zero-Data-Leakage Enforcement, Dynamic Context Scoping, Dual-ID Ownership Bindings
- * Serverless / Vercel Ready with Mongoose Singleton Pattern
  */
 
 if (typeof window !== 'undefined') {
@@ -43,7 +42,7 @@ const enforceTenantKey = (tenantKey, keyName = 'userId') => {
 };
 
 // --------------------------------------------------
-// 1. User Schema
+// 1. User Model (Isolated Profiles, Balances & Stats)
 // --------------------------------------------------
 const userSchema = new mongoose.Schema({
   telegramId: { 
@@ -131,7 +130,7 @@ userSchema.statics.findByTelegramIdIsolated = function(telegramId) {
 };
 
 // --------------------------------------------------
-// 2. Isolated Wallet Schema
+// 2. Isolated Wallet Model (Central Balance Control)
 // --------------------------------------------------
 const walletSchema = new mongoose.Schema({
   userId: { 
@@ -143,8 +142,7 @@ const walletSchema = new mongoose.Schema({
   },
   telegramId: { 
     type: String, 
-    required: [true, 'Telegram ID is required for fast tenant lookup'], 
-    unique: true,
+    required: false, 
     index: true, 
     trim: true 
   },
@@ -188,7 +186,7 @@ walletSchema.statics.getWalletIsolated = function(userId) {
 };
 
 // --------------------------------------------------
-// 3. Isolated Transaction History Schema
+// 3. Isolated Transaction History Model
 // --------------------------------------------------
 const transactionSchema = new mongoose.Schema({
   userId: { 
@@ -199,7 +197,7 @@ const transactionSchema = new mongoose.Schema({
   },
   telegramId: { 
     type: String, 
-    required: [true, 'Telegram ID is required for fast tenant lookup'], 
+    required: false, 
     index: true, 
     trim: true 
   },
@@ -233,7 +231,6 @@ const transactionSchema = new mongoose.Schema({
 
 transactionSchema.index({ userId: 1, createdAt: -1 });
 transactionSchema.index({ telegramId: 1, createdAt: -1 });
-transactionSchema.index({ userId: 1, type: 1, createdAt: -1 });
 
 transactionSchema.statics.getUserTransactionsIsolated = function(userId, filter = {}) {
   enforceTenantKey(userId, 'userId');
@@ -241,7 +238,7 @@ transactionSchema.statics.getUserTransactionsIsolated = function(userId, filter 
 };
 
 // --------------------------------------------------
-// 4. Self-Serve Ad Schema (Campaigns)
+// 4. Self-Serve Ad Model (Campaigns)
 // --------------------------------------------------
 const adSchema = new mongoose.Schema({
   userId: { 
@@ -252,7 +249,7 @@ const adSchema = new mongoose.Schema({
   },
   telegramId: {
     type: String,
-    required: [true, 'Telegram ID is required for fast tenant lookup'],
+    required: false,
     index: true,
     trim: true
   },
@@ -264,7 +261,7 @@ const adSchema = new mongoose.Schema({
   },
   advertiserTelegramId: {
     type: String,
-    required: [true, 'Advertiser Telegram ID is required for fast tenant lookup'],
+    required: false,
     index: true,
     trim: true
   },
@@ -343,9 +340,6 @@ adSchema.pre('validate', function(next) {
 });
 
 adSchema.index({ userId: 1, status: 1, createdAt: -1 });
-adSchema.index({ telegramId: 1, status: 1, createdAt: -1 });
-adSchema.index({ advertiserTelegramId: 1, status: 1, createdAt: -1 });
-adSchema.index({ status: 1, remainingBudget: 1, createdAt: -1 });
 
 adSchema.statics.findAdvertiserAdsIsolated = function(userId, filter = {}) {
   enforceTenantKey(userId, 'userId');
@@ -353,7 +347,7 @@ adSchema.statics.findAdvertiserAdsIsolated = function(userId, filter = {}) {
 };
 
 // --------------------------------------------------
-// 5. Shortened Link Schema (Links - Isolated Multi-Tenant)
+// 5. Shortened Link Model (Links - Isolated Multi-Tenant)
 // --------------------------------------------------
 const linkSchema = new mongoose.Schema({
   shortCode: { 
@@ -371,13 +365,13 @@ const linkSchema = new mongoose.Schema({
   },
   telegramId: {
     type: String,
-    required: [true, 'Telegram ID is required for zero-leakage index queries'],
+    required: false,
     index: true,
     trim: true
   },
   publisherTelegramId: {
     type: String,
-    required: [true, 'Publisher Telegram ID is required for zero-leakage index queries'],
+    required: false,
     index: true,
     trim: true
   },
@@ -421,10 +415,7 @@ linkSchema.pre('validate', function(next) {
 });
 
 linkSchema.index({ userId: 1, createdAt: -1 });
-linkSchema.index({ telegramId: 1, createdAt: -1 });
-linkSchema.index({ publisherTelegramId: 1, createdAt: -1 });
 linkSchema.index({ userId: 1, isActive: 1, createdAt: -1 });
-linkSchema.index({ userId: 1, shortCode: 1 });
 
 linkSchema.statics.getUserIsolatedLinks = function(userId, query = {}, options = {}) {
   enforceTenantKey(userId, 'userId');
@@ -438,7 +429,7 @@ linkSchema.statics.findOneIsolated = function(shortCode, userId) {
 };
 
 // --------------------------------------------------
-// 6. Traffic & Impressions Schema
+// 6. Traffic & Impressions Model
 // --------------------------------------------------
 const impressionSchema = new mongoose.Schema({
   linkId: { 
@@ -455,7 +446,7 @@ const impressionSchema = new mongoose.Schema({
   },
   telegramId: {
     type: String,
-    required: [true, 'Telegram ID is required for tenant isolation'],
+    required: false,
     trim: true,
     index: true
   },
@@ -467,7 +458,7 @@ const impressionSchema = new mongoose.Schema({
   },
   publisherTelegramId: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
     index: true
   },
@@ -524,10 +515,6 @@ impressionSchema.pre('validate', function(next) {
 });
 
 impressionSchema.index({ userId: 1, createdAt: -1 });
-impressionSchema.index({ telegramId: 1, createdAt: -1 });
-impressionSchema.index({ publisherTelegramId: 1, createdAt: -1 });
-impressionSchema.index({ linkId: 1, userId: 1, createdAt: -1 });
-impressionSchema.index({ ip: 1, linkId: 1, createdAt: -1 });
 
 impressionSchema.statics.getPublisherImpressionsIsolated = function(userId, extraFilter = {}) {
   enforceTenantKey(userId, 'userId');
@@ -535,7 +522,7 @@ impressionSchema.statics.getPublisherImpressionsIsolated = function(userId, extr
 };
 
 // --------------------------------------------------
-// 7. Anti-Bypass Click Session Schema
+// 7. Anti-Bypass Click Session Model
 // --------------------------------------------------
 const clickSessionSchema = new mongoose.Schema({
   linkId: { 
@@ -551,7 +538,7 @@ const clickSessionSchema = new mongoose.Schema({
   },
   telegramId: {
     type: String,
-    required: [true, 'Telegram ID is required for tenant isolation'],
+    required: false,
     trim: true,
     index: true
   },
@@ -601,12 +588,10 @@ clickSessionSchema.pre('validate', function(next) {
 });
 
 clickSessionSchema.index({ linkId: 1, ip: 1 });
-clickSessionSchema.index({ userId: 1, createdAt: -1 });
-clickSessionSchema.index({ telegramId: 1, createdAt: -1 });
-clickSessionSchema.index({ bridgeToken: 1 }, { unique: true });
+clickSessionSchema.index({ bridgeToken: 1 });
 
 // --------------------------------------------------
-// 8. Withdraw Request Schema (Withdrawals)
+// 8. Withdraw Request Model (Withdrawals)
 // --------------------------------------------------
 const withdrawSchema = new mongoose.Schema({
   userId: { 
@@ -617,7 +602,7 @@ const withdrawSchema = new mongoose.Schema({
   },
   telegramId: {
     type: String,
-    required: [true, 'Telegram ID is required for tenant isolation'],
+    required: false,
     trim: true,
     index: true
   },
@@ -676,7 +661,6 @@ withdrawSchema.pre('validate', function(next) {
 });
 
 withdrawSchema.index({ userId: 1, status: 1, createdAt: -1 });
-withdrawSchema.index({ telegramId: 1, status: 1, createdAt: -1 });
 
 withdrawSchema.index(
   { userId: 1, status: 'pending' }, 
@@ -691,7 +675,7 @@ withdrawSchema.statics.getUserWithdrawalsIsolated = function(userId, status = nu
 };
 
 // --------------------------------------------------
-// 9. Earnings Hold Schema
+// 9. Earnings Hold Model
 // --------------------------------------------------
 const earningsHoldSchema = new mongoose.Schema({
   userId: { 
@@ -702,7 +686,7 @@ const earningsHoldSchema = new mongoose.Schema({
   },
   telegramId: {
     type: String,
-    required: [true, 'Telegram ID is required for tenant isolation'],
+    required: false,
     trim: true,
     index: true
   },
@@ -726,7 +710,6 @@ const earningsHoldSchema = new mongoose.Schema({
 }, globalSchemaOptions);
 
 earningsHoldSchema.index({ userId: 1, isReleased: 1, releaseAt: 1 });
-earningsHoldSchema.index({ telegramId: 1, isReleased: 1, releaseAt: 1 });
 
 earningsHoldSchema.statics.getUserHoldsIsolated = function(userId) {
   enforceTenantKey(userId, 'userId');
@@ -734,7 +717,7 @@ earningsHoldSchema.statics.getUserHoldsIsolated = function(userId) {
 };
 
 // --------------------------------------------------
-// 10. Advertiser Deposit Schema (Deposits)
+// 10. Advertiser Deposit Model (Deposits)
 // --------------------------------------------------
 const depositSchema = new mongoose.Schema({
   userId: {
@@ -745,7 +728,7 @@ const depositSchema = new mongoose.Schema({
   },
   telegramId: {
     type: String,
-    required: [true, 'Telegram ID is required for fast tenant lookup'],
+    required: false,
     trim: true,
     index: true
   },
@@ -757,7 +740,7 @@ const depositSchema = new mongoose.Schema({
   },
   advertiserTelegramId: {
     type: String,
-    required: [true, 'Advertiser Telegram ID is required'],
+    required: false,
     trim: true,
     index: true
   },
@@ -803,8 +786,6 @@ depositSchema.pre('validate', function(next) {
 });
 
 depositSchema.index({ userId: 1, status: 1, createdAt: -1 });
-depositSchema.index({ telegramId: 1, status: 1, createdAt: -1 });
-depositSchema.index({ advertiserTelegramId: 1, status: 1, createdAt: -1 });
 
 depositSchema.statics.getAdvertiserDepositsIsolated = function(userId) {
   enforceTenantKey(userId, 'userId');
@@ -812,33 +793,40 @@ depositSchema.statics.getAdvertiserDepositsIsolated = function(userId) {
 };
 
 // --------------------------------------------------
-// 11. Announcement Schema
+// 11. Announcement Model
 // --------------------------------------------------
 const announcementSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true },
   content: { type: String, required: true, trim: true },
   isActive: { type: Boolean, default: true, index: true },
+  isGlobal: { type: Boolean, default: true, index: true },
   targetUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, index: true },
+  targetUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, index: true },
   targetTelegramId: { type: String, default: null, trim: true, index: true }
 }, globalSchemaOptions);
 
+announcementSchema.pre('validate', function(next) {
+  if (this.targetUser && !this.targetUserId) this.targetUserId = this.targetUser;
+  if (this.targetUserId && !this.targetUser) this.targetUser = this.targetUserId;
+  next();
+});
+
 announcementSchema.index({ isActive: 1, targetUser: 1, createdAt: -1 });
-announcementSchema.index({ isActive: 1, targetTelegramId: 1, createdAt: -1 });
 
 announcementSchema.statics.getForUserIsolated = function(userId, telegramId) {
   return this.find({
     isActive: true,
     $or: [
+      { isGlobal: true },
       { targetUser: null, targetTelegramId: null },
       { targetUser: userId },
+      { targetUserId: userId },
       { targetTelegramId: String(telegramId) }
     ]
   }).sort({ createdAt: -1 });
 };
 
-// --------------------------------------------------
-// Safe Singleton Model Compilation for Vercel / Serverless
-// --------------------------------------------------
+// Exporting Optimized Safe Models
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 const Wallet = mongoose.models.Wallet || mongoose.model('Wallet', walletSchema);
 const Transaction = mongoose.models.Transaction || mongoose.model('Transaction', transactionSchema);
@@ -851,7 +839,6 @@ const EarningsHold = mongoose.models.EarningsHold || mongoose.model('EarningsHol
 const Deposit = mongoose.models.Deposit || mongoose.model('Deposit', depositSchema);
 const Announcement = mongoose.models.Announcement || mongoose.model('Announcement', announcementSchema);
 
-// Exporting All Models Cleanly
 module.exports = {
   User,
   Wallet,
