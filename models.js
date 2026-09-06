@@ -1,7 +1,7 @@
 /**
- * Ultra-Enterprise Models Architecture (V5.2 - Absolute Multi-Tenant Isolation & Zero Data-Leakage)
+ * Ultra-Enterprise Models Architecture (V5.3 - Absolute Multi-Tenant Isolation & Zero Data-Leakage)
  * Platform: Telega.ads Advertising & Shortener Network
- * Security: Zero-Data-Leakage Enforcement, Dynamic Context Scoping, Dual-ID Ownership Bindings
+ * Security: Zero-Data-Leakage Enforcement, Dynamic Context Scoping, Dual-ID Ownership Bindings, Audit Logging & State Persistence
  */
 
 if (typeof window !== 'undefined') {
@@ -113,6 +113,16 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Invalid wallet address format (Must be USDT TRC20, BEP20/ERC20, or TON)'
     }
+  },
+  lastActiveAt: {
+    type: Date,
+    default: Date.now,
+    index: true
+  },
+  appSettings: {
+    theme: { type: String, default: 'dark', enum: ['dark', 'light'] },
+    notificationsEnabled: { type: Boolean, default: true },
+    autoSaveDrafts: { type: Boolean, default: true }
   },
   statsSummary: {
     totalLinksCreated: { type: Number, default: 0, min: 0 },
@@ -835,6 +845,73 @@ announcementSchema.statics.getForUserIsolated = function(userId, telegramId) {
   }).sort({ createdAt: -1 });
 };
 
+// --------------------------------------------------
+// 12. User Activity & Audit Log Model (Zero Data-Loss Enforcement)
+// --------------------------------------------------
+const userActivityLogSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'User ID is required for activity logging'],
+    index: true
+  },
+  telegramId: {
+    type: String,
+    required: [true, 'Telegram ID is required for audit logging'],
+    trim: true,
+    index: true
+  },
+  action: {
+    type: String,
+    required: [true, 'Action type is required'],
+    trim: true,
+    index: true // Ex: 'UPDATE_SETTINGS', 'LINK_CREATE', 'WITHDRAW_REQUEST', 'SESSION_CLOSE'
+  },
+  description: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  changes: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {} // Dynamic Key-Value store for recording state diffs (e.g. before/after)
+  },
+  ip: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  userAgent: {
+    type: String,
+    default: '',
+    trim: true
+  }
+}, globalSchemaOptions);
+
+userActivityLogSchema.index({ userId: 1, createdAt: -1 });
+userActivityLogSchema.index({ telegramId: 1, createdAt: -1 });
+userActivityLogSchema.index({ action: 1, createdAt: -1 });
+
+userActivityLogSchema.statics.logActivityIsolated = async function({ userId, telegramId, action, description = '', changes = {}, ip = '', userAgent = '' }) {
+  enforceTenantKey(userId, 'userId');
+  enforceTenantKey(telegramId, 'telegramId');
+  
+  return this.create({
+    userId,
+    telegramId: String(telegramId).trim(),
+    action,
+    description,
+    changes,
+    ip,
+    userAgent
+  });
+};
+
+userActivityLogSchema.statics.getUserLogsIsolated = function(userId, limit = 50) {
+  enforceTenantKey(userId, 'userId');
+  return this.find({ userId }).sort({ createdAt: -1 }).limit(limit);
+};
+
 // Exporting Optimized Safe Models
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 const Wallet = mongoose.models.Wallet || mongoose.model('Wallet', walletSchema);
@@ -847,6 +924,7 @@ const Withdraw = mongoose.models.Withdraw || mongoose.model('Withdraw', withdraw
 const EarningsHold = mongoose.models.EarningsHold || mongoose.model('EarningsHold', earningsHoldSchema);
 const Deposit = mongoose.models.Deposit || mongoose.model('Deposit', depositSchema);
 const Announcement = mongoose.models.Announcement || mongoose.model('Announcement', announcementSchema);
+const UserActivityLog = mongoose.models.UserActivityLog || mongoose.model('UserActivityLog', userActivityLogSchema);
 
 module.exports = {
   User,
@@ -859,5 +937,6 @@ module.exports = {
   Withdraw,
   EarningsHold,
   Deposit,
-  Announcement
+  Announcement,
+  UserActivityLog
 };
