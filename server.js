@@ -808,17 +808,25 @@ app.post('/api/impression', validateTraffic, clickLimiter, async (req, res, next
 // --- Strict Link Management Engine (100% Isolated Routes Guard) ---
 // =========================================================================
 
-// Create Link Engine
-app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, next) => {
+// Create Link Engine (المعدلة بالكامل وفق المطلوب)
+app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => {
   try {
-    let { title, targetUrl } = req.body;
-    const cleanUrl = String(targetUrl || '').trim();
-    const userId = req.user && (req.user._id || req.user.id);
+    // 1. استلام userId من req.user، أو req.body.userId، أو من الهيدر
+    const userId = (req.user && (req.user._id || req.user.id)) ||
+                   req.body.userId ||
+                   req.headers['x-user-id'] ||
+                   req.headers['userid'];
 
-    // 1. GUARANTEED REFUSAL: Reject creation if userId is missing or undefined
+    // إذا لم يجد userId أرجع رسالة بأسلوب متناسق دون أن ينهار الخادم
     if (!userId) {
-      return res.status(401).json({ success: false, error: 'غير مصرح: معرف المستخدم مفقود' });
+      return res.status(401).json({ 
+        success: false, 
+        error: 'غير مصرح: معرف المستخدم (userId) مفقود' 
+      });
     }
+
+    const { title, targetUrl } = req.body;
+    const cleanUrl = String(targetUrl || '').trim();
 
     if (!cleanUrl || !validUrl.isWebUri(cleanUrl)) {
       return res.status(400).json({ success: false, error: 'الرابط المستهدف غير صالح' });
@@ -836,26 +844,35 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
     } catch (e) {}
 
     const shortCode = crypto.randomBytes(3).toString('hex');
+    const publisherTelegramId = req.user?.telegramId || null;
     
-    // 2. GUARANTEED STORAGE: Store mandatory userId inside the created Link
+    // إنشاء وحفظ الرابط مع userId
     const link = await Link.create({
       userId: userId,
-      publisherTelegramId: req.user.telegramId,
+      publisherTelegramId: publisherTelegramId,
       title: title ? String(title).trim() : 'رابط بدون عنوان',
       targetUrl: cleanUrl,
       shortCode,
       isActive: true
     });
 
-    await User.findByIdAndUpdate(userId, { $inc: { 'statsSummary.totalLinksCreated': 1 } });
+    if (mongoose.Types.ObjectId.isValid(userId)) {
+      await User.findByIdAndUpdate(userId, { $inc: { 'statsSummary.totalLinksCreated': 1 } }).catch(() => {});
+    }
 
-    res.json({ 
+    return res.json({ 
       success: true, 
       link,
       shortUrl: `https://${CONFIG.APP_DOMAIN}/r/${shortCode}`
     });
   } catch (err) {
-    next(err);
+    // طباعة الخطأ في الكونسول لمعرفة السبب بوضوح
+    console.error('❌ Error in POST /api/links:', err);
+    
+    return res.status(500).json({ 
+      success: false, 
+      error: 'حدث خطأ أثناء اختصار الرابط، يرجى المحاولة لاحقاً' 
+    });
   }
 });
 
