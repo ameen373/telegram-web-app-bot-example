@@ -33,6 +33,7 @@ app.use(cors({
 }));
 app.options('*', cors());
 
+// --- Ensure JSON Parsing Middleware is at the top ---
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(express.static(__dirname));
@@ -524,7 +525,7 @@ app.post('/api/ads', authMiddleware, async (req, res, next) => {
     }], { session });
 
     await session.commitTransaction();
-    res.json({ success: true, ad: ad[0] });
+    res.json({ success: true, data: ad[0], ad: ad[0] });
   } catch (err) {
     await session.abortTransaction();
     next(err);
@@ -536,7 +537,7 @@ app.post('/api/ads', authMiddleware, async (req, res, next) => {
 app.get('/api/user/ads', authMiddleware, async (req, res, next) => {
   try {
     const ads = await Ad.find({ userId: req.userId }).sort({ createdAt: -1 }).lean();
-    res.json({ success: true, ads });
+    res.json({ success: true, data: ads, ads });
   } catch (err) {
     next(err);
   }
@@ -547,17 +548,15 @@ app.post('/api/ads/toggle', authMiddleware, async (req, res, next) => {
     const { adId } = req.body;
     if (!mongoose.Types.ObjectId.isValid(adId)) return res.status(400).json({ success: false, error: 'معرف الإعلان غير صالح' });
 
-    const ad = await Ad.findOne({ _id: adId, userId: req.userId });
-    if (!ad) return res.status(404).json({ success: false, error: 'الإعلان غير موجود أو لا تملك صلاحية تعديله' });
+    const ad = await Ad.findOneAndUpdate(
+      { _id: adId, userId: req.userId, status: { $ne: 'completed' } },
+      [{ $set: { status: { $cond: [{ $eq: ["$status", "active"] }, "paused", "active"] } } }],
+      { new: true }
+    );
 
-    if (ad.status === 'completed') {
-      return res.status(400).json({ success: false, error: 'لا يمكن تفعيل حملة مكتملة ونفاذ ميزانيتها' });
-    }
+    if (!ad) return res.status(400).json({ success: false, error: 'الإعلان غير موجود أو مكتمل الميزانية أو لا تملك صلاحية تعديله' });
 
-    ad.status = ad.status === 'active' ? 'paused' : 'active';
-    await ad.save();
-
-    res.json({ success: true, status: ad.status });
+    res.json({ success: true, status: ad.status, data: ad });
   } catch (err) {
     next(err);
   }
@@ -603,7 +602,7 @@ app.post('/api/deposit', authMiddleware, async (req, res, next) => {
       `💳 <b>طلب إيداع جديد!</b>\nالمستخدم: <code>${req.user.username}</code>\nالمبلغ: <code>$${numAmount}</code>\nالشبكة: <code>${cleanNetwork}</code>\nTxID: <code>${cleanTxid}</code>`
     );
 
-    res.json({ success: true, deposit });
+    res.json({ success: true, data: deposit, deposit });
   } catch (err) {
     next(err);
   }
@@ -671,7 +670,7 @@ app.post('/api/withdraw', authMiddleware, async (req, res, next) => {
       `🔔 <b>تم تقديم طلب السحب بنجاح!</b>\nالمبلغ: <code>$${numAmt}</code>\nالرسوم: <code>$${FEE}</code>\nالصافي: <code>$${netAmount}</code>\nالشبكة: <code>${cleanNetwork}</code>\nالمحفظة: <code>${cleanWallet}</code>\nالحالة: ⏳ قيد المراجعة\n\nالدعم: ${CONFIG.SUPPORT_USERNAME}`
     );
 
-    res.json({ success: true, withdraw: withdrawRequest[0] });
+    res.json({ success: true, data: withdrawRequest[0], withdraw: withdrawRequest[0] });
   } catch (err) {
     await session.abortTransaction();
     next(err);
@@ -942,10 +941,8 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => 
 
     return res.json({ 
       success: true, 
-      link: {
-        ...linkObj,
-        shortUrl
-      },
+      data: { ...linkObj, shortUrl },
+      link: { ...linkObj, shortUrl },
       shortUrl
     });
   } catch (err) {
@@ -984,7 +981,7 @@ const getUserLinks = async (userId) => {
 app.get('/api/links', authMiddleware, async (req, res, next) => {
   try {
     const links = await getUserLinks(req.userId);
-    res.json({ success: true, links });
+    res.json({ success: true, data: links, links });
   } catch (err) {
     next(err);
   }
@@ -994,7 +991,7 @@ app.get('/api/links', authMiddleware, async (req, res, next) => {
 app.get('/api/user/links', authMiddleware, async (req, res, next) => {
   try {
     const links = await getUserLinks(req.userId);
-    res.json({ success: true, links });
+    res.json({ success: true, data: links, links });
   } catch (err) {
     next(err);
   }
@@ -1015,7 +1012,7 @@ app.post('/api/links/toggle', authMiddleware, async (req, res, next) => {
     await link.save();
     await safeRedisDel(`link:data:${link.shortCode}`);
 
-    res.json({ success: true, isActive: link.isActive });
+    res.json({ success: true, isActive: link.isActive, data: link });
   } catch (err) {
     next(err);
   }
@@ -1029,8 +1026,8 @@ app.post('/api/user/settings', authMiddleware, async (req, res, next) => {
     if (defaultWallet !== undefined) updateData.defaultWallet = String(defaultWallet).trim();
     if (language !== undefined) updateData.language = String(language).trim().toLowerCase() || CONFIG.DEFAULT_LANGUAGE;
 
-    await User.findByIdAndUpdate(req.userId, updateData);
-    res.json({ success: true, message: 'تم تحديث الإعدادات بنجاح' });
+    const updatedUser = await User.findByIdAndUpdate(req.userId, updateData, { new: true });
+    res.json({ success: true, message: 'تم تحديث الإعدادات بنجاح', data: updatedUser });
   } catch (err) {
     next(err);
   }
@@ -1049,7 +1046,8 @@ app.get('/api/admin/dashboard-data', authMiddleware, adminMiddleware, async (req
       Ad.countDocuments()
     ]);
 
-    res.json({ success: true, withdraws, deposits, users, stats: { ...(stats[0] || {}), totalAds } });
+    const dashboardData = { withdraws, deposits, users, stats: { ...(stats[0] || {}), totalAds } };
+    res.json({ success: true, data: dashboardData, ...dashboardData });
   } catch (err) {
     next(err);
   }
@@ -1100,7 +1098,7 @@ app.post('/api/admin/deposit/action', authMiddleware, adminMiddleware, async (re
     }
 
     await session.commitTransaction();
-    res.json({ success: true, deposit });
+    res.json({ success: true, data: deposit, deposit });
   } catch (err) {
     await session.abortTransaction();
     next(err);
@@ -1153,7 +1151,7 @@ app.post('/api/admin/withdraw/action', authMiddleware, adminMiddleware, async (r
     }
 
     await session.commitTransaction();
-    res.json({ success: true, withdraw });
+    res.json({ success: true, data: withdraw, withdraw });
   } catch (err) {
     await session.abortTransaction();
     next(err);
@@ -1213,7 +1211,7 @@ app.post('/api/admin/distribute-revenue', authMiddleware, adminMiddleware, async
     }
 
     await session.commitTransaction();
-    res.json({ success: true, message: `تم توزيع $${revenue} بنجاح على ${links.length} رابطاً.` });
+    res.json({ success: true, message: `تم توزيع $${revenue} بنجاح على ${links.length} رابطاً.`, data: { distributedRevenue: revenue, processedLinks: links.length } });
   } catch (err) {
     await session.abortTransaction();
     next(err);
@@ -1237,7 +1235,7 @@ app.post('/api/admin/user/toggle-ban', authMiddleware, adminMiddleware, async (r
       sendTelegramNotification(user.telegramId, `🚫 <b>تنبيه من الإدارة:</b> تم حظر حسابك بسبب مخالفة الشروط.\nالدعم: ${CONFIG.SUPPORT_USERNAME}`);
     }
 
-    res.json({ success: true, isBanned: user.isBanned });
+    res.json({ success: true, isBanned: user.isBanned, data: user });
   } catch (err) {
     next(err);
   }
