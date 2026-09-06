@@ -244,6 +244,7 @@ const authMiddleware = async (req, res, next) => {
 
     // Attach verified user exclusively to current request context
     req.user = user;
+    req.user.id = user._id; // Normalized ObjectId string/reference
     next();
   } catch (err) {
     res.status(401).json({ success: false, error: 'انتهت الجلسة، يرجى إعادة التسجيل' });
@@ -328,11 +329,11 @@ app.get('/api/user/data', authMiddleware, async (req, res, next) => {
     const telegramId = req.user.telegramId;
 
     const [rawLinks, withdraws, announcements, ads, deposits] = await Promise.all([
-      Link.getUserIsolatedLinks(userId).lean(),
-      Withdraw.getUserWithdrawalsIsolated(userId).lean(),
+      Link.find({ userId }).sort({ createdAt: -1 }).lean(),
+      Withdraw.find({ userId }).sort({ createdAt: -1 }).lean(),
       Announcement.getForUserIsolated(userId, telegramId).lean(),
-      Ad.findAdvertiserAdsIsolated(userId).lean(),
-      Deposit.getAdvertiserDepositsIsolated(userId).lean()
+      Ad.find({ $or: [{ userId }, { advertiserId: userId }] }).sort({ createdAt: -1 }).lean(),
+      Deposit.find({ $or: [{ userId }, { advertiserId: userId }] }).sort({ createdAt: -1 }).lean()
     ]);
 
     const links = rawLinks.map(link => {
@@ -410,6 +411,7 @@ app.post('/api/ads', authMiddleware, async (req, res, next) => {
     }
 
     const ad = await Ad.create([{
+      userId: req.user._id,
       advertiserId: req.user._id,
       advertiserTelegramId: req.user.telegramId,
       title: String(title).trim(),
@@ -435,7 +437,7 @@ app.post('/api/ads', authMiddleware, async (req, res, next) => {
 
 app.get('/api/user/ads', authMiddleware, async (req, res, next) => {
   try {
-    const ads = await Ad.findAdvertiserAdsIsolated(req.user._id).lean();
+    const ads = await Ad.find({ $or: [{ userId: req.user._id }, { advertiserId: req.user._id }] }).sort({ createdAt: -1 }).lean();
     res.json({ success: true, ads });
   } catch (err) {
     next(err);
@@ -447,7 +449,8 @@ app.post('/api/ads/toggle', authMiddleware, async (req, res, next) => {
     const { adId } = req.body;
     if (!mongoose.Types.ObjectId.isValid(adId)) return res.status(400).json({ success: false, error: 'معرف الإعلان غير صالح' });
 
-    const ad = await Ad.findOne({ _id: adId, advertiserId: req.user._id });
+    // Enforce Isolation: Check ownership strictly by userId/advertiserId
+    const ad = await Ad.findOne({ _id: adId, $or: [{ userId: req.user._id }, { advertiserId: req.user._id }] });
     if (!ad) return res.status(404).json({ success: false, error: 'الإعلان غير موجود أو لا تملك صلاحية تعديله' });
 
     if (ad.status === 'completed') {
@@ -489,6 +492,7 @@ app.post('/api/deposit', authMiddleware, async (req, res, next) => {
     }
 
     const deposit = await Deposit.create({
+      userId: req.user._id,
       advertiserId: req.user._id,
       advertiserTelegramId: req.user.telegramId,
       amount: numAmount,
@@ -533,6 +537,7 @@ app.post('/api/withdraw', authMiddleware, async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'عنوان المحفظة غير صالح' });
     }
 
+    // Enforce Isolation: Ensure no pending withdrawal exists for this specific userId
     const activePending = await Withdraw.findOne({ userId: req.user._id, status: 'pending' }).session(session);
     if (activePending) {
       await session.abortTransaction();
@@ -610,6 +615,7 @@ app.post('/api/init-click', validateTraffic, async (req, res, next) => {
         $match: { 
           status: 'active', 
           remainingBudget: { $gte: 0.0015 },
+          userId: { $ne: new mongoose.Types.ObjectId(linkOwnerId) },
           advertiserId: { $ne: new mongoose.Types.ObjectId(linkOwnerId) }
         } 
       },
@@ -627,6 +633,7 @@ app.post('/api/init-click', validateTraffic, async (req, res, next) => {
     const bridgeToken = crypto.randomBytes(16).toString('hex');
     const session = await ClickSession.create({ 
       linkId, 
+      userId: linkOwnerId,
       publisherId: linkOwnerId,
       ip: req.ip, 
       bridgeToken,
@@ -718,6 +725,7 @@ app.post('/api/impression', validateTraffic, clickLimiter, async (req, res, next
 
     await Impression.create([{
       linkId: link._id,
+      userId: link.userId._id,
       publisherId: link.userId._id,
       publisherTelegramId: link.userId.telegramId,
       adSource: clickSession.adSource,
@@ -832,7 +840,7 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res, nex
 // Fetch Links Alias (Unified Endpoint For Privacy & Front-End Compatibility)
 app.get('/api/links', authMiddleware, async (req, res, next) => {
   try {
-    const rawLinks = await Link.getUserIsolatedLinks(req.user._id).lean();
+    const rawLinks = await Link.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
       const validImp = link.validImpressions || 0;
@@ -852,7 +860,7 @@ app.get('/api/links', authMiddleware, async (req, res, next) => {
 // Strict Isolated User Links Fetching Endpoint
 app.get('/api/user/links', authMiddleware, async (req, res, next) => {
   try {
-    const rawLinks = await Link.getUserIsolatedLinks(req.user._id).lean();
+    const rawLinks = await Link.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
       const validImp = link.validImpressions || 0;
@@ -948,19 +956,20 @@ app.post('/api/admin/deposit/action', authMiddleware, adminMiddleware, async (re
     await deposit.save({ session });
 
     if (action === 'approved') {
+      const targetUserId = deposit.userId || deposit.advertiserId._id;
       await User.findByIdAndUpdate(
-        deposit.advertiserId._id,
+        targetUserId,
         { $inc: { availableBalance: deposit.amount } },
         { session }
       );
 
       sendTelegramNotification(
-        deposit.advertiserId.telegramId,
+        deposit.advertiserTelegramId || deposit.advertiserId.telegramId,
         `🎉 <b>تم تأكيد الإيداع!</b>\nتمت إضافة <code>$${deposit.amount}</code> إلى رصيدك المتاح.`
       );
     } else {
       sendTelegramNotification(
-        deposit.advertiserId.telegramId,
+        deposit.advertiserTelegramId || deposit.advertiserId.telegramId,
         `❌ <b>تم رفض طلب الإيداع</b>\nالمبلغ: <code>$${deposit.amount}</code>\n⚠️ <b>السبب:</b> ${deposit.rejectReason}\n\nالدعم: ${CONFIG.SUPPORT_USERNAME}`
       );
     }
@@ -1008,12 +1017,12 @@ app.post('/api/admin/withdraw/action', authMiddleware, adminMiddleware, async (r
       );
 
       sendTelegramNotification(
-        withdraw.userId.telegramId,
+        withdraw.telegramId || withdraw.userId.telegramId,
         `❌ <b>تم رفض طلب السحب</b>\nإجمالي المبلغ: <code>$${withdraw.amount}</code>\n⚠️ <b>السبب:</b> ${withdraw.rejectReason}\nتم إعادة المبلغ لرصيدك المتاح.\nالدعم: ${CONFIG.SUPPORT_USERNAME}`
       );
     } else if (action === 'approved') {
       sendTelegramNotification(
-        withdraw.userId.telegramId,
+        withdraw.telegramId || withdraw.userId.telegramId,
         `🎉 <b>تمت الموافقة على السحب!</b>\nإجمالي المبلغ: <code>$${withdraw.amount}</code>\nالصافي المحول: <code>$${withdraw.netAmount}</code>\nالشبكة: <code>${withdraw.network}</code>\nشكراً لاستخدامك منصتنا!`
       );
     }
