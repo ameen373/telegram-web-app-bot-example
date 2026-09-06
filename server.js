@@ -244,7 +244,6 @@ const authMiddleware = async (req, res, next) => {
       return res.status(403).json({ success: false, error: 'حسابك معطل بسبب مخالفة الشروط' });
     }
 
-    // ربط كائن المستخدم واستخراج userId بشكل صريح وموحد
     req.user = user;
     req.user.id = user._id.toString();
     req.userId = user._id;
@@ -270,7 +269,6 @@ app.all('/api/check-admin', async (req, res) => {
     let targetUserId = req.body?.userId || req.query?.userId;
     let telegramIdToCheck = null;
 
-    // إذا كان الممرّر معرف MongoDB، نبحث عن المستخدم لجلب telegramId
     if (targetUserId && mongoose.Types.ObjectId.isValid(targetUserId)) {
       const u = await User.findById(targetUserId).lean();
       if (u) telegramIdToCheck = String(u.telegramId).trim();
@@ -278,7 +276,6 @@ app.all('/api/check-admin', async (req, res) => {
       telegramIdToCheck = String(targetUserId).trim();
     }
 
-    // إذا لم يتم تمرير userId محدد، نحاول التحقق من الجلسة الموثقة إن وجدت
     if (!telegramIdToCheck) {
       const authHeader = req.headers.authorization;
       if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -388,7 +385,6 @@ app.get('/api/user/data', authMiddleware, async (req, res, next) => {
       });
     }
 
-    // استعلام معزول بصرامة اعتماداً على userId الخاص بالمستخدم الحالي
     const [rawLinks, withdraws, announcements, ads, deposits] = await Promise.all([
       Link.find({ $or: [{ userId: userId }, { userId: userId.toString() }] }).sort({ createdAt: -1 }).lean(),
       Withdraw.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
@@ -437,6 +433,163 @@ app.get('/api/user/data', authMiddleware, async (req, res, next) => {
   }
 });
 
+// =========================================================================
+// --- NEW & ENHANCED POST / PUT STATE PERSISTENCE API ROUTES ---
+// =========================================================================
+
+// --- Update Profile & Settings Real-time (PUT /api/user/profile) ---
+app.put('/api/user/profile', authMiddleware, async (req, res, next) => {
+  try {
+    const { username, language, defaultWallet } = req.body;
+    const updateData = {};
+
+    if (username !== undefined) updateData.username = String(username).trim();
+    if (language !== undefined) updateData.language = String(language).trim().toLowerCase();
+    if (defaultWallet !== undefined) updateData.defaultWallet = String(defaultWallet).trim();
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    ).lean();
+
+    res.json({ success: true, user: updatedUser, message: 'تم تحديث الملف الشخصي بنجاح' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// --- Update Link Details (PUT /api/links/:id) ---
+app.put('/api/links/:id', authMiddleware, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { title, targetUrl, isActive } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: 'معرف الرابط غير صالح' });
+    }
+
+    const link = await Link.findOne({ _id: id, $or: [{ userId: req.userId }, { userId: req.userId.toString() }] });
+    if (!link) {
+      return res.status(404).json({ success: false, error: 'الرابط غير موجود أو لا تملك صلاحية التعديل' });
+    }
+
+    if (title !== undefined) link.title = String(title).trim();
+    if (targetUrl !== undefined) {
+      const cleanUrl = String(targetUrl).trim();
+      if (!validUrl.isWebUri(cleanUrl) || isPhishingOrMalicious(cleanUrl)) {
+        return res.status(400).json({ success: false, error: 'الرابط المستهدف الجديد غير صالح أو ينتهك الأمان' });
+      }
+      link.targetUrl = cleanUrl;
+    }
+    if (isActive !== undefined) link.isActive = Boolean(isActive);
+
+    await link.save();
+    await safeRedisDel(`link:data:${link.shortCode}`);
+
+    const shortUrl = `https://${CONFIG.APP_DOMAIN}/r/${link.shortCode}`;
+    res.json({ success: true, link: { ...link.toObject(), shortUrl }, message: 'تم تحديث بيانات الرابط بنجاح' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// --- Delete Link Endpoint (DELETE /api/links/:id) ---
+app.delete('/api/links/:id', authMiddleware, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: 'معرف الرابط غير صالح' });
+    }
+
+    const link = await Link.findOneAndDelete({ _id: id, $or: [{ userId: req.userId }, { userId: req.userId.toString() }] });
+    if (!link) {
+      return res.status(404).json({ success: false, error: 'الرابط غير موجود أو تمت إزالته سابقاً' });
+    }
+
+    await safeRedisDel(`link:data:${link.shortCode}`);
+    res.json({ success: true, message: 'تم حذف الرابط بنجاح' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// --- Update Ad Campaign Details (PUT /api/ads/:id) ---
+app.put('/api/ads/:id', authMiddleware, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { title, targetUrl, status } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: 'معرف الإعلان غير صالح' });
+    }
+
+    const ad = await Ad.findOne({ _id: id, userId: req.userId });
+    if (!ad) {
+      return res.status(404).json({ success: false, error: 'الحملة الإعلانية غير موجودة أو لا تملك صلاحية التعديل' });
+    }
+
+    if (title !== undefined) ad.title = String(title).trim();
+    if (targetUrl !== undefined) {
+      const cleanUrl = String(targetUrl).trim();
+      if (!validUrl.isWebUri(cleanUrl)) {
+        return res.status(400).json({ success: false, error: 'رابط الحملة غير صالح' });
+      }
+      ad.targetUrl = cleanUrl;
+    }
+    if (status !== undefined && ['active', 'paused'].includes(status)) {
+      if (ad.remainingBudget > 0 && ad.status !== 'completed') {
+        ad.status = status;
+      }
+    }
+
+    await ad.save();
+    res.json({ success: true, ad, message: 'تم تحديث الحملة الإعلانية بنجاح' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// --- Bulk Synchronize Entire State From UI (POST /api/user/sync) ---
+app.post('/api/user/sync', authMiddleware, async (req, res, next) => {
+  try {
+    const { settings, links } = req.body;
+
+    if (settings) {
+      const updateData = {};
+      if (settings.defaultWallet !== undefined) updateData.defaultWallet = String(settings.defaultWallet).trim();
+      if (settings.language !== undefined) updateData.language = String(settings.language).trim().toLowerCase();
+      if (Object.keys(updateData).length > 0) {
+        await User.findByIdAndUpdate(req.userId, { $set: updateData });
+      }
+    }
+
+    if (Array.isArray(links)) {
+      const bulkOps = links
+        .filter(l => mongoose.Types.ObjectId.isValid(l._id))
+        .map(l => ({
+          updateOne: {
+            filter: { _id: l._id, $or: [{ userId: req.userId }, { userId: req.userId.toString() }] },
+            update: { 
+              $set: { 
+                ...(l.title && { title: String(l.title).trim() }),
+                ...(l.isActive !== undefined && { isActive: Boolean(l.isActive) })
+              } 
+            }
+          }
+        }));
+
+      if (bulkOps.length > 0) {
+        await Link.bulkWrite(bulkOps);
+      }
+    }
+
+    res.json({ success: true, message: 'تم المزامنة الحية والحفظ الدائم بنجاح' });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // --- Self-Serve Ad Campaign APIs ---
 app.post('/api/ads', authMiddleware, async (req, res, next) => {
   const session = await mongoose.startSession();
@@ -460,7 +613,6 @@ app.post('/api/ads', authMiddleware, async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'الحد الأدنى لميزانية الحملة هو $5' });
     }
 
-    // خصم الميزانية حصرياً من رصيد المستخدم صاحب الجلسة
     const updatedUser = await User.findOneAndUpdate(
       { _id: req.userId, availableBalance: { $gte: budget } },
       { $inc: { availableBalance: -budget } },
@@ -499,7 +651,6 @@ app.post('/api/ads', authMiddleware, async (req, res, next) => {
 
 app.get('/api/user/ads', authMiddleware, async (req, res, next) => {
   try {
-    // جلب الحملات الخاصة بالمستخدم الحالي فقط
     const ads = await Ad.find({ userId: req.userId }).sort({ createdAt: -1 }).lean();
     res.json({ success: true, ads });
   } catch (err) {
@@ -512,7 +663,6 @@ app.post('/api/ads/toggle', authMiddleware, async (req, res, next) => {
     const { adId } = req.body;
     if (!mongoose.Types.ObjectId.isValid(adId)) return res.status(400).json({ success: false, error: 'معرف الإعلان غير صالح' });
 
-    // التحقق من ملكية الإعلان عبر userId
     const ad = await Ad.findOne({ _id: adId, userId: req.userId });
     if (!ad) return res.status(404).json({ success: false, error: 'الإعلان غير موجود أو لا تملك صلاحية تعديله' });
 
@@ -554,7 +704,6 @@ app.post('/api/deposit', authMiddleware, async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'تم تقديم رقم هذه المعاملة (TxID) من قبل' });
     }
 
-    // ربط طلب الإيداع بـ userId الحالي
     const deposit = await Deposit.create({
       userId: req.userId,
       advertiserId: req.userId,
@@ -601,7 +750,6 @@ app.post('/api/withdraw', authMiddleware, async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'عنوان المحفظة غير صالح' });
     }
 
-    // التحقق من وجود طلب معلق للمستخدم نفسه حصراً
     const activePending = await Withdraw.findOne({ userId: req.userId, status: 'pending' }).session(session);
     if (activePending) {
       await session.abortTransaction();
@@ -610,7 +758,6 @@ app.post('/api/withdraw', authMiddleware, async (req, res, next) => {
 
     const netAmount = numAmt - FEE;
 
-    // الخصم المالي المعزول بـ userId
     const updatedUser = await User.findOneAndUpdate(
       { _id: req.userId, availableBalance: { $gte: numAmt } },
       { $inc: { availableBalance: -numAmt }, defaultWallet: cleanWallet },
@@ -890,7 +1037,6 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => 
     const shortCode = crypto.randomBytes(3).toString('hex');
     const publisherTelegramId = req.user?.telegramId || null;
     
-    // إنشاء كائن الرابط الجديد مع التأكد من ربط userId صراحة
     const newLink = new Link({
       userId: userId,
       publisherTelegramId: publisherTelegramId,
@@ -901,7 +1047,6 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => 
       isActive: true
     });
 
-    // حفظ الوثيقة في قاعدة البيانات
     await newLink.save();
 
     if (mongoose.Types.ObjectId.isValid(userId)) {
@@ -911,7 +1056,6 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => 
     const linkObj = newLink.toObject ? newLink.toObject() : newLink;
     const shortUrl = `https://${CONFIG.APP_DOMAIN}/r/${shortCode}`;
 
-    // إرجاع كائن الرابط الجديد كاملاً بداخل الاستجابة
     return res.json({ 
       success: true, 
       link: {
@@ -933,7 +1077,6 @@ app.post('/api/links', authMiddleware, linkCreationLimiter, async (req, res) => 
 const getUserLinks = async (userId) => {
   if (!userId) return [];
 
-  // فحص صيغة userId سواء كانت ObjectId أو String لضمان مطابقة المعرف تماماً
   const rawLinks = await Link.find({
     $or: [
       { userId: userId },
@@ -981,7 +1124,6 @@ app.post('/api/links/toggle', authMiddleware, async (req, res, next) => {
     if (!userId) return res.status(401).json({ success: false, error: 'معرف المستخدم مفقود' });
     if (!mongoose.Types.ObjectId.isValid(linkId)) return res.status(400).json({ success: false, error: 'معرف الرابط غير صالح' });
 
-    // التأكد من الملكية بـ userId
     const link = await Link.findOne({ _id: linkId, $or: [{ userId: userId }, { userId: userId.toString() }] });
     if (!link) return res.status(404).json({ success: false, error: 'الرابط غير موجود أو لا تملك صلاحيات التعديل عليه' });
 
