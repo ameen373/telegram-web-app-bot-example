@@ -828,15 +828,23 @@
       }
     }
 
-    // Unified Secure Network Wrapper (Ensures Valid Authentication Headers)
+    // Unified Secure Network Wrapper (Guarantees Identification Headers Sent to Backend)
     async function safeFetch(endpoint, options = {}) {
       options.headers = options.headers || {};
       
+      // 1. Send Bearer Token if logged in
       if (authToken) {
         options.headers['Authorization'] = `Bearer ${authToken}`;
       }
-      if (tg?.initData) {
+      
+      // 2. Send Telegram Mini App initData
+      if (tg && tg.initData) {
         options.headers['x-telegram-init-data'] = tg.initData;
+      }
+
+      // 3. Ensure JSON Content-Type for POST/PUT methods if body present
+      if (options.body && typeof options.body === 'string' && !options.headers['Content-Type']) {
+        options.headers['Content-Type'] = 'application/json';
       }
       
       const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
@@ -844,10 +852,14 @@
       
       try {
         let response = await fetch(targetUrl, options);
-        if (response.status === 401) {
+        
+        // Auto-reauthenticate on expired token
+        if (response && response.status === 401 && !options._isRetry) {
+          options._isRetry = true;
           const reAuth = await authLogin();
           if (reAuth) {
-            options.headers['Authorization'] = `Bearer ${authToken}`;
+            if (authToken) options.headers['Authorization'] = `Bearer ${authToken}`;
+            if (tg?.initData) options.headers['x-telegram-init-data'] = tg.initData;
             response = await fetch(targetUrl, options);
           }
         }
@@ -1009,8 +1021,11 @@
       try {
         const res = await safeFetch('/api/auth/login', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ referrerId: startParam, telegramUserInfo: tg?.initDataUnsafe?.user || {} })
+          body: JSON.stringify({ 
+            initData: tg?.initData || '', // Pass raw initData string
+            referrerId: startParam, 
+            telegramUserInfo: tg?.initDataUnsafe?.user || {} 
+          })
         });
         if (!res) return false;
         const data = await res.json();
@@ -1166,7 +1181,6 @@
       try {
         const res = await safeFetch('/api/links/toggle', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ linkId })
         });
         if (!res) return;
@@ -1186,7 +1200,6 @@
       try {
         const res = await safeFetch('/api/ads/toggle', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ adId })
         });
         if (!res) return;
@@ -1214,7 +1227,6 @@
       try {
         const res = await safeFetch('/api/ads', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title, targetUrl, totalBudget })
         });
         if (!res) return;
@@ -1249,7 +1261,6 @@
       try {
         const res = await safeFetch('/api/deposit', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ amount, paymentMethod, txHash })
         });
         if (!res) return;
@@ -1279,7 +1290,6 @@
       try {
         const res = await safeFetch('/api/init-click', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ linkCode: shortCode })
         });
         if (res) {
@@ -1338,7 +1348,6 @@
       try {
         const res = await safeFetch('/api/impression', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ linkCode: shortCode, sessionId: currentSessionId, duration })
         });
         if (!res) return;
@@ -1370,7 +1379,6 @@
       try {
         const res = await safeFetch('/api/links', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title, targetUrl })
         });
         if (!res) return;
@@ -1403,7 +1411,6 @@
       try {
         const res = await safeFetch('/api/withdraw', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ amount, walletAddress })
         });
         if (!res) return;
@@ -1431,7 +1438,6 @@
       try {
         const res = await safeFetch('/api/user/settings', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ defaultWallet })
         });
         if (!res) return;
@@ -1532,7 +1538,6 @@
       try {
         const res = await safeFetch('/api/admin/deposit/action', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ depositId, action })
         });
         if (!res) return;
@@ -1558,7 +1563,6 @@
       try {
         const res = await safeFetch('/api/admin/withdraw/action', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ withdrawId, action, rejectReason })
         });
         if (!res) return;
@@ -1578,7 +1582,6 @@
       try {
         const res = await safeFetch('/api/admin/user/toggle-ban', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId })
         });
         if (!res) return;
@@ -1603,7 +1606,6 @@
       try {
         const res = await safeFetch('/api/admin/distribute-revenue', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ totalRevenue })
         });
         if (!res) return;
