@@ -33,7 +33,7 @@ app.use(cors({
 }));
 app.options('*', cors());
 
-// --- Ensure JSON Parsing Middleware is at the top ---
+// --- Ensure Body Parsing Middlewares are at the top ---
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(express.static(__dirname));
@@ -123,7 +123,7 @@ async function connectDB() {
   return cached.conn;
 }
 
-// Middleware لضمان الاتصال بقاعدة البيانات قبل تنفيذ أي مسار أو عملية داتابيز
+// Middleware لضمان الاتصال بقاعدة البيانات قبل تنفيذ أي مسار
 app.use(async (req, res, next) => {
   try {
     await connectDB();
@@ -304,6 +304,58 @@ const adminMiddleware = async (req, res, next) => {
 };
 
 // =========================================================================
+// --- USER MANAGEMENT ROUTES (MongoDB Atlas Save, Update & Fetch) ---
+// =========================================================================
+
+// POST / PUT: حفظ أو تحديث بيانات المستخدم بأمان
+app.all(['/api/user/save', '/api/user/update'], authMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const { username, language, defaultWallet, settings } = req.body;
+
+    const updateFields = {};
+    if (username !== undefined) updateFields.username = String(username).trim();
+    if (language !== undefined) updateFields.language = String(language).trim().toLowerCase();
+    if (defaultWallet !== undefined) updateFields.defaultWallet = String(defaultWallet).trim();
+    if (settings !== undefined && typeof settings === 'object') updateFields.settings = settings;
+
+    // تحديث أو إنشاء التغييرات وانتظار التنفيذ
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: userId },
+      { $set: updateFields },
+      { upsert: true, new: true, runValidators: true }
+    );
+
+    return res.json({
+      success: true,
+      message: 'تم حفظ البيانات بنجاح في MongoDB Atlas',
+      user: updatedUser
+    });
+  } catch (err) {
+    logger.error('❌ Error saving user data:', err);
+    return res.status(500).json({ success: false, error: 'حدث خطأ أثناء حفظ البيانات' });
+  }
+});
+
+// GET: استرجاع أحدث بيانات المستخدم للواجهة
+app.get('/api/user/profile', authMiddleware, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId).lean();
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'المستخدم غير موجود' });
+    }
+
+    return res.json({
+      success: true,
+      user
+    });
+  } catch (err) {
+    logger.error('❌ Error fetching user data:', err);
+    return res.status(500).json({ success: false, error: 'حدث خطأ أثناء استرجاع البيانات' });
+  }
+});
+
+// =========================================================================
 // --- API Endpoint: Check Admin Role (/api/check-admin) ---
 // =========================================================================
 app.all('/api/check-admin', async (req, res) => {
@@ -358,26 +410,20 @@ app.post('/api/auth/login', async (req, res, next) => {
     const currentUsername = telegramUser?.username || `User_${tgId.slice(-4)}`;
     const userLanguage = telegramUser?.language_code || CONFIG.DEFAULT_LANGUAGE;
 
-    let user = await User.findOne({ telegramId: tgId });
-    if (!user) {
-      user = await User.create({
-        telegramId: tgId,
-        username: currentUsername,
-        language: userLanguage,
-        referredBy: mongoose.Types.ObjectId.isValid(referrerId) ? referrerId : null
-      });
-    } else {
-      let updated = false;
-      if (user.username !== currentUsername) {
-        user.username = currentUsername;
-        updated = true;
-      }
-      if (!user.language) {
-        user.language = userLanguage;
-        updated = true;
-      }
-      if (updated) await user.save();
-    }
+    const user = await User.findOneAndUpdate(
+      { telegramId: tgId },
+      {
+        $setOnInsert: {
+          telegramId: tgId,
+          referredBy: mongoose.Types.ObjectId.isValid(referrerId) ? referrerId : null
+        },
+        $set: {
+          username: currentUsername,
+          language: userLanguage
+        }
+      },
+      { upsert: true, new: true }
+    );
 
     if (user.isBanned) return res.status(403).json({ success: false, error: `حسابك معطل بسبب مخالفة الشروط. التواصل مع الدعم: ${CONFIG.SUPPORT_USERNAME}` });
 
@@ -427,13 +473,16 @@ app.get('/api/user/data', authMiddleware, async (req, res, next) => {
       });
     }
 
-    const [rawLinks, withdraws, announcements, ads, deposits] = await Promise.all([
+    const [freshUser, rawLinks, withdraws, announcements, ads, deposits] = await Promise.all([
+      User.findById(userId).lean(),
       Link.find({ $or: [{ userId: userId }, { userId: userId.toString() }] }).sort({ createdAt: -1 }).lean(),
       Withdraw.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
       Announcement.find({ $or: [{ isGlobal: true }, { targetUserId: userId }] }).sort({ createdAt: -1 }).lean(),
       Ad.find({ userId: userId }).sort({ createdAt: -1 }).lean(),
       Deposit.find({ userId: userId }).sort({ createdAt: -1 }).lean()
     ]);
+
+    const userObj = freshUser || req.user;
 
     const links = rawLinks.map(link => {
       const totalViews = link.views || 0;
@@ -449,11 +498,11 @@ app.get('/api/user/data', authMiddleware, async (req, res, next) => {
       };
     });
 
-    const isAdmin = String(req.user.telegramId).trim() === CONFIG.ADMIN_ID;
+    const isAdmin = String(userObj.telegramId).trim() === CONFIG.ADMIN_ID;
     res.json({ 
       success: true,
-      user: req.user, 
-      language: req.user.language || CONFIG.DEFAULT_LANGUAGE,
+      user: userObj, 
+      language: userObj.language || CONFIG.DEFAULT_LANGUAGE,
       links, 
       withdraws, 
       announcements, 
@@ -1026,7 +1075,7 @@ app.post('/api/user/settings', authMiddleware, async (req, res, next) => {
     if (defaultWallet !== undefined) updateData.defaultWallet = String(defaultWallet).trim();
     if (language !== undefined) updateData.language = String(language).trim().toLowerCase() || CONFIG.DEFAULT_LANGUAGE;
 
-    const updatedUser = await User.findByIdAndUpdate(req.userId, updateData, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(req.userId, { $set: updateData }, { new: true });
     res.json({ success: true, message: 'تم تحديث الإعدادات بنجاح', data: updatedUser });
   } catch (err) {
     next(err);
