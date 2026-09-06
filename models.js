@@ -37,7 +37,7 @@ const globalSchemaOptions = {
 // Helper validator to enforce non-empty ownership parameters
 const enforceTenantKey = (tenantKey, keyName = 'userId') => {
   if (!tenantKey) {
-    throw new Error(`Security Violation [Tenant Isolation]: Access denied. Missing strictly required parameters: ${keyName}`);
+    throw new Error(`Security Violation [Tenant Isolation]: Access denied. Missing strictly required parameter: ${keyName}`);
   }
 };
 
@@ -130,9 +130,15 @@ userSchema.statics.findByTelegramIdIsolated = function(telegramId) {
 };
 
 // --------------------------------------------------
-// 2. Self-Serve Ad Model (Advertiser Specific Data)
+// 2. Self-Serve Ad Model (Campaigns)
 // --------------------------------------------------
 const adSchema = new mongoose.Schema({
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User', 
+    required: [true, 'User ID is required for tenant isolation'], 
+    index: true 
+  },
   advertiserId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
@@ -211,17 +217,24 @@ const adSchema = new mongoose.Schema({
   }
 }, globalSchemaOptions);
 
-adSchema.index({ advertiserId: 1, status: 1, createdAt: -1 });
+// Ensure userId and advertiserId stay in sync before saving
+adSchema.pre('validate', function(next) {
+  if (this.userId && !this.advertiserId) this.advertiserId = this.userId;
+  if (this.advertiserId && !this.userId) this.userId = this.advertiserId;
+  next();
+});
+
+adSchema.index({ userId: 1, status: 1, createdAt: -1 });
 adSchema.index({ advertiserTelegramId: 1, status: 1, createdAt: -1 });
 adSchema.index({ status: 1, remainingBudget: 1, createdAt: -1 });
 
-adSchema.statics.findAdvertiserAdsIsolated = function(advertiserId, filter = {}) {
-  enforceTenantKey(advertiserId, 'advertiserId');
-  return this.find({ ...filter, advertiserId }).sort({ createdAt: -1 });
+adSchema.statics.findAdvertiserAdsIsolated = function(userId, filter = {}) {
+  enforceTenantKey(userId, 'userId');
+  return this.find({ ...filter, $or: [{ userId }, { advertiserId: userId }] }).sort({ createdAt: -1 });
 };
 
 // --------------------------------------------------
-// 3. Shortened Link Model (Strictly Isolated Publisher Data)
+// 3. Shortened Link Model (Links)
 // --------------------------------------------------
 const linkSchema = new mongoose.Schema({
   shortCode: { 
@@ -302,6 +315,12 @@ const impressionSchema = new mongoose.Schema({
     required: true, 
     index: true 
   },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
+  },
   publisherId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -358,14 +377,20 @@ const impressionSchema = new mongoose.Schema({
   }
 }, globalSchemaOptions);
 
-impressionSchema.index({ publisherId: 1, createdAt: -1 });
+impressionSchema.pre('validate', function(next) {
+  if (this.publisherId && !this.userId) this.userId = this.publisherId;
+  if (this.userId && !this.publisherId) this.publisherId = this.userId;
+  next();
+});
+
+impressionSchema.index({ userId: 1, createdAt: -1 });
 impressionSchema.index({ publisherTelegramId: 1, createdAt: -1 });
-impressionSchema.index({ linkId: 1, publisherId: 1, createdAt: -1 });
+impressionSchema.index({ linkId: 1, userId: 1, createdAt: -1 });
 impressionSchema.index({ ip: 1, linkId: 1, createdAt: -1 });
 
-impressionSchema.statics.getPublisherImpressionsIsolated = function(publisherId, extraFilter = {}) {
-  enforceTenantKey(publisherId, 'publisherId');
-  return this.find({ ...extraFilter, publisherId }).sort({ createdAt: -1 });
+impressionSchema.statics.getPublisherImpressionsIsolated = function(userId, extraFilter = {}) {
+  enforceTenantKey(userId, 'userId');
+  return this.find({ ...extraFilter, $or: [{ userId }, { publisherId: userId }] }).sort({ createdAt: -1 });
 };
 
 // --------------------------------------------------
@@ -376,6 +401,12 @@ const clickSessionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Link', 
     required: true 
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
   },
   publisherId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -416,12 +447,18 @@ const clickSessionSchema = new mongoose.Schema({
   }
 }, globalSchemaOptions);
 
+clickSessionSchema.pre('validate', function(next) {
+  if (this.publisherId && !this.userId) this.userId = this.publisherId;
+  if (this.userId && !this.publisherId) this.publisherId = this.userId;
+  next();
+});
+
 clickSessionSchema.index({ linkId: 1, ip: 1 });
-clickSessionSchema.index({ publisherId: 1, createdAt: -1 });
+clickSessionSchema.index({ userId: 1, createdAt: -1 });
 clickSessionSchema.index({ bridgeToken: 1 }, { unique: true });
 
 // --------------------------------------------------
-// 6. Withdraw Request Model
+// 6. Withdraw Request Model (Withdrawals)
 // --------------------------------------------------
 const withdrawSchema = new mongoose.Schema({
   userId: { 
@@ -492,9 +529,9 @@ withdrawSchema.pre('validate', function(next) {
 
 withdrawSchema.index({ userId: 1, status: 1, createdAt: -1 });
 withdrawSchema.index({ telegramId: 1, status: 1, createdAt: -1 });
-// Prevention of double active pending withdraws per user (Concurrency & Shared State Barrier)
+// Prevention of double active pending withdraws per user
 withdrawSchema.index(
-  { userId: 1, status: 1 }, 
+  { userId: 1, status: 'pending' }, 
   { unique: true, partialFilterExpression: { status: 'pending' } }
 );
 
@@ -549,9 +586,15 @@ earningsHoldSchema.statics.getUserHoldsIsolated = function(userId) {
 };
 
 // --------------------------------------------------
-// 8. Advertiser Deposit Model
+// 8. Advertiser Deposit Model (Deposits)
 // --------------------------------------------------
 const depositSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'User ID is required for tenant isolation'],
+    index: true
+  },
   advertiserId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -597,12 +640,18 @@ const depositSchema = new mongoose.Schema({
   }
 }, globalSchemaOptions);
 
-depositSchema.index({ advertiserId: 1, status: 1, createdAt: -1 });
+depositSchema.pre('validate', function(next) {
+  if (this.userId && !this.advertiserId) this.advertiserId = this.userId;
+  if (this.advertiserId && !this.userId) this.userId = this.advertiserId;
+  next();
+});
+
+depositSchema.index({ userId: 1, status: 1, createdAt: -1 });
 depositSchema.index({ advertiserTelegramId: 1, status: 1, createdAt: -1 });
 
-depositSchema.statics.getAdvertiserDepositsIsolated = function(advertiserId) {
-  enforceTenantKey(advertiserId, 'advertiserId');
-  return this.find({ advertiserId }).sort({ createdAt: -1 });
+depositSchema.statics.getAdvertiserDepositsIsolated = function(userId) {
+  enforceTenantKey(userId, 'userId');
+  return this.find({ $or: [{ userId }, { advertiserId: userId }] }).sort({ createdAt: -1 });
 };
 
 // --------------------------------------------------
